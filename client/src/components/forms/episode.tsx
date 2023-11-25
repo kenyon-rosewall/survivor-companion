@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Columns, Form, Button } from 'react-bulma-components'
 import DatePicker from 'react-datepicker'
-import { fixDates } from '../../dateUtils'
 
 type EpisodeFormProps = {
   formType: string,

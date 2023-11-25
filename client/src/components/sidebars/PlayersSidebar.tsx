@@ -21,7 +21,6 @@ const PlayersSidebar: React.FC<PlayersSidebarProps> = ({ seasonId, playerId }) =
       .then(response => response.json())
       .then(data => {
         setPlayers(data.data)
-        console.log(data.data)
       })
       .catch(err => console.error('Error fetching players:', err))
   }, [seasonId, reloadPlayers])

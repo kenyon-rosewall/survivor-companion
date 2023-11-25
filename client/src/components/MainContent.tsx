@@ -6,13 +6,15 @@ import { SeasonInfo,
   Alliances, 
   Advantages, 
   Events,
-  ManageAdvantages } 
+  ManageAdvantages, 
+  Tribes} 
   from './content'
 
 const MainContent: React.FC = () => {
   const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
   const selectedEpisode: number = useSelector((state: any) => state.season.selectedEpisode)
   const selectedPlayer: number = useSelector((state: any) => state.season.selectedPlayer)
+  const selectedTribe: number = useSelector((state: any) => state.season.selectedTribe)
   const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
 
   const selectComponent = () => {
@@ -38,6 +40,11 @@ const MainContent: React.FC = () => {
         return <Players
                   seasonId={selectedSeason}
                   playerId={selectedPlayer}
+                />
+      case 'tribes':
+        return <Tribes
+                  seasonId={selectedSeason}
+                  tribeId={selectedTribe}
                 />
       case 'alliances':
         return <Alliances seasonId={selectedSeason} />

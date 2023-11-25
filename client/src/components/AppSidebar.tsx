@@ -16,6 +16,7 @@ const AppSidebar: React.FC = () => {
   const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
   const selectedEpisode: number = useSelector((state: any) => state.season.selectedEpisode)
   const selectedPlayer: number = useSelector((state: any) => state.season.selectedPlayer)
+  const selectedTribe: number = useSelector((state: any) => state.season.selectedTribe)
   const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
 
   const selectComponent = () => {
@@ -41,7 +42,10 @@ const AppSidebar: React.FC = () => {
                   playerId={selectedPlayer}
                 />
       case 'tribes':
-        return <TribesSidebar seasonId={selectedSeason} />
+        return <TribesSidebar
+                  seasonId={selectedSeason}
+                  tribeId={selectedTribe}
+                />
       case 'alliances':
         return <AlliancesSidebar seasonId={selectedSeason} />
       case 'advantages':
