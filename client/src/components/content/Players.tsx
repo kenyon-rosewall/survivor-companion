@@ -1,13 +1,24 @@
 import React from 'react'
+import PlayerForm from '../forms/player'
 
 type PlayersProps = {
-  seasonId: number
+  seasonId: number,
+  playerId: number
 }
 
-const Players: React.FC<PlayersProps> = ({ seasonId }) => {
+const Players: React.FC<PlayersProps> = ({ seasonId, playerId }) => {
+  const handleFormSubmit = (player: any) => {
+    // TODO: update player in state
+  }
+
   return (
     <>
-      <h1>Players</h1>
+      <PlayerForm
+        formType='update'
+        seasonId={seasonId}
+        playerOnSeasonId={playerId}
+        onSubmitComplete={handleFormSubmit}
+      />
     </>
   )
 }

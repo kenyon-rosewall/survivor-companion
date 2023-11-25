@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setSelectedSeason } from '../../actions/seasons'
+import { setSelectedSeason, setSelectedEpisode, setSelectedPlayer } from '../../actions/seasons'
 import { Form } from 'react-bulma-components'
 const { Select } = Form
 
@@ -21,6 +21,8 @@ const SeasonDropdown: React.FC = () => {
   const handleSeasonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedSeason = Number(e.target.value)
     dispatch(setSelectedSeason(selectedSeason))
+    dispatch(setSelectedEpisode(0))
+    dispatch(setSelectedPlayer(0))
   }
 
   const renderDropdownItems = () => {

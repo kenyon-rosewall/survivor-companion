@@ -13,6 +13,7 @@ type EpisodeFormProps = {
 
 const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
   const buttonText = props.formType === 'update' ? 'Update Episode' : 'Add Episode'
+  const formDisabled = props.formType === 'update' && !props.episodeId
   const dateOptions: any = {
     year: 'numeric',
     month: 'short',
@@ -79,6 +80,7 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 name="order"
                 value={formData.order}
                 onChange={handleInputChange}
+                disabled={formDisabled}
               />
             </Form.Control>
           </Form.Field>
@@ -92,6 +94,7 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
+                disabled={formDisabled}
               />
             </Form.Control>
           </Form.Field>
@@ -108,6 +111,7 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 selected={new Date(formData.airingDate)}
                 onChange={(date) => setFormData({ ...formData, airingDate: date })}
                 showIcon
+                disabled={formDisabled}
               />
             </Form.Control>
           </Form.Field>
@@ -121,6 +125,7 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 <Form.Control>
                   <Form.Checkbox
                     checked={formData.premiere}
+                    disabled={formDisabled}
                     onChange={(e) => setFormData({ ...formData, premiere: e.target.checked })}
                   >
                     Premiere
@@ -132,6 +137,7 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 <Form.Control>
                   <Form.Checkbox
                     checked={formData.merge}
+                    disabled={formDisabled}
                     onChange={(e) => setFormData({ ...formData, merge: e.target.checked })}
                   >
                     Merge
@@ -143,6 +149,7 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 <Form.Control>
                   <Form.Checkbox
                     checked={formData.final}
+                    disabled={formDisabled}
                     onChange={(e) => setFormData({ ...formData, final: e.target.checked })}
                   >
                     Final
@@ -160,6 +167,7 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
           <Form.Textarea
             name="notes"
             onChange={handleInputChange}
+            disabled={formDisabled}
           />
         </Form.Control>
       </Form.Field>
@@ -167,6 +175,7 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
       <Button
         color="primary"
         type="submit"
+        disabled={formDisabled}
       >
         {buttonText}
       </Button>

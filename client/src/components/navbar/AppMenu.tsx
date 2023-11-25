@@ -17,8 +17,8 @@ const AppMenu: React.FC = () => {
   const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
   const levelItems: LevelItem[] = [
     { icon: 'circle-info', text: 'Season Information', name: 'seasonInfo' },
-    { icon: 'tv', text: 'Episodes', name: 'episodes' },
     { icon: 'users', text: 'Players', name: 'players' },
+    { icon: 'tv', text: 'Episodes', name: 'episodes' },
     { icon: 'campground', text: 'Tribes', name: 'tribes' },
     { icon: 'heart', text: 'Alliances', name: 'alliances' },
     { icon: 'scroll', text: 'Advantages', name: 'advantages' },

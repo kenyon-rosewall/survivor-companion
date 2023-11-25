@@ -1,14 +1,20 @@
 import { createReducer } from "@reduxjs/toolkit"
-import { setSelectedSeason, setSelectedEpisode } from "../actions/seasons"
+import {
+  setSelectedSeason,
+  setSelectedEpisode,
+  setSelectedPlayer,
+} from "../actions/seasons"
 
 interface SeasonsState {
   selectedSeason: number
-  selectedEpisode: number
+  selectedEpisode?: number
+  selectedPlayer?: number
 }
 
 const initialState: SeasonsState = {
   selectedSeason: 0,
   selectedEpisode: 0,
+  selectedPlayer: 0,
 }
 
 const seasonsReducer = createReducer(initialState, (builder) => {
@@ -22,6 +28,12 @@ const seasonsReducer = createReducer(initialState, (builder) => {
     state.selectedEpisode = 0
     const newSelectedEpisode = Number(action.payload)
     if (!isNaN(newSelectedEpisode)) state.selectedEpisode = newSelectedEpisode
+  })
+
+  builder.addCase(setSelectedPlayer, (state, action) => {
+    state.selectedPlayer = 0
+    const newSelectedPlayer = Number(action.payload)
+    if (!isNaN(newSelectedPlayer)) state.selectedPlayer = newSelectedPlayer
   })
 })
 
