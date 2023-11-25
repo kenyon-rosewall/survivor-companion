@@ -11,6 +11,7 @@ import { SeasonInfo,
 
 const MainContent: React.FC = () => {
   const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
+  const selectedEpisode: number = useSelector((state: any) => state.season.selectedEpisode)
   const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
 
   const selectComponent = () => {
@@ -24,12 +25,14 @@ const MainContent: React.FC = () => {
       return <h1>Select Season First</h1>
     }
 
-    console.log(selectedSeason)
     switch (selectedMenuItem) {
       case 'seasonInfo':
         return <SeasonInfo seasonId={selectedSeason} />
       case 'episodes':
-        return <Episodes seasonId={selectedSeason} />
+        return <Episodes
+                  seasonId={selectedSeason}
+                  episodeId={selectedEpisode}
+                />
       case 'players':
         return <Players seasonId={selectedSeason} />
       case 'alliances':

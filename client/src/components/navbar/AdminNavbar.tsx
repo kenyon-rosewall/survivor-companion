@@ -26,6 +26,12 @@ const AdminNavbar: React.FC = () => {
           <span>Manage Seasons</span>
         </Dropdown.Item>
         <Dropdown.Item
+          value="managePlayers"
+        >
+          <FontAwesomeIcon icon={["fas", "users"]} />
+          <span>Manage Players</span>
+        </Dropdown.Item>
+        <Dropdown.Item
           value="manageAdvantages"
         >
           <FontAwesomeIcon icon={["fas", "trophy"]} />

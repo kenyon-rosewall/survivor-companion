@@ -14,6 +14,7 @@ import {
 
 const AppSidebar: React.FC = () => {
   const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
+  const selectedEpisode: number = useSelector((state: any) => state.season.selectedEpisode)
   const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
 
   const selectComponent = () => {
@@ -29,7 +30,10 @@ const AppSidebar: React.FC = () => {
 
     switch (selectedMenuItem) {
       case 'episodes':
-        return <EpisodesSidebar seasonId={selectedSeason} />
+        return <EpisodesSidebar
+                  seasonId={selectedSeason}
+                  episodeId={selectedEpisode}
+                />
       case 'players':
         return <PlayersSidebar seasonId={selectedSeason} />
       case 'tribes':

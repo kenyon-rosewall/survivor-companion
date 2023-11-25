@@ -1,13 +1,30 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import EpisodeForm from '../forms/episode'
 
 type EpisodesProps = {
-  seasonId: number
+  seasonId: number,
+  episodeId: number
 }
 
-const Episodes: React.FC<EpisodesProps> = ({ seasonId }) => {
+const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen)
+  }
+
+  const handleFormSubmit = (episode: any) => {
+    toggleModal()
+  }
+
   return (
     <>
-      <h1>Episodes</h1>
+      <EpisodeForm
+        formType='update'
+        seasonId={seasonId}
+        episodeId={episodeId}
+        onSubmitComplete={handleFormSubmit}
+      />
     </>
   )
 }

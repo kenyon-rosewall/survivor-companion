@@ -42,7 +42,7 @@ const SeasonInfo: React.FC<SeasonInfoProps> = ({ seasonId }) => {
         </Columns.Column>
         <Columns.Column>
           <p>
-            {new Date(season.filmingStart).toLocaleDateString('en-US', dateOptions)}-
+            {new Date(season.filmingStart).toLocaleDateString('en-US', dateOptions)} - 
             {new Date(season.filmingEnd).toLocaleDateString('en-US', dateOptions)}
           </p>
         </Columns.Column>
@@ -88,7 +88,7 @@ const SeasonInfo: React.FC<SeasonInfoProps> = ({ seasonId }) => {
         </Columns.Column>
         <Columns.Column>
           <p style={{ whiteSpace: 'pre-wrap' }}>
-            {season.notes.replace(/"/g,'')}
+            {String(season.notes).replace(/"/g,'')}
           </p>
         </Columns.Column>
       </Columns>
