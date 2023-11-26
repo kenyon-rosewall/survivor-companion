@@ -1,5 +1,6 @@
 import React from 'react'
 import EpisodeForm from '../forms/episode'
+import PlayersInEpisode from './PlayersInEpisode'
 
 type EpisodesProps = {
   seasonId: number,
@@ -19,6 +20,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         episodeId={episodeId}
         onSubmitComplete={handleFormSubmit}
       />
+      <PlayersInEpisode episodeId={episodeId} />
     </>
   )
 }
