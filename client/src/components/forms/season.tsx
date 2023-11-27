@@ -19,6 +19,7 @@ const SeasonForm: React.FC<SeasonFormProps> = ({ maxOrder, onSubmitComplete }) =
     rating: '',
     notes: ''
   })
+  const [disableButton, setDisableButton] = useState<boolean>(false)
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target
@@ -27,6 +28,8 @@ const SeasonForm: React.FC<SeasonFormProps> = ({ maxOrder, onSubmitComplete }) =
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setDisableButton(true)
+
     fetch(`http://localhost:5000/seasons`, {
       method: 'POST',
       headers: {
@@ -37,6 +40,7 @@ const SeasonForm: React.FC<SeasonFormProps> = ({ maxOrder, onSubmitComplete }) =
     .then(response => response.json())
     .then(data => {
       onSubmitComplete(data.data)
+      setDisableButton(false)
     })
     .catch(err => console.error('Error adding season:', err))
   }
@@ -143,6 +147,7 @@ const SeasonForm: React.FC<SeasonFormProps> = ({ maxOrder, onSubmitComplete }) =
       <Button
         color="primary"
         type="submit"
+        disabled={disableButton}
       >
         Add Season
       </Button>

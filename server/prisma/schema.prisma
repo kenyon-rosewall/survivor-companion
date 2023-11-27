@@ -11,200 +11,173 @@ datasource db {
 }
 
 model Season {
-      id				Int			@id @default(autoincrement())
-      order  				Int
-      name				String?
-      episodeCount			Int			@default(0)
-      filmingStart			DateTime?
-      filmingEnd			DateTime?
-      airingStart			DateTime?
-      airingEnd			DateTime?
-      rating				String?
-      notes				String?
-      episodes				Episode[]
-      tribes				Tribe[]
-      playersOnSeason			PlayerOnSeason[]
-      hasFireTokens			Boolean		@default(false)
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  id				              Int			            @id @default(autoincrement())
+  order  			            Int
+  name				            String?
+  episodeCount            Int			            @default(0)
+  filmingStart            DateTime?
+  filmingEnd	            DateTime?
+  airingStart	            DateTime?
+  airingEnd		            DateTime?
+  rating			            String?
+  notes				            String?
+  episodes				        Episode[]
+  tribes				          Tribe[]
+  playersOnSeason         PlayerOnSeason[]
+  hasFireTokens			      Boolean		          @default(false)
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 }
 
 model Episode {
-      id				Int			@id @default(autoincrement())
-      season				Season			@relation(fields: [seasonId], references: [id])
-      seasonId				Int
-      order				Int
-      name				String?
-      airingDate			DateTime
-      notes				String?
-      premiere				Boolean
-      merge				Boolean
-      final				Boolean
-      playersInEpisode			PlayerInEpisode[]
-      tribalCouncils			TribalCouncil[]
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  id				              Int			            @id @default(autoincrement())
+  season				          Season			        @relation(fields: [seasonId], references: [id])
+  seasonId				        Int
+  order				            Int
+  name				            String?
+  airingDate			        DateTime
+  notes				            String?
+  premiere				        Boolean
+  merge				            Boolean
+  final				            Boolean
+  playersInEpisode			  PlayerInEpisode[]
+  tribalCouncils			    TribalCouncil[]
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 }
 
 model Tribe {
-      id				Int			@id @default(autoincrement())
-      name				String
-      category				String
-      season				Season			@relation(fields: [seasonId], references: [id])
-      seasonId				Int
-      playersInEpisode			PlayerInEpisode[]
-      tribalCouncils			TribalCouncil[]
-      events				TribeEvent[]
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
-}
-
-model TribeEvent {
-      id				Int			@id @default(autoincrement())
-      tribe				Tribe			@relation(fields: [tribeId], references: [id])
-      tribeId				Int
-      playerInEpisode			PlayerInEpisode	@relation(fields: [playerInEpisodeId], references: [id])
-      playerInEpisodeId		Int
-      // ["left", "joined"]
-      category				String
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  id				              Int			            @id @default(autoincrement())
+  name				            String
+  category				        String
+  color                   String?
+  season				          Season			        @relation(fields: [seasonId], references: [id])
+  seasonId				        Int
+  playersInEpisode			  PlayerInEpisode[]
+  tribalCouncils			    TribalCouncil[]
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 }
 
 model Player {
-      id				Int			@id @default(autoincrement())
-      name				String
-      nickname				String?
-      birthday				DateTime
-      notes				String?
-      playerInEpisodes			PlayerInEpisode[]
-      playerOnSeasons			PlayerOnSeason[]
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  id				              Int			            @id @default(autoincrement())
+  name				            String
+  nickname				        String?
+  birthday				        DateTime
+  notes				            String?
+  playerInEpisodes			  PlayerInEpisode[]
+  playerOnSeasons			    PlayerOnSeason[]
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 }
 
 model PlayerOnSeason {
-      player				Player			@relation(fields: [playerId], references: [id])
-      playerId				Int
-      season				Season			@relation(fields: [seasonId], references: [id])
-      seasonId				Int
-      headshot				String?
-      occupation			String?
-      bornLocation			String?
-      residenceLocation		String?
-      notes				String?
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  player				          Player			        @relation(fields: [playerId], references: [id])
+  playerId				        Int
+  season				          Season			        @relation(fields: [seasonId], references: [id])
+  seasonId				        Int
+  headshot				        String?
+  occupation			        String?
+  bornLocation			      String?
+  residenceLocation		    String?
+  notes				            String?
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 
-      @@id([playerId, seasonId])
+  @@id([playerId, seasonId])
 }
 
 model TribalCouncil {
-      id				Int			@id @default(autoincrement())
-      episode				Episode		@relation(fields: [episodeId], references: [id])
-      episodeId			Int
-      tribes				Tribe[]
-      votes				Vote[]
-      notes				String?
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  id				              Int			            @id @default(autoincrement())
+  episode				          Episode		          @relation(fields: [episodeId], references: [id])
+  episodeId			          Int
+  tribes				          Tribe[]
+  votes				            Vote[]
+  notes				            String?
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 }
 
 model Vote {
-      tribalCouncilId			Int
-      tribalCouncil			TribalCouncil		@relation(fields: [tribalCouncilId], references: [id])
-      voter				PlayerInEpisode	@relation("CastVotes", fields: [voterId], references: [id])
-      voterId				Int
-      votedFor				PlayerInEpisode	@relation("ReceivedVotes", fields: [votedForId], references: [id])
-      votedForId			Int
-      doesNotCount			Boolean
-      didNotVote			Boolean
-      // ["vote", "shotInTheDark", "extraVote", "revote"]
-      category				String			@default("vote")
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  tribalCouncilId			    Int
+  tribalCouncil			      TribalCouncil		    @relation(fields: [tribalCouncilId], references: [id])
+  voter				            PlayerInEpisode	    @relation("CastVotes", fields: [voterId], references: [id])
+  voterId				          Int
+  votedFor				        PlayerInEpisode	    @relation("ReceivedVotes", fields: [votedForId], references: [id])
+  votedForId			        Int
+  doesNotCount			      Boolean
+  didNotVote			        Boolean
+  // ["vote", "shotInTheDark", "extraVote", "revote"]
+  category			          String			        @default("vote")
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 
-      @@id([tribalCouncilId, voterId])
+  @@id([tribalCouncilId, voterId])
 }
 
 model Elimination {
-      id				Int			@id @default(autoincrement())
-      playerInEpisode			PlayerInEpisode	@relation(fields: [playerInEpisodeId], references: [id])
-      playerInEpisodeId		Int			@unique
-      // ["votedOut", "rockDraw", "fireMaking", "quit", "medevac", "redemption", "edge", "ejection"]
-      category				String			@default("votedOut")
-      notes				String?
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  id				              Int			            @id @default(autoincrement())
+  playerInEpisode			    PlayerInEpisode	    @relation(fields: [playerInEpisodeId], references: [id])
+  playerInEpisodeId		    Int			            @unique
+  // ["votedOut", "rockDraw", "fireMaking", "quit", "medevac", "redemption", "edge", "ejection"]
+  category				        String			        @default("votedOut")
+  notes				            String?
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 }
 
 model PlayerInEpisode {
-      id				Int			@id @default(autoincrement())
-      player				Player			@relation(fields: [playerId], references: [id])
-      playerId				Int
-      episode				Episode		@relation(fields: [episodeId], references: [id])
-      episodeId			Int
-      // ["playing", "eliminated", "redemption", "edge"]
-      status				String			@default("playing")
-      castVotes			Vote[]			@relation("CastVotes")
-      receivedVotes			Vote[]			@relation("ReceivedVotes")
-      tribe				Tribe			@relation(fields: [tribeId], references: [id])
-      tribeId				Int
-      tribeEvents			TribeEvent[]
-      elimination			Elimination?
-      advantages			Advantage[]
-      alliances			Alliance[]
-      advantagePlays			AdvantageEvent[]
-      allianceEvents			AllianceEvent[]
-      shotInTheDark			Boolean
-      fireTokens			Int			@default(0)
-      notes				String?
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  id				              Int			            @id @default(autoincrement())
+  player				          Player			        @relation(fields: [playerId], references: [id])
+  playerId				        Int
+  episode				          Episode		          @relation(fields: [episodeId], references: [id])
+  episodeId			          Int
+  // ["playing", "eliminated", "redemption", "edge"]
+  status				          String			        @default("playing")
+  castVotes			          Vote[]			        @relation("CastVotes")
+  receivedVotes		        Vote[]			        @relation("ReceivedVotes")
+  tribe				            Tribe?			        @relation(fields: [tribeId], references: [id])
+  tribeId				          Int?
+  elimination			        Elimination?
+  advantages			        Advantage[]
+  alliances			          Alliance[]
+  advantagePlays	        AdvantageEvent[]
+  shotInTheDark		        Boolean
+  fireTokens			        Int			            @default(0)
+  notes				            String?
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 }
 
 model Advantage {
-      id				Int			@id @default(autoincrement())
-      name				String
-      description			String
-      playersInEpisodes		PlayerInEpisode[]
-      plays				AdvantageEvent[]
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  id				              Int			            @id @default(autoincrement())
+  name				            String
+  description			        String
+  playersInEpisodes		    PlayerInEpisode[]
+  plays				            AdvantageEvent[]
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 }
 
 model AdvantageEvent {
-      id				Int			@id @default(autoincrement())
-      playerInEpisode			PlayerInEpisode	@relation(fields: [playerInEpisodeId], references: [id])
-      playerInEpisodeId		Int
-      advantage			Advantage		@relation(fields: [advantageId], references: [id])
-      advantageId			Int
-      // ["played", "transferred", "lost", "expired"]
-      category				String			@default("played")
-      notes				String?
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  id				              Int			            @id @default(autoincrement())
+  playerInEpisode			    PlayerInEpisode	    @relation(fields: [playerInEpisodeId], references: [id])
+  playerInEpisodeId		    Int
+  advantage			          Advantage		        @relation(fields: [advantageId], references: [id])
+  advantageId			        Int
+  // ["played", "transferred", "lost", "expired"]
+  category				        String			        @default("played")
+  notes				            String?
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 }
 
 model Alliance {
-      id				Int			@id @default(autoincrement())
-      alliancePlayers			PlayerInEpisode[]
-      events				AllianceEvent[]
-      name				String?
-      color                   String
-      notes				String?
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
-}
-
-model AllianceEvent {
-      id				Int			@id @default(autoincrement())
-      playerInEpisode			PlayerInEpisode	@relation(fields: [playerInEpisodeId], references: [id])
-      playerInEpisodeId		Int
-      alliance				Alliance		@relation(fields: [allianceId], references: [id])
-      allianceId			Int
-      // ["joined", "left", "switched"]
-      category				String
-      createdAt			DateTime		@default(now())
-      updatedAt			DateTime		@updatedAt
+  id				              Int			            @id @default(autoincrement())
+  alliancePlayers			    PlayerInEpisode[]
+  name				            String?
+  color                   String
+  notes				            String?
+  createdAt			          DateTime		        @default(now())
+  updatedAt			          DateTime		        @updatedAt
 }

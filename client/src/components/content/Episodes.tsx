@@ -1,4 +1,5 @@
 import React from 'react'
+import { Block } from 'react-bulma-components'
 import EpisodeForm from '../forms/episode'
 import PlayersInEpisode from './PlayersInEpisode'
 
@@ -14,13 +15,18 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
 
   return (
     <>
-      <EpisodeForm
-        formType='update'
-        seasonId={seasonId}
-        episodeId={episodeId}
-        onSubmitComplete={handleFormSubmit}
-      />
-      <PlayersInEpisode episodeId={episodeId} />
+      <Block>
+        <h2 className='subtitle'>Info</h2>
+        <EpisodeForm
+          formType='update'
+          seasonId={seasonId}
+          episodeId={episodeId}
+          onSubmitComplete={handleFormSubmit}
+        />
+      </Block>
+      <Block>
+        <PlayersInEpisode episodeId={episodeId} />
+      </Block>
     </>
   )
 }

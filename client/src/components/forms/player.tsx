@@ -32,6 +32,7 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
     playerOnSeasonNotes: ''
   })
   const [players, setPlayers] = useState<any[]>([])
+  const [disableButton, setDisableButton] = useState<boolean>(false)
 
   useEffect(() => {
     if (props.formType === 'update' && props.playerOnSeasonId) {
@@ -61,6 +62,7 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setDisableButton(true)
 
     let url = `http://localhost:5000/seasons/${props.seasonId}/players`
     let method = 'POST'
@@ -79,6 +81,7 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
     .then(response => response.json())
     .then(data => {
       props.onSubmitComplete(data.data)
+      setDisableButton(false)
     })
     .catch(err => console.error('Error adding player:', err))
   }
@@ -314,7 +317,7 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
       <Button
         color="primary"
         type="submit"
-        disabled={formDisabled}
+        disabled={formDisabled || disableButton}
       >
         {buttonText}
       </Button>

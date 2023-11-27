@@ -27,8 +27,10 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
     final: false,
     notes: ''
   })
+  const [disableButton, setDisableButton] = useState<boolean>(false)
 
   useEffect(() => {
+    if (props.episodeId === 0) return
     if (props.formType === 'update' && props.episodeId) {
       fetch(`http://localhost:5000/episodes/${props.episodeId}`)
       .then(response => response.json())
@@ -37,7 +39,7 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
       })
       .catch(err => console.error('Error fetching episode:', err))
     }
-  }, [props.episodeId])
+  }, [props.episodeId, props.formType])
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target
@@ -45,7 +47,9 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
   }
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (props.episodeId === 0) return
     e.preventDefault()
+    setDisableButton(true)
 
     let url = `http://localhost:5000/seasons/${props.seasonId}/episodes`
     let method = 'POST'
@@ -64,6 +68,7 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
     .then(response => response.json())
     .then(data => {
       props.onSubmitComplete(data.data)
+      setDisableButton(false)
     })
     .catch(err => console.error('Error adding episode:', err))
   }
@@ -174,10 +179,12 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
       <Button
         color="primary"
         type="submit"
-        disabled={formDisabled}
+        disabled={formDisabled || disableButton}
+        className='is-pulled-right'
       >
         {buttonText}
       </Button>
+      <div className='is-clearfix'></div>
     </form>
   )
 }

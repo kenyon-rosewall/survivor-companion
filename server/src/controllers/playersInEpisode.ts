@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import prismaClient from "../modules/prismaClient"
 import { Prisma } from "@prisma/client"
 import players from "./players"
+import { exit } from "process"
 
 const getPlayersInEpisode = async (
   req: Request,
@@ -52,32 +53,36 @@ const getPlayerInEpisode = async (
   })
 }
 
-// const updatePlayerOnSeason = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   const seasonId: number = +req.params.seasonId
-//   const playerId: number = +req.params.playerId
-//   const playerOnSeason = await prismaClient.playerOnSeason.findUnique({
-//     where: { playerId_seasonId: { playerId: playerId, seasonId: seasonId } },
-//   })
+const updatePlayerInEpisode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const playerInEpisodeId: number = Number(req.params.id)
+  const playerInEpisode = await prismaClient.playerInEpisode.findUnique({
+    where: { id: playerInEpisodeId },
+  })
 
-//   if (playerOnSeason) {
-//     const updatedPlayerOnSeason = await prismaClient.playerOnSeason.update({
-//       where: { playerId_seasonId: { playerId: playerId, seasonId: seasonId } },
-//       data: extractPlayerOnSeasonData(req),
-//     })
+  if (playerInEpisode) {
+    const updatedPlayerInEpisode = await prismaClient.playerInEpisode.update({
+      where: { id: playerInEpisodeId },
+      data: {
+        status: req.body.status,
+        tribeId: req.body.tribeId,
+        shotInTheDark: req.body.shotInTheDark,
+        notes: req.body.notes,
+      },
+    })
 
-//     return res.status(200).json({
-//       data: updatedPlayerOnSeason,
-//     })
-//   }
+    return res.status(200).json({
+      data: updatedPlayerInEpisode,
+    })
+  }
 
-//   return res.status(404).json({
-//     data: `Player ${playerId} not found on season ${seasonId}.`,
-//   })
-// }
+  return res.status(404).json({
+    data: `Player ${playerInEpisodeId} not found.`,
+  })
+}
 
 // const deletePlayerOnSeason = async (
 //   req: Request,
@@ -99,6 +104,14 @@ const getPlayerInEpisode = async (
 //   })
 // }
 
+const deletePlayersInEpisode = async (episodeId: number) => {
+  const deletedPlayersInEpisode = await prismaClient.playerInEpisode.deleteMany(
+    {
+      where: { episodeId: episodeId },
+    }
+  )
+}
+
 const importPlayersInEpisode = async (episodeId: number) => {
   const episode = await prismaClient.episode.findUnique({
     where: { id: episodeId },
@@ -113,7 +126,6 @@ const importPlayersInEpisode = async (episodeId: number) => {
           data: {
             playerId: player.playerId,
             episodeId: episodeId,
-            tribeId: 0,
             status: "playing",
             shotInTheDark: true,
           },
@@ -175,7 +187,10 @@ const initPlayersInEpisode = async (
 ) => {
   try {
     const episodeId: number = Number(req.params.episodeId)
-    const premiere: boolean = Boolean(req.params.premiere)
+    const premiere: boolean = req.body.premiere
+
+    deletePlayersInEpisode(episodeId)
+
     if (premiere) {
       await importPlayersInEpisode(episodeId)
     } else {
@@ -190,7 +205,14 @@ const initPlayersInEpisode = async (
         advantages: true,
         alliances: true,
       },
-      orderBy: { player: { name: "asc" } },
+      orderBy: [
+        {
+          status: "desc",
+        },
+        {
+          player: { id: "asc" },
+        },
+      ],
     })
 
     return res.status(201).json({
@@ -204,7 +226,7 @@ const initPlayersInEpisode = async (
 export default {
   getPlayersInEpisode,
   getPlayerInEpisode,
-  // updatePlayerOnSeason,
+  updatePlayerInEpisode,
   // deletePlayerOnSeason,
   initPlayersInEpisode,
 }

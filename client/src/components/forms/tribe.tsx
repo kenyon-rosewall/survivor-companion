@@ -14,7 +14,9 @@ const TribeForm: React.FC<TribeFormProps> = (props: TribeFormProps) => {
   const [formData, setFormData] = useState<any>({
     name: '',
     category: '',
+    color: ''
   })
+  const [disableButton, setDisableButton] = useState<boolean>(false)
 
   useEffect(() => {
     if (props.formType === 'update' && props.tribeId) {
@@ -34,6 +36,7 @@ const TribeForm: React.FC<TribeFormProps> = (props: TribeFormProps) => {
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setDisableButton(true)
 
     let url = `http://localhost:5000/seasons/${props.seasonId}/tribes`
     let method = 'POST'
@@ -52,6 +55,7 @@ const TribeForm: React.FC<TribeFormProps> = (props: TribeFormProps) => {
     .then(response => response.json())
     .then(data => {
       props.onSubmitComplete(data.data)
+      setDisableButton(false)
     })
     .catch(err => console.error('Error adding tribe:', err))
   }
@@ -72,12 +76,27 @@ const TribeForm: React.FC<TribeFormProps> = (props: TribeFormProps) => {
             </Form.Control>
           </Form.Field>
         </Columns.Column>
+
+        <Columns.Column>
+          <Form.Field>
+            <Form.Label>Color</Form.Label>
+            <Form.Control>
+              <Form.Input
+                name="color"
+                value={formData.color}
+                onChange={handleInputChange}
+                disabled={formDisabled}
+              />
+            </Form.Control>
+          </Form.Field>
+        </Columns.Column>
       </Columns>
 
       <Button
         color="primary"
         type="submit"
-        disabled={formDisabled}
+        disabled={formDisabled || disableButton}
+        className='is-pulled-right'
       >
         {buttonText}
       </Button>

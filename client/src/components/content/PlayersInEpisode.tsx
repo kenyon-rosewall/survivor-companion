@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Table, Tag } from 'react-bulma-components'
+import { useSelector } from 'react-redux'
+import { Button, Table } from 'react-bulma-components'
+import PlayerInEpisodeForm from '../forms/playerInEpisode'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IconName } from '@fortawesome/fontawesome-svg-core'
 
 type PlayersInEpisodeProps = {
   episodeId: number
 }
 
 const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId }) => {
+  const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
   const [playersInEpisode, setPlayersInEpisode] = useState<any[]>([])
   const [episode, setEpisode] = useState<any>({})
-  const [needsInit, setNeedsInit] = useState<boolean>(true)
+  const [tribes, setTribes] = useState<any[]>([{}])
+  const [hasShotInTheDark, setHasShotInTheDark] = useState<any>(false)
+  const [disableButton, setDisableButton] = useState<boolean>(false)
+  // const [globalEditing, setGlobalEditing] = useState<boolean>(false)
 
   useEffect(() => {
+    if (episodeId === 0) return
+
     fetch(`http://localhost:5000/episodes/${episodeId}/players`)
     .then(response => response.json())
     .then(data => {
       setPlayersInEpisode(data.data)
-      if (data.data.length > 0) {
-        setNeedsInit(false)
-      }
     })
     .catch(err => console.error('Error fetching players:', err))
 
@@ -29,109 +33,94 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId }) => {
       setEpisode(data.data)
     })
     .catch(err => console.error('Error fetching episode:', err))
-  }, [episodeId, needsInit])
 
-  const renderPlayerAdvantages = (advantages: any[]) => {
-    return advantages.map(advantage => (
-      <Tag
-        key={advantage.id}
-      >
-        {advantage.name}
-      </Tag>
-    ))
-  }
+    fetch(`http://localhost:5000/seasons/${selectedSeason}`)
+    .then(response => response.json())
+    .then(data => {
+      setHasShotInTheDark(data.data.order > 40)
+    })
+    .catch(err => console.error('Error fetching season:', err))
 
-  const renderPlayerAlliances = (alliances: any[]) => {
-    return alliances.map(alliance => (
-      <Tag
-        key={alliance.id}
-        color={alliance.color}
-      >
-        {alliance.name}
-      </Tag>
-    ))
-  }
-
-  const renderShotInTheDark = (shotInTheDark: boolean) => {
-    let i: IconName = "square-check"
-    if (shotInTheDark) i = "square"
-
-    return (
-      <FontAwesomeIcon icon={["fas", i]} />
-    )
-  }
+    fetch(`http://localhost:5000/seasons/${selectedSeason}/tribes`)
+    .then(response => response.json())
+    .then(data => {
+      setTribes(data.data)
+    })
+    .catch(err => console.error('Error fetching tribes:', err))
+  }, [selectedSeason, episodeId])
 
   const renderPlayersInEpisode = () => {
-    return playersInEpisode.map(player => (
-      <tr key={player.id}>
-        <td>{player.player.name}</td>
-        <td>{player.tribe.name}</td>
-        <td>
-          <Tag.Group>
-            {renderPlayerAdvantages(player.advantages)}
-          </Tag.Group>
-        </td>
-        <td>
-          <Tag.Group>
-            {renderPlayerAlliances(player.alliances)}
-          </Tag.Group>  
-        </td>
-        <td>{renderShotInTheDark(player.shotInTheDark)}</td>
-        <td>{player.notes}</td>
-      </tr>
+    return playersInEpisode.map((pie, index) => (
+      <PlayerInEpisodeForm
+        key={index}
+        pie={pie}
+        tribes={tribes}
+        seasonId={selectedSeason}
+        hasShotInTheDark={hasShotInTheDark}
+        // globalEditing={globalEditing}
+      />
     ))
   }
 
   const initPlayersInEpisode = (e: React.MouseEvent<HTMLButtonElement>) => {
-    let url = `http://localhost:5000/episodes/${episodeId}/initPlayers?premiere=${episode.premiere}`
+    if (episodeId === 0) return
+    e.preventDefault()
+    setDisableButton(true)
+
+    let url = `http://localhost:5000/episodes/${episodeId}/players`
     fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({ premiere: episode.premiere  })
     })
     .then(response => response.json())
     .then(data => {
       setPlayersInEpisode(data.data)
-      if (data.data.length > 0) {
-        setNeedsInit(false)
-      }
+      setDisableButton(false)
     })
     .catch(err => console.error('Error initializing players:', err))
   }
 
   return (
     <>
-      <h1 className='title'>Players</h1>
-      <Table striped bordered>
+      <h2 className='subtitle'>Players</h2>
+      <Table striped bordered size='fullwidth'>
         <thead>
           <tr>
             <th>Player</th>
+            <th>Status</th>
             <th>Tribe</th>
             <th>Advantages</th>
-            <th>Alliances</th>  
-            <th>Shot in the Dark</th>
+            <th>Alliances</th>
+            { hasShotInTheDark ? <th>Shot in the Dark</th> : null}
             <th>Notes</th>
+            <th align='center'>
+              <Button 
+                disabled={playersInEpisode.length === 0}
+                color='primary' 
+                size={'small'} 
+                // onClick={() => setGlobalEditing(!globalEditing)}
+              >
+                <FontAwesomeIcon icon={["fas", (false ? "floppy-disk" : "edit")]} />
+              </Button>
+            </th>
           </tr>  
         </thead>
         <tbody>
-          {needsInit ? (
-            <tr>
-              <td colSpan={6}>
-                No players in this episode.
-                <Button
-                  color='primary'
-                  onClick={initPlayersInEpisode}
-                >
-                  Init
-                </Button>
-              </td>
-            </tr>
-          ) : (
-            renderPlayersInEpisode()
-          )}
+          {renderPlayersInEpisode()}
         </tbody>
-      </Table>      
+      </Table>
+      <Button
+        color='danger'
+        onClick={initPlayersInEpisode}
+        className='is-pulled-right'
+        disabled={disableButton}
+      >
+        Reset Players
+      </Button>
+      <div className='is-clearfix'></div>
     </>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Menu, Modal } from 'react-bulma-components'
+import { Icon, Menu, Modal } from 'react-bulma-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setSelectedTribe } from '../../actions/seasons'
 import TribeForm from '../forms/tribe'
@@ -34,7 +34,7 @@ const TribesSidebar: React.FC<TribesSidebarProps> = ({ seasonId, tribeId }) => {
     }
   }, [isModalOpen])
 
-  const renderEpisodes = () => {
+  const renderTribes = () => {
     if (Array.isArray(tribes) && tribes.length > 0) {
       return tribes.map((tribe, index) => (
         <Menu.List.Item
@@ -42,7 +42,13 @@ const TribesSidebar: React.FC<TribesSidebarProps> = ({ seasonId, tribeId }) => {
           active={tribe.id === tribeId}
           onClick={() => dispatch(setSelectedTribe(tribe.id))}
         >
-          {tribe.name}
+          {tribe.name} 
+          <Icon
+            className='is-pulled-right'
+            size="small"
+          >
+            <FontAwesomeIcon icon={["fas", "circle"]} style={{ color: tribe.color }} />
+          </Icon>
         </Menu.List.Item>
       ))
     }
@@ -65,7 +71,7 @@ const TribesSidebar: React.FC<TribesSidebarProps> = ({ seasonId, tribeId }) => {
         <FontAwesomeIcon icon={["fas", "plus"]} />
         <span>Add Tribe</span>
       </Menu.List.Item>
-      {renderEpisodes()}
+      {renderTribes()}
       <Modal show={isModalOpen} onClose={toggleModal}>
         <Modal.Card>
           <Modal.Card.Header>
