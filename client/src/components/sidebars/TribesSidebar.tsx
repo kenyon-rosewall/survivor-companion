@@ -58,7 +58,7 @@ const TribesSidebar: React.FC<TribesSidebarProps> = ({ seasonId, tribeId }) => {
     setIsModalOpen(!isModalOpen)
   }
 
-  const handleFormSubmit = (episode: any) => {
+  const handleFormSubmit = () => {
     toggleModal()
     setReloadTribes(!reloadTribes)
   }

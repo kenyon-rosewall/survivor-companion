@@ -86,7 +86,7 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId }) => {
   return (
     <>
       <h2 className='subtitle'>Players</h2>
-      <Table striped bordered size='fullwidth'>
+      <Table bordered size='fullwidth'>
         <thead>
           <tr>
             <th>Player</th>

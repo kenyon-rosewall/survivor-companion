@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navbar } from 'react-bulma-components'
-import logo from '../images/logo.png'
-import { SeasonDropdown, AppMenu, AdminNavbar } from './navbar'
+import logo from '../../images/logo.png'
+import { SeasonDropdown, AppMenu, AdminNavbar } from '../navbar'
 
 export default class AppNavbar extends React.Component {
   render() {

@@ -146,7 +146,9 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
             {renderTribeOptions()}
           </Form.Select>
         ) : (
-          <Tag color={formData.tribe.color}>{formData.tribe.name}</Tag>
+          <Tag style={{ backgroundColor: formData.tribe.color, color: 'black' }}>
+            {formData.tribe.name}
+          </Tag>
         )}
       </td>
     )

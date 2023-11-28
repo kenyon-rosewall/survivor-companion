@@ -13,7 +13,6 @@ interface LevelItem {
 
 const AppMenu: React.FC = () => {
   const dispatch = useDispatch()
-  const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
   const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
   const levelItems: LevelItem[] = [
     { icon: 'circle-info', text: 'Season Information', name: 'seasonInfo' },
@@ -21,7 +20,6 @@ const AppMenu: React.FC = () => {
     { icon: 'tv', text: 'Episodes', name: 'episodes' },
     { icon: 'campground', text: 'Tribes', name: 'tribes' },
     { icon: 'heart', text: 'Alliances', name: 'alliances' },
-    { icon: 'scroll', text: 'Advantages', name: 'advantages' },
     { icon: 'list', text: 'Events', name: 'events' },
   ]
 

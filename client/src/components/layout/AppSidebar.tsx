@@ -6,24 +6,24 @@ import {
   PlayersSidebar, 
   TribesSidebar, 
   AlliancesSidebar, 
-  AdvantagesSidebar, 
   EventsSidebar,
   ManageSeasonsSidebar,
   ManageAdvantagesSidebar } 
-  from './sidebars'
+  from '../sidebars'
 
 const AppSidebar: React.FC = () => {
   const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
   const selectedEpisode: number = useSelector((state: any) => state.season.selectedEpisode)
   const selectedPlayer: number = useSelector((state: any) => state.season.selectedPlayer)
   const selectedTribe: number = useSelector((state: any) => state.season.selectedTribe)
+  const selectedAdvantage: number = useSelector((state: any) => state.season.selectedAdvantage)
   const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
 
   const selectComponent = () => {
     if (selectedMenuItem === 'manageSeasons') {
       return <ManageSeasonsSidebar seasonId={selectedSeason} />
     } else if (selectedMenuItem === 'manageAdvantages') {
-      return <ManageAdvantagesSidebar seasonId={selectedSeason} />
+      return <ManageAdvantagesSidebar advantageId={selectedAdvantage} />
     }
 
     if (selectedSeason === 0) {
@@ -48,8 +48,6 @@ const AppSidebar: React.FC = () => {
                 />
       case 'alliances':
         return <AlliancesSidebar seasonId={selectedSeason} />
-      case 'advantages':
-        return <AdvantagesSidebar seasonId={selectedSeason} />
       case 'events':
         return <EventsSidebar seasonId={selectedSeason} />
       default:

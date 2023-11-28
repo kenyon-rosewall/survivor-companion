@@ -1,0 +1,24 @@
+@charset "utf-8";
+
+@import '~bulma/sass/utilities/initial-variables.sass';
+@import '~bulma/sass/utilities/functions.sass';
+
+$body-background-color: $black-ter;
+$body-color: $white-ter;
+$menu-item-color: $white-ter;
+$title-color: $white-ter;
+$subtitle-color: $white-ter;
+$label-color: $white-ter;
+$strong-color: $white-ter;
+$input-background-color: $grey;
+$input-color: $white-ter;
+$input-disabled-background-color: $grey;
+$input-disabled-color: $white-ter;
+$table-background-color: $grey;
+$table-color: $white-ter;
+$footer-background-color: $black-ter;
+$dropdown-background-color: $grey;
+$dropdown-color: $white-ter;
+
+@import '~bulma/bulma.sass';
+

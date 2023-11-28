@@ -137,7 +137,7 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
         <Columns.Column>
         <Form.Field>
           <Form.Control>
-            <div className="dropdown is-active">
+            <div className="dropdown">
               <div className="dropdown-trigger">
                 <Form.Input
                   name="q"

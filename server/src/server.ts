@@ -8,6 +8,7 @@ import episodes from "./routes/episodes"
 import players from "./routes/players"
 import tribes from "./routes/tribes"
 import playerInEpisodes from "./routes/playerInEpisodes"
+import advantages from "./routes/advantages"
 
 const router: Express = express()
 
@@ -33,6 +34,7 @@ router.use("/episodes", episodes)
 router.use("/players", players)
 router.use("/tribes", tribes)
 router.use("/playerInEpisodes", playerInEpisodes)
+router.use("/advantages", advantages)
 
 router.use((req, res, next) => {
   return res.status(404).json({

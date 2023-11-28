@@ -1,13 +1,22 @@
 import React from 'react'
+import AdvantageForm from '../forms/advantage'
 
 type ManageAdvantagesProps = {
-  seasonId: number
+  advantageId: number
 }
 
-const ManageAdvantages: React.FC<ManageAdvantagesProps> = ({ seasonId }) => {
+const ManageAdvantages: React.FC<ManageAdvantagesProps> = ({ advantageId }) => {
+  const handleFormSubmit = (advantage: any) => {
+    // TODO: update advantage in state
+  }
+
   return (
     <>
-      <h1>Manage Advantages</h1>
+      <AdvantageForm
+        formType='update'
+        advantageId={advantageId}
+        onSubmitComplete={handleFormSubmit}
+      />
     </>
   )
 }

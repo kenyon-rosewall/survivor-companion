@@ -4,6 +4,7 @@ import {
   setSelectedEpisode,
   setSelectedPlayer,
   setSelectedTribe,
+  setSelectedAdvantage,
 } from "../actions/seasons"
 
 interface SeasonsState {
@@ -11,6 +12,7 @@ interface SeasonsState {
   selectedEpisode?: number
   selectedPlayer?: number
   selectedTribe?: number
+  selectedAdvantage?: number
 }
 
 const initialState: SeasonsState = {
@@ -18,6 +20,7 @@ const initialState: SeasonsState = {
   selectedEpisode: 0,
   selectedPlayer: 0,
   selectedTribe: 0,
+  selectedAdvantage: 0,
 }
 
 const seasonsReducer = createReducer(initialState, (builder) => {
@@ -43,6 +46,13 @@ const seasonsReducer = createReducer(initialState, (builder) => {
     state.selectedTribe = 0
     const newSelectedTribe = Number(action.payload)
     if (!isNaN(newSelectedTribe)) state.selectedTribe = newSelectedTribe
+  })
+
+  builder.addCase(setSelectedAdvantage, (state, action) => {
+    state.selectedAdvantage = 0
+    const newSelectedAdvantage = Number(action.payload)
+    if (!isNaN(newSelectedAdvantage))
+      state.selectedAdvantage = newSelectedAdvantage
   })
 })
 
