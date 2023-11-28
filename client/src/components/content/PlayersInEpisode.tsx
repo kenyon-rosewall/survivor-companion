@@ -6,13 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 type PlayersInEpisodeProps = {
   episodeId: number
+  episode: any
+  tribes: any[]
 }
 
-const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId }) => {
+const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode, tribes }) => {
   const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
   const [playersInEpisode, setPlayersInEpisode] = useState<any[]>([])
-  const [episode, setEpisode] = useState<any>({})
-  const [tribes, setTribes] = useState<any[]>([{}])
   const [hasShotInTheDark, setHasShotInTheDark] = useState<any>(false)
   const [disableButton, setDisableButton] = useState<boolean>(false)
   // const [globalEditing, setGlobalEditing] = useState<boolean>(false)
@@ -27,26 +27,12 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId }) => {
     })
     .catch(err => console.error('Error fetching players:', err))
 
-    fetch(`http://localhost:5000/episodes/${episodeId}`)
-    .then(response => response.json())
-    .then(data => {
-      setEpisode(data.data)
-    })
-    .catch(err => console.error('Error fetching episode:', err))
-
     fetch(`http://localhost:5000/seasons/${selectedSeason}`)
     .then(response => response.json())
     .then(data => {
       setHasShotInTheDark(data.data.order > 40)
     })
     .catch(err => console.error('Error fetching season:', err))
-
-    fetch(`http://localhost:5000/seasons/${selectedSeason}/tribes`)
-    .then(response => response.json())
-    .then(data => {
-      setTribes(data.data)
-    })
-    .catch(err => console.error('Error fetching tribes:', err))
   }, [selectedSeason, episodeId])
 
   const renderPlayersInEpisode = () => {

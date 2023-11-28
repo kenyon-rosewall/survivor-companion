@@ -16,7 +16,7 @@ const AlliancesSidebar: React.FC<AlliancesSidebarProps> = ({ seasonId }) => {
         setAlliances(data.data)
       })
       .catch(err => console.error('Error fetching advantages:', err))
-  }, [])
+  }, [seasonId])
 
   const renderAlliances = () => {
     if (Array.isArray(alliances) && alliances.length > 0) {

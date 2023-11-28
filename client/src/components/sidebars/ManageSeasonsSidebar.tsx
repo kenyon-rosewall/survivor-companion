@@ -1,6 +1,6 @@
-import React, { SetStateAction, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Menu, Modal, Button } from 'react-bulma-components'
+import { Menu, Modal } from 'react-bulma-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setSelectedSeason } from '../../actions/seasons'
 import SeasonForm from '../forms/season'
@@ -29,9 +29,9 @@ const ManageSeasonsSidebar: React.FC<ManageSeasonsSidebarProps> = ({ seasonId })
       .catch(err => console.error('Error fetching seasons:', err))
   }, [seasonId])
 
-  const handleSeasonClick = (seasonId: number) => () => {
-    dispatch(setSelectedSeason(seasonId))
-  }
+  // const handleSeasonClick = (seasonId: number) => () => {
+  //   dispatch(setSelectedSeason(seasonId))
+  // }
 
   const renderSeasons = () => {
     if (Array.isArray(seasons) && seasons.length > 0) {

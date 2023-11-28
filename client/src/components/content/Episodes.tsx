@@ -1,7 +1,8 @@
-import React from 'react'
-import { Block } from 'react-bulma-components'
+import React, { useState, useEffect } from 'react'
+import { Block, Button } from 'react-bulma-components'
 import EpisodeForm from '../forms/episode'
 import PlayersInEpisode from './PlayersInEpisode'
+import TribalCouncil from './TribalCouncils'
 
 type EpisodesProps = {
   seasonId: number,
@@ -9,6 +10,25 @@ type EpisodesProps = {
 }
 
 const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
+  const [episode, setEpisode] = useState<any>({})
+  const [tribes, setTribes] = useState<any[]>([{}])
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/episodes/${episodeId}`)
+    .then(response => response.json())
+    .then(data => {
+      setEpisode(data.data)
+    })
+    .catch(err => console.error('Error fetching episode:', err))
+
+    fetch(`http://localhost:5000/seasons/${seasonId}/tribes`)
+    .then(response => response.json())
+    .then(data => {
+      setTribes(data.data)
+    })
+    .catch(err => console.error('Error fetching tribes:', err))
+  }, [episodeId, seasonId])
+
   const handleFormSubmit = (episode: any) => {
     // TODO: update episode in state
   }
@@ -25,7 +45,17 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         />
       </Block>
       <Block>
-        <PlayersInEpisode episodeId={episodeId} />
+        <PlayersInEpisode
+          episodeId={episodeId}
+          episode={episode}
+          tribes={tribes}
+        />
+      </Block>
+      <Block>
+        <TribalCouncil
+          episodeId={episodeId}
+          tribes={tribes}
+        />
       </Block>
     </>
   )

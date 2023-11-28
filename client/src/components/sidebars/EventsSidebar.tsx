@@ -16,7 +16,7 @@ const EventsSidebar: React.FC<EventsSidebarProps> = ({ seasonId }) => {
         setEvents(data.data)
       })
       .catch(err => console.error('Error fetching events:', err))
-  }, [])
+  }, [seasonId])
 
   const renderEvents = () => {
     if (Array.isArray(events) && events.length > 0) {

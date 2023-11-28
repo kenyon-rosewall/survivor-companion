@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, Form, Tag } from "react-bulma-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from '@fortawesome/fontawesome-svg-core'
+import TribeSelect from '../common/tribeSelect'
 
 type PlayerInEpisodeFormProps = {
   pie: any
@@ -125,26 +126,15 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
     })
   }
 
-  const renderTribeOptions = () => {
-    return (
-      <>
-        <option value="0" data-color=""></option>
-        {props.tribes.map(tribe => (
-          <option key={tribe.id} value={tribe.id} data-color={tribe.color}>
-            {tribe.name}
-          </option>
-        ))}
-      </>
-    )
-  }
-  
   const renderTribe = () => {
     return (
       <td>
         {editing ? (
-          <Form.Select value={formData.tribe.id} onChange={handleTribe}>
-            {renderTribeOptions()}
-          </Form.Select>
+          <TribeSelect
+            tribes={props.tribes}
+            selectedTribeId={formData.tribe.id}
+            handleTribeChange={handleTribe}
+          />
         ) : (
           <Tag style={{ backgroundColor: formData.tribe.color, color: 'black' }}>
             {formData.tribe.name}

@@ -103,8 +103,8 @@ model Vote {
   tribalCouncil			      TribalCouncil		    @relation(fields: [tribalCouncilId], references: [id])
   voter				            PlayerInEpisode	    @relation("CastVotes", fields: [voterId], references: [id])
   voterId				          Int
-  votedFor				        PlayerInEpisode	    @relation("ReceivedVotes", fields: [votedForId], references: [id])
-  votedForId			        Int
+  votedFor				        PlayerInEpisode?	  @relation("ReceivedVotes", fields: [votedForId], references: [id])
+  votedForId			        Int?
   doesNotCount			      Boolean
   didNotVote			        Boolean
   // ["vote", "shotInTheDark", "extraVote", "revote"]

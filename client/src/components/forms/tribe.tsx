@@ -27,7 +27,7 @@ const TribeForm: React.FC<TribeFormProps> = (props: TribeFormProps) => {
       })
       .catch(err => console.error('Error fetching tribe:', err))
     }
-  }, [props.tribeId])
+  }, [props.tribeId, props.formType])
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Block, Columns, Dropdown, Form, Button } from 'react-bulma-components'
 import DatePicker from 'react-datepicker'
-import { fixDates } from '../../dateUtils'
-import { render } from '@testing-library/react'
 
 type PlayerFormProps = {
   formType: string,
@@ -48,7 +46,7 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
       })
       .catch(err => console.error('Error fetching episode:', err))
     }
-  }, [props.playerOnSeasonId])
+  }, [props.playerOnSeasonId, props.formType, props.seasonId])
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target
@@ -121,7 +119,9 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
   const renderPlayers = () => {
     if (Array.isArray(players) && players.length > 0) {
       return players.map((player, index) => (
-        <a className='dropdown-item'
+        <a 
+          href="#"
+          className='dropdown-item'
           key={player.item.id}
           onClick={selectPlayer.bind(this, player.item)}
         >
