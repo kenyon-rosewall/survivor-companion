@@ -32,8 +32,16 @@ const getTribalCouncil = async (
     include: {
       votes: {
         include: {
-          voter: true,
-          votedFor: true,
+          voter: {
+            include: {
+              player: true,
+            },
+          },
+          votedFor: {
+            include: {
+              player: true,
+            },
+          },
         },
       },
       tribes: true,
@@ -154,6 +162,47 @@ const deleteTribe = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
+const getPlayersFromTribalCouncil = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const tribalCouncilId: number = Number(req.params.tribalCouncilId)
+  const tribalCouncil = await prismaClient.tribalCouncil.findUnique({
+    where: { id: tribalCouncilId },
+    include: {
+      tribes: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  })
+
+  if (tribalCouncil) {
+    const players = await prismaClient.playerInEpisode.findMany({
+      where: {
+        tribeId: {
+          in: tribalCouncil.tribes.map((tribe) => tribe.id),
+        },
+        episodeId: tribalCouncil.episodeId,
+        status: "playing",
+      },
+      include: {
+        player: true,
+      },
+    })
+
+    return res.status(200).json({
+      data: players,
+    })
+  }
+
+  return res.status(404).json({
+    data: `Tribal Council ${tribalCouncilId} not found.`,
+  })
+}
+
 export default {
   getTribalCouncilsFromEpisode,
   getTribalCouncil,
@@ -162,4 +211,5 @@ export default {
   addTribalCouncil,
   addTribe,
   deleteTribe,
+  getPlayersFromTribalCouncil,
 }

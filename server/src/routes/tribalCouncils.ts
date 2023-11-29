@@ -6,6 +6,10 @@ const router = express.Router()
 router.get("/:id", tribalCouncilController.getTribalCouncil)
 router.put("/:id", tribalCouncilController.updateTribalCouncil)
 router.delete("/:id", tribalCouncilController.deleteTribalCouncil)
+router.get(
+  "/:tribalCouncilId/players",
+  tribalCouncilController.getPlayersFromTribalCouncil
+)
 
 router.post(
   "/:tribalCouncilId/tribes/:tribeId",

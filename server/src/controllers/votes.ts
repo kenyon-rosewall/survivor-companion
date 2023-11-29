@@ -3,8 +3,8 @@ import prismaClient from "../modules/prismaClient"
 
 const extractVoteData = (req: Request) => ({
   tribalCouncilId: req.body.tribalCouncilId,
-  voterId: req.body.voterId,
-  votedForId: req.body.votedForId,
+  voterId: Number(req.body.voterId),
+  votedForId: Number(req.body.votedForId),
   doesNotCount: req.body.doesNotCount,
   didNotVote: req.body.didNotVote,
   category: req.body.category,

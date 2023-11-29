@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Block, Button } from 'react-bulma-components'
 import EpisodeForm from '../forms/episode'
 import PlayersInEpisode from './PlayersInEpisode'
-import TribalCouncil from './TribalCouncils'
+import TribalCouncils from './TribalCouncils'
 
 type EpisodesProps = {
   seasonId: number,
@@ -52,7 +52,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         />
       </Block>
       <Block>
-        <TribalCouncil
+        <TribalCouncils
           episodeId={episodeId}
           tribes={tribes}
         />
