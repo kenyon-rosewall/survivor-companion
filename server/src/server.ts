@@ -10,6 +10,7 @@ import tribes from "./routes/tribes"
 import playerInEpisodes from "./routes/playerInEpisodes"
 import advantages from "./routes/advantages"
 import tribalCouncils from "./routes/tribalCouncils"
+import eliminations from "./routes/eliminations"
 
 const router: Express = express()
 
@@ -37,6 +38,7 @@ router.use("/tribes", tribes)
 router.use("/playerInEpisodes", playerInEpisodes)
 router.use("/advantages", advantages)
 router.use("/tribalCouncils", tribalCouncils)
+router.use("/eliminations", eliminations)
 
 router.use((req, res, next) => {
   return res.status(404).json({

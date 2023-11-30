@@ -119,7 +119,7 @@ model Elimination {
   id				              Int			            @id @default(autoincrement())
   playerInEpisode			    PlayerInEpisode	    @relation(fields: [playerInEpisodeId], references: [id])
   playerInEpisodeId		    Int			            @unique
-  // ["votedOut", "rockDraw", "fireMaking", "quit", "medevac", "redemption", "edge", "ejection"]
+  // ["votedOut", "rockDraw", "fireMaking", "quit", "medevac", "redemption", "edge", "ejection", "redemptionDual", "edgeChallenge"]
   category				        String			        @default("votedOut")
   notes				            String?
   createdAt			          DateTime		        @default(now())

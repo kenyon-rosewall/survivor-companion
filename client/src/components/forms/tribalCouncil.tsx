@@ -133,7 +133,7 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({ tribalCouncilId, 
             <td>{formatVote(vote)}</td>
             <td width={2}>
               <FontAwesomeIcon 
-                icon={["fas", vote.doesNotCount ? "xmark" as IconName : "" as IconName]} 
+                icon={["fas", vote.doesNotCount ? "square-xmark" as IconName : "square" as IconName]} 
               />
             </td>
             <td width={2}>

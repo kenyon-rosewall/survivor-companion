@@ -223,10 +223,33 @@ const initPlayersInEpisode = async (
   }
 }
 
+const getPlayingPlayersInEpisode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const episodeId: number = Number(req.params.episodeId)
+
+  const players = await prismaClient.playerInEpisode.findMany({
+    where: {
+      episodeId: episodeId,
+      status: {
+        not: "eliminated",
+      },
+    },
+    include: { player: true },
+  })
+
+  return res.status(200).json({
+    data: players,
+  })
+}
+
 export default {
   getPlayersInEpisode,
   getPlayerInEpisode,
   updatePlayerInEpisode,
   // deletePlayerOnSeason,
   initPlayersInEpisode,
+  getPlayingPlayersInEpisode,
 }

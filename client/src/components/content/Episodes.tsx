@@ -3,6 +3,7 @@ import { Block, Button } from 'react-bulma-components'
 import EpisodeForm from '../forms/episode'
 import PlayersInEpisode from './PlayersInEpisode'
 import TribalCouncils from './TribalCouncils'
+import Eliminations from './Eliminations'
 
 type EpisodesProps = {
   seasonId: number,
@@ -55,6 +56,11 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         <TribalCouncils
           episodeId={episodeId}
           tribes={tribes}
+        />
+      </Block>
+      <Block>
+        <Eliminations
+          episodeId={episodeId}
         />
       </Block>
     </>

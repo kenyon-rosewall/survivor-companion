@@ -51,6 +51,15 @@ const addVote = async (req: Request, res: Response, next: NextFunction) => {
     data: extractVoteData(req),
   })
 
+  switch (vote.category) {
+    case "shotInTheDark":
+      await prismaClient.playerInEpisode.update({
+        where: { id: vote.voterId },
+        data: { shotInTheDark: false },
+      })
+      break
+  }
+
   return res.status(201).json({
     data: vote,
   })
