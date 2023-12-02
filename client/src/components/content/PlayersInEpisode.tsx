@@ -8,9 +8,10 @@ type PlayersInEpisodeProps = {
   episodeId: number
   episode: any
   tribes: any[]
+  refreshPlayersInEpisode: number
 }
 
-const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode, tribes }) => {
+const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode, tribes, refreshPlayersInEpisode }) => {
   const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
   const [playersInEpisode, setPlayersInEpisode] = useState<any[]>([])
   const [hasShotInTheDark, setHasShotInTheDark] = useState<any>(false)
@@ -33,7 +34,7 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
       setHasShotInTheDark(data.data.order > 40)
     })
     .catch(err => console.error('Error fetching season:', err))
-  }, [selectedSeason, episodeId])
+  }, [selectedSeason, episodeId, refreshPlayersInEpisode])
 
   const renderPlayersInEpisode = () => {
     return playersInEpisode.map((pie, index) => (

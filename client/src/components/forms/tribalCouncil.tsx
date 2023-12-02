@@ -131,9 +131,9 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({ tribalCouncilId, 
         {tribalCouncil.votes?.map((vote: any, index: number) => (
           <tr key={index}>
             <td>{formatVote(vote)}</td>
-            <td width={2}>
+            <td width={2} align='center'>
               <FontAwesomeIcon 
-                icon={["fas", vote.doesNotCount ? "square-xmark" as IconName : "square" as IconName]} 
+                icon={["fas", vote.doesNotCount ? "square-xmark" as IconName : "square-check" as IconName]} 
               />
             </td>
             <td width={2}>
@@ -176,6 +176,13 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({ tribalCouncilId, 
       <Button className='is-pulled-right' onClick={() => setIsVoteModalOpen(true)}>Add Vote</Button>
         <h3 className='subtitle'>Votes</h3>
         <Table bordered size='fullwidth'>
+          <thead>
+            <tr>
+              <th>Vote</th>
+              <th>Counts</th>
+              <th></th>
+            </tr>
+          </thead>
           <tbody>
             {renderVotes()}
           </tbody>

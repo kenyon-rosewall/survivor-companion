@@ -75,14 +75,18 @@ const updateElimination = async (
   next: NextFunction
 ) => {
   const id: number = Number(req.params.id)
-  const elimination = await prismaClient.elimination.update({
+  const elimination = await prismaClient.elimination.findUnique({
     where: { id: id },
-    data: extractEliminationData(req),
   })
 
   if (elimination) {
+    const updatedElimination = await prismaClient.elimination.update({
+      where: { id: id },
+      data: extractEliminationData(req),
+    })
+
     return res.status(200).json({
-      data: elimination,
+      data: updatedElimination,
     })
   }
 

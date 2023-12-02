@@ -3,6 +3,7 @@ import episodeController from "../controllers/episodes"
 import playerInEpisodeController from "../controllers/playersInEpisode"
 import tribalCouncilController from "../controllers/tribalCouncils"
 import eliminationController from "../controllers/eliminations"
+import advantageEventController from "../controllers/advantageEvents"
 const router = express.Router()
 
 router.get("/", episodeController.getEpisodes)
@@ -34,5 +35,14 @@ router.get(
   eliminationController.getEliminationsFromEpisode
 )
 router.post("/:episodeId/eliminations", eliminationController.addElimination)
+
+router.get(
+  "/:episodeId/advantageEvents",
+  advantageEventController.getAdvantageEventsFromEpisode
+)
+router.post(
+  "/:episodeId/advantageEvents",
+  advantageEventController.addAdvantageEvent
+)
 
 export = router

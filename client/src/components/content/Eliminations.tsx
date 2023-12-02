@@ -4,13 +4,14 @@ import EliminationForm from '../forms/elimination'
 
 type EliminationsProps = {
   episodeId: number,
+  players: any[]
+  eliminationCallback: () => void
 }
 
-const Eliminations: React.FC<EliminationsProps> = ({ episodeId }) => {
+const Eliminations: React.FC<EliminationsProps> = ({ episodeId, players, eliminationCallback }) => {
   const [eliminations, setEliminations] = useState<any[]>([{}])
   const [refreshEliminations, setRefreshEliminations] = useState<boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  const [players, setPlayers] = useState<any[]>([{}])
 
   useEffect(() => {
     fetch(`http://localhost:5000/episodes/${episodeId}/eliminations`)
@@ -19,18 +20,12 @@ const Eliminations: React.FC<EliminationsProps> = ({ episodeId }) => {
       setEliminations(data.data)
     })
     .catch(err => console.error('Error fetching eliminations:', err))
-
-    fetch(`http://localhost:5000/episodes/${episodeId}/players/playing`)
-    .then(response => response.json())
-    .then(data => {
-      setPlayers(data.data)
-    })
-    .catch(err => console.error('Error fetching playing players:', err))
   }, [episodeId, refreshEliminations])
 
   const handleAddElimination = () => {
-    setRefreshEliminations(!refreshEliminations)
     setIsModalOpen(false)
+    setRefreshEliminations(!refreshEliminations)
+    eliminationCallback()
   }
 
   const handleDeleteElimination = (index: number) => {
@@ -40,6 +35,7 @@ const Eliminations: React.FC<EliminationsProps> = ({ episodeId }) => {
     })
     .then(response => {
       setRefreshEliminations(!refreshEliminations)
+      eliminationCallback()
     })
     .catch(err => console.error('Error deleting elimination:', err))
   }

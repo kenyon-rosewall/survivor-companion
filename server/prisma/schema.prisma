@@ -165,7 +165,7 @@ model AdvantageEvent {
   playerInEpisodeId		    Int
   advantage			          Advantage		        @relation(fields: [advantageId], references: [id])
   advantageId			        Int
-  // ["played", "transferred", "lost", "expired"]
+  // ["obtained", "played", "transferred", "lost", "expired"]
   category				        String			        @default("played")
   notes				            String?
   createdAt			          DateTime		        @default(now())
