@@ -3,8 +3,8 @@ import PlayersSidebar from "./PlayersSidebar"
 import TribesSidebar from "./TribesSidebar"
 import AlliancesSidebar from "./AlliancesSidebar"
 import EventsSidebar from "./EventsSidebar"
-import ManageSeasonsSidebar from "./ManageSeasonsSidebar"
-import ManageAdvantagesSidebar from "./ManageAdvantagesSidebar"
+import SeasonsSidebar from "./SeasonsSidebar"
+import AdvantagesSidebar from "./AdvantagesSidebar"
 
 export {
   EpisodesSidebar,
@@ -12,6 +12,6 @@ export {
   TribesSidebar,
   AlliancesSidebar,
   EventsSidebar,
-  ManageSeasonsSidebar,
-  ManageAdvantagesSidebar,
+  SeasonsSidebar,
+  AdvantagesSidebar,
 }

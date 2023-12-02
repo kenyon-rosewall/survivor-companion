@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Button } from 'react-bulma-components'
+import { Button, Level } from 'react-bulma-components'
 import TribalCouncilForm from '../forms/tribalCouncil'
+import Title from '../common/title'
 
 type TribalCouncilsProps = {
   episodeId: number
@@ -49,12 +50,21 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({ episodeId, tribes }) =>
 
   return (
     <>
-      <Button
-        className="is-pulled-right"
-        onClick={addTribalCouncil}
-        disabled={disableAddButton}
-      >Add Tribal Council</Button>
-      <h2 className='subtitle'>Tribal Council</h2>
+      <Level>
+        <Level.Side align="left">
+          <Level.Item>
+            <Title>Tribal Councils</Title>
+          </Level.Item>
+        </Level.Side>
+        <Level.Side align="right">
+          <Level.Item>
+            <Button
+              onClick={addTribalCouncil}
+              disabled={disableAddButton}
+            >Add Tribal Council</Button>
+          </Level.Item>
+        </Level.Side>
+      </Level>
       {renderTribalCouncils()}
     </>
   )

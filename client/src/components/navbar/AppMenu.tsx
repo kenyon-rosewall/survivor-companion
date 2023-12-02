@@ -17,10 +17,10 @@ const AppMenu: React.FC = () => {
   const levelItems: LevelItem[] = [
     { icon: 'circle-info', text: 'Season Information', name: 'seasonInfo' },
     { icon: 'users', text: 'Players', name: 'players' },
-    { icon: 'tv', text: 'Episodes', name: 'episodes' },
     { icon: 'campground', text: 'Tribes', name: 'tribes' },
-    { icon: 'heart', text: 'Alliances', name: 'alliances' },
-    { icon: 'list', text: 'Events', name: 'events' },
+    { icon: 'tv', text: 'Episodes', name: 'episodes' },
+    // { icon: 'heart', text: 'Alliances', name: 'alliances' },
+    // { icon: 'list', text: 'Events', name: 'events' },
   ]
 
   const handleItemClick = (itemName: string) => {
@@ -43,6 +43,7 @@ const AppMenu: React.FC = () => {
   return (
     <Navbar.Container>
       {renderLevelItems()}
+      <Navbar.Divider />
     </Navbar.Container>
   )
 }

@@ -150,59 +150,61 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({ tribalCouncilId, 
   }
 
   return (
-    <Columns>
-      <Columns.Column size={6}>
-        <Button className='is-pulled-right' onClick={() => setIsTribeModalOpen(true)}>Add Tribe</Button>
-        <h3 className='subtitle'>Tribes</h3>
-        <Tag.Group>{renderTribes()}</Tag.Group>
-        <Modal show={isTribeModalOpen} onClose={() => setIsTribeModalOpen(false)}>
-          <Modal.Card>
-            <Modal.Card.Header>
-              <Modal.Card.Title>Add Tribe to Tribal Council</Modal.Card.Title>
-            </Modal.Card.Header>
-            <Modal.Card.Body>
-              <TribeSelect
-                tribes={tribes}
-                selectedTribeId={tribeData.tribeId}
-                handleTribeChange={handleTribeChange}
-              />
-              <Button onClick={addTribe}>Add Tribe</Button>
-            </Modal.Card.Body>
-          </Modal.Card>
-        </Modal>
-      </Columns.Column>
+    <>
+      <Columns>
+        <Columns.Column size={3}>
+          <Button className='is-pulled-right' onClick={() => setIsTribeModalOpen(true)}>Add Tribe</Button>
+          <h3 className='subtitle'>Tribes</h3>
+          <Tag.Group>{renderTribes()}</Tag.Group>
+          <Modal show={isTribeModalOpen} onClose={() => setIsTribeModalOpen(false)}>
+            <Modal.Card>
+              <Modal.Card.Header>
+                <Modal.Card.Title>Add Tribe to Tribal Council</Modal.Card.Title>
+              </Modal.Card.Header>
+              <Modal.Card.Body>
+                <TribeSelect
+                  tribes={tribes}
+                  selectedTribeId={tribeData.tribeId}
+                  handleTribeChange={handleTribeChange}
+                />
+                <Button onClick={addTribe}>Add Tribe</Button>
+              </Modal.Card.Body>
+            </Modal.Card>
+          </Modal>
+        </Columns.Column>
 
-      <Columns.Column>
-      <Button className='is-pulled-right' onClick={() => setIsVoteModalOpen(true)}>Add Vote</Button>
-        <h3 className='subtitle'>Votes</h3>
-        <Table bordered size='fullwidth'>
-          <thead>
-            <tr>
-              <th>Vote</th>
-              <th>Counts</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {renderVotes()}
-          </tbody>
-        </Table>
-        <Modal show={isVoteModalOpen} onClose={() => setIsVoteModalOpen(false)}>
-          <Modal.Card>
-            <Modal.Card.Header>
-              <Modal.Card.Title>Add Tribe to Tribal Council</Modal.Card.Title>
-            </Modal.Card.Header>
-            <Modal.Card.Body>
-              <VoteForm
-                tribalCouncilId={tribalCouncilId}
-                players={players}
-                handleFormSubmit={addVote}
-              />
-            </Modal.Card.Body>
-          </Modal.Card>
-        </Modal>
-      </Columns.Column>
-    </Columns>
+        <Columns.Column size={9}>
+        <Button className='is-pulled-right' onClick={() => setIsVoteModalOpen(true)}>Add Vote</Button>
+          <h3 className='subtitle'>Votes</h3>
+          <Table bordered size='fullwidth'>
+            <thead>
+              <tr>
+                <th>Vote</th>
+                <th>Counts</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {renderVotes()}
+            </tbody>
+          </Table>
+          <Modal show={isVoteModalOpen} onClose={() => setIsVoteModalOpen(false)}>
+            <Modal.Card>
+              <Modal.Card.Header>
+                <Modal.Card.Title>Add Tribe to Tribal Council</Modal.Card.Title>
+              </Modal.Card.Header>
+              <Modal.Card.Body>
+                <VoteForm
+                  tribalCouncilId={tribalCouncilId}
+                  players={players}
+                  handleFormSubmit={addVote}
+                />
+              </Modal.Card.Body>
+            </Modal.Card>
+          </Modal>
+        </Columns.Column>
+      </Columns>
+    </>
   )
 }
 

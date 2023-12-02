@@ -5,7 +5,7 @@ import { SeasonInfo,
   Players, 
   Alliances, 
   Events,
-  ManageAdvantages, 
+  Advantages, 
   Tribes} 
   from '../content'
 
@@ -21,7 +21,7 @@ const AppContent: React.FC = () => {
     if (selectedMenuItem === 'manageSeasons') {
       return <SeasonInfo seasonId={selectedSeason} />
     } else if (selectedMenuItem === 'manageAdvantages') {
-      return <ManageAdvantages advantageId={selectedAdvantage} />
+      return <Advantages advantageId={selectedAdvantage} />
     }
 
     if (selectedSeason === 0) {

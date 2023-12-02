@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Block, Button } from 'react-bulma-components'
+import { Block, Tabs } from 'react-bulma-components'
 import EpisodeForm from '../forms/episode'
-import PlayersInEpisode from './PlayersInEpisode'
-import TribalCouncils from './TribalCouncils'
-import Eliminations from './Eliminations'
-import AdvantageEvents from './AdvantageEvents'
+import PlayersInEpisode from '../episode/PlayersInEpisode'
+import TribalCouncils from '../episode/TribalCouncils'
+import Eliminations from '../episode/Eliminations'
+import AdvantageEvents from '../episode/AdvantageEvents'
 
 type EpisodesProps = {
   seasonId: number,
@@ -16,6 +16,10 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
   const [tribes, setTribes] = useState<any[]>([{}])
   const [players, setPlayers] = useState<any[]>([{}])
   const [refreshPlayersInEpisode, setRefreshPlayersInEpisode] = useState<number>(0)
+  const tabs = [
+    'Info', 'Players', 'Tribal Councils', 'Eliminations', 'Advantage Events', 'Alliances'
+  ]
+  const [selectedTab, setSelectedTab] = useState<string>('Info')
 
   useEffect(() => {
     fetch(`http://localhost:5000/episodes/${episodeId}`)
@@ -48,9 +52,30 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
     setRefreshPlayersInEpisode(refreshPlayersInEpisode + 1)
   }
 
+  const renderTabs = () => {
+    return tabs.map((tab, index) => (
+      <Tabs.Tab
+        key={index}
+        active={tab === selectedTab}
+        onClick={() => setSelectedTab(tab)}
+      >
+        {tab}
+      </Tabs.Tab>
+    ))
+  }
+
   return (
     <>
-      <Block>
+      <Tabs 
+        align='center'
+        fullwidth={true}
+        type='boxed'
+      >
+        {renderTabs()}
+      </Tabs>
+      <Block
+        className={selectedTab === 'Info' ? '' : 'is-hidden'}
+      >
         <h2 className='subtitle'>Info</h2>
         <EpisodeForm
           formType='update'
@@ -59,7 +84,9 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
           onSubmitComplete={handleFormSubmit}
         />
       </Block>
-      <Block>
+      <Block
+        className={selectedTab === 'Players' ? '' : 'is-hidden'}
+      >
         <PlayersInEpisode
           episodeId={episodeId}
           episode={episode}
@@ -67,20 +94,26 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
           refreshPlayersInEpisode={refreshPlayersInEpisode}
         />
       </Block>
-      <Block>
+      <Block
+        className={selectedTab === 'Tribal Councils' ? '' : 'is-hidden'}
+      >
         <TribalCouncils
           episodeId={episodeId}
           tribes={tribes}
         />
       </Block>
-      <Block>
+      <Block
+        className={selectedTab === 'Eliminations' ? '' : 'is-hidden'}
+      >
         <Eliminations
           episodeId={episodeId}
           players={players}
           eliminationCallback={incrementRefreshPlayersInEpisode}
         />
       </Block>
-      <Block>
+      <Block
+        className={selectedTab === 'Advantage Events' ? '' : 'is-hidden'}
+      >
         <AdvantageEvents
           episodeId={episodeId}
           players={players}

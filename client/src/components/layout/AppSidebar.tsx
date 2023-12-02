@@ -7,8 +7,8 @@ import {
   TribesSidebar, 
   AlliancesSidebar, 
   EventsSidebar,
-  ManageSeasonsSidebar,
-  ManageAdvantagesSidebar } 
+  SeasonsSidebar,
+  AdvantagesSidebar } 
   from '../sidebars'
 
 const AppSidebar: React.FC = () => {
@@ -21,9 +21,9 @@ const AppSidebar: React.FC = () => {
 
   const selectComponent = () => {
     if (selectedMenuItem === 'manageSeasons') {
-      return <ManageSeasonsSidebar seasonId={selectedSeason} />
+      return <SeasonsSidebar seasonId={selectedSeason} />
     } else if (selectedMenuItem === 'manageAdvantages') {
-      return <ManageAdvantagesSidebar advantageId={selectedAdvantage} />
+      return <AdvantagesSidebar advantageId={selectedAdvantage} />
     }
 
     if (selectedSeason === 0) {

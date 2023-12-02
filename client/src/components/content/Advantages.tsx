@@ -1,11 +1,11 @@
 import React from 'react'
 import AdvantageForm from '../forms/advantage'
 
-type ManageAdvantagesProps = {
+type AdvantagesProps = {
   advantageId: number
 }
 
-const ManageAdvantages: React.FC<ManageAdvantagesProps> = ({ advantageId }) => {
+const Advantages: React.FC<AdvantagesProps> = ({ advantageId }) => {
   const handleFormSubmit = (advantage: any) => {
     // TODO: update advantage in state
   }
@@ -21,4 +21,4 @@ const ManageAdvantages: React.FC<ManageAdvantagesProps> = ({ advantageId }) => {
   )
 }
 
-export default ManageAdvantages
+export default Advantages

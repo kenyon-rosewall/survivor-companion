@@ -5,11 +5,11 @@ import { setSelectedAdvantage } from '../../actions/seasons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import AdvantageForm from '../forms/advantage'
 
-type ManageAdvantagesSidebarProps = {
+type AdvantagesSidebarProps = {
   advantageId: number
 }
 
-const ManageAdvantagesSidebar: React.FC<ManageAdvantagesSidebarProps> = ({ advantageId }) => {
+const AdvantagesSidebar: React.FC<AdvantagesSidebarProps> = ({ advantageId }) => {
   const dispatch = useDispatch()
   const [advantages, setAdvantages] = useState<any[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -82,4 +82,4 @@ const ManageAdvantagesSidebar: React.FC<ManageAdvantagesSidebarProps> = ({ advan
   )
 }
 
-export default ManageAdvantagesSidebar
+export default AdvantagesSidebar

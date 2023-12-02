@@ -5,11 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setSelectedSeason } from '../../actions/seasons'
 import SeasonForm from '../forms/season'
 
-type ManageSeasonsSidebarProps = {
+type SeasonsSidebarProps = {
   seasonId: number
 }
 
-const ManageSeasonsSidebar: React.FC<ManageSeasonsSidebarProps> = ({ seasonId }) => {
+const SeasonsSidebar: React.FC<SeasonsSidebarProps> = ({ seasonId }) => {
   const dispatch = useDispatch()
   const [seasons, setSeasons] = useState<any[]>([])
   const [maxOrder, setMaxOrder] = useState<number>(0)
@@ -79,4 +79,4 @@ const ManageSeasonsSidebar: React.FC<ManageSeasonsSidebarProps> = ({ seasonId })
   )
 }
 
-export default ManageSeasonsSidebar
+export default SeasonsSidebar
