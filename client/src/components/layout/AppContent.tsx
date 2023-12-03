@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux'
 import { SeasonInfo, 
   Episodes, 
   Players, 
-  Alliances, 
-  Events,
   Advantages, 
   Tribes} 
   from '../content'
@@ -46,10 +44,8 @@ const AppContent: React.FC = () => {
                   seasonId={selectedSeason}
                   tribeId={selectedTribe}
                 />
-      case 'alliances':
-        return <Alliances seasonId={selectedSeason} />
-      case 'events':
-        return <Events seasonId={selectedSeason} />
+      // case 'events':
+      //   return <Events seasonId={selectedSeason} />
       default:
         return <h1>Content</h1>
     }

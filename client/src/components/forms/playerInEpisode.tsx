@@ -10,6 +10,7 @@ type PlayerInEpisodeFormProps = {
   seasonId: number
   hasShotInTheDark: boolean
   // globalEditing: boolean
+  callback: () => void
 }
 
 const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerInEpisodeFormProps) => {
@@ -68,18 +69,6 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
       notes: props.pie.notes
     })
   }, [props.pie])
-
-  // useEffect(() => {
-  //   prevEditing.current = editing
-  //   setEditing(props.globalEditing)
-  // }, [props.globalEditing])
-
-  // useEffect(() => {
-  //   console.log(`editing changed (${props.pie.playerId}): `, prevEditing)
-  //   if (prevEditing.current === true && editing === false) {
-  //     saveFormData()
-  //   }
-  // }, [editing, saveFormData])
 
   const renderPlayerName = () => {
     return (
@@ -156,12 +145,28 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
     )
   }
 
+  const removeAlliance = (index: number) => {
+    const allianceId = props.pie.alliances[index].id
+    fetch(`http://localhost:5000/alliances/${allianceId}/player/${props.pie.id}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    })
+    .then(response => {
+      props.callback()
+    })
+    .catch(err => console.error('Error removing player from alliance:', err))
+  }
+
   const renderAlliances = () => {
     return (
       <td>
         <Tag.Group>
           {props.pie.alliances.map((alliance: any) => (
-            <Tag key={alliance.id} color={alliance.color}>{alliance.name}</Tag>
+            <Tag key={alliance.id} style={{ backgroundColor: alliance.color }}>
+              {alliance.name}
+              <Button remove size={'small'} onClick={() => removeAlliance(alliance.id)} />
+            </Tag>
           ))}
         </Tag.Group>  
       </td>

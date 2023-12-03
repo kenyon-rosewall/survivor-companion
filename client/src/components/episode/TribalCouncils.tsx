@@ -14,6 +14,8 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({ episodeId, tribes }) =>
   const [disableAddButton, setDisableAddButton] = useState(false)
 
   useEffect(() => {
+    if (episodeId === 0) return
+    
     fetch(`http://localhost:5000/episodes/${episodeId}/tribalCouncils`)
     .then(response => response.json())
     .then(data => {

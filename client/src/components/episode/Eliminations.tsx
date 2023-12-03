@@ -14,6 +14,8 @@ const Eliminations: React.FC<EliminationsProps> = ({ episodeId, players, elimina
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
+    if (episodeId === 0) return
+    
     fetch(`http://localhost:5000/episodes/${episodeId}/eliminations`)
     .then(response => response.json())
     .then(data => {

@@ -3,6 +3,7 @@ import seasonController from "../controllers/seasons"
 import episodeController from "../controllers/episodes"
 import playerOnSeasonController from "../controllers/playerOnSeasons"
 import tribeController from "../controllers/tribes"
+import allianceController from "../controllers/alliances"
 const router = express.Router()
 
 router.get("/", seasonController.getSeasons)
@@ -31,5 +32,8 @@ router.post("/:seasonId/players", playerOnSeasonController.addPlayerOnSeason)
 
 router.get("/:seasonId/tribes", tribeController.getTribesBySeason)
 router.post("/:seasonId/tribes", tribeController.addTribe)
+
+router.get("/:seasonId/alliances", allianceController.getAlliancesBySeason)
+router.post("/:seasonId/alliances", allianceController.addAlliance)
 
 export = router

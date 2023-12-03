@@ -9,9 +9,10 @@ type PlayersInEpisodeProps = {
   episode: any
   tribes: any[]
   refreshPlayersInEpisode: number
+  playersCallback: () => void
 }
 
-const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode, tribes, refreshPlayersInEpisode }) => {
+const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode, tribes, refreshPlayersInEpisode, playersCallback }) => {
   const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
   const [playersInEpisode, setPlayersInEpisode] = useState<any[]>([])
   const [hasShotInTheDark, setHasShotInTheDark] = useState<any>(false)
@@ -44,6 +45,7 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
         tribes={tribes}
         seasonId={selectedSeason}
         hasShotInTheDark={hasShotInTheDark}
+        callback={playersCallback}
         // globalEditing={globalEditing}
       />
     ))

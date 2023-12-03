@@ -5,6 +5,7 @@ import PlayersInEpisode from '../episode/PlayersInEpisode'
 import TribalCouncils from '../episode/TribalCouncils'
 import Eliminations from '../episode/Eliminations'
 import AdvantageEvents from '../episode/AdvantageEvents'
+import Alliances from '../episode/Alliances'
 
 type EpisodesProps = {
   seasonId: number,
@@ -22,6 +23,8 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
   const [selectedTab, setSelectedTab] = useState<string>('Info')
 
   useEffect(() => {
+    if (episodeId === 0) return
+
     fetch(`http://localhost:5000/episodes/${episodeId}`)
     .then(response => response.json())
     .then(data => {
@@ -92,6 +95,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
           episode={episode}
           tribes={tribes}
           refreshPlayersInEpisode={refreshPlayersInEpisode}
+          playersCallback={incrementRefreshPlayersInEpisode}
         />
       </Block>
       <Block
@@ -118,6 +122,15 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
           episodeId={episodeId}
           players={players}
           advantageEventCallback={incrementRefreshPlayersInEpisode}
+        />
+      </Block>
+      <Block
+        className={selectedTab === 'Alliances' ? '' : 'is-hidden'}
+      >
+        <Alliances
+          seasonId={seasonId}
+          episodeId={episodeId}
+          allianceCallback={incrementRefreshPlayersInEpisode}
         />
       </Block>
     </>

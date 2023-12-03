@@ -24,6 +24,7 @@ model Season {
   episodes				        Episode[]
   tribes				          Tribe[]
   playersOnSeason         PlayerOnSeason[]
+  alliances               Alliance[]
   hasFireTokens			      Boolean		          @default(false)
   createdAt			          DateTime		        @default(now())
   updatedAt			          DateTime		        @updatedAt
@@ -174,6 +175,8 @@ model AdvantageEvent {
 
 model Alliance {
   id				              Int			            @id @default(autoincrement())
+  season                  Season              @relation(fields: [seasonId], references: [id])
+  seasonId                Int
   alliancePlayers			    PlayerInEpisode[]
   name				            String?
   color                   String

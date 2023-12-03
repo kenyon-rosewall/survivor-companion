@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Block, Columns, Dropdown, Form, Button } from 'react-bulma-components'
+import { Block, Columns, Form, Button } from 'react-bulma-components'
 import DatePicker from 'react-datepicker'
+import PlayerSearch from '../common/playerSearch'
 
 type PlayerFormProps = {
   formType: string,
@@ -29,7 +30,6 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
     playerNotes: '',
     playerOnSeasonNotes: ''
   })
-  const [players, setPlayers] = useState<any[]>([])
   const [disableButton, setDisableButton] = useState<boolean>(false)
 
   useEffect(() => {
@@ -71,9 +71,7 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
 
     fetch(url, {
       method: method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     })
     .then(response => response.json())
@@ -82,22 +80,6 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
       setDisableButton(false)
     })
     .catch(err => console.error('Error adding player:', err))
-  }
-
-  const handleSearch = (e: any) => {
-    e.preventDefault()
-
-    const q = e.target.value
-    if (q.length > 2) {
-      fetch(`http://localhost:5000/players/search/${q}`)
-        .then(response => response.json())
-        .then(data => {
-          setPlayers(data.data)
-        })
-        .catch(err => console.error('Error fetching players:', err))
-    } else {
-      setPlayers([])
-    }
   }
 
   const selectPlayer = (player: any) => {
@@ -109,25 +91,9 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
       birthday: player.birthday ? player.birthday : "",
       playerNotes: player.notes ? player.notes : ""
     })
-    setPlayers([])
     const searchEl = document.getElementById('playerSearch')
     if (searchEl) {
       searchEl.setAttribute("value", "player.name")
-    }
-  }
-
-  const renderPlayers = () => {
-    if (Array.isArray(players) && players.length > 0) {
-      return players.map((player, index) => (
-        <a 
-          href="#"
-          className='dropdown-item'
-          key={player.item.id}
-          onClick={selectPlayer.bind(this, player.item)}
-        >
-          {player.item.name}
-        </a>
-      ))
     }
   }
 
@@ -135,27 +101,10 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
     <form onSubmit={handleFormSubmit}>
       <Columns>
         <Columns.Column>
-        <Form.Field>
-          <Form.Control>
-            <div className="dropdown">
-              <div className="dropdown-trigger">
-                <Form.Input
-                  name="q"
-                  id="playerSearch"
-                  placeholder="Search existing players..."
-                  onChange={handleSearch}
-                  disabled={formDisabled}
-                />
-                <input type='hidden' name='playerId' value={formData.playerId} />
-              </div>
-              <div className="dropdown-menu" role="menu">
-                <div className="dropdown-content">
-                  {renderPlayers()}
-                </div>
-              </div>
-            </div>
-          </Form.Control>
-        </Form.Field>
+          <PlayerSearch
+            formDisabled={formDisabled}
+            handleSelectPlayer={selectPlayer}
+          />
         </Columns.Column>
       </Columns>
 
