@@ -17,6 +17,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
   const [tribes, setTribes] = useState<any[]>([{}])
   const [players, setPlayers] = useState<any[]>([{}])
   const [refreshPlayersInEpisode, setRefreshPlayersInEpisode] = useState<number>(0)
+  const [refreshAlliances, setRefreshAlliances] = useState<number>(0)
   const tabs = [
     'Info', 'Players', 'Tribal Councils', 'Eliminations', 'Advantage Events', 'Alliances'
   ]
@@ -53,6 +54,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
 
   const incrementRefreshPlayersInEpisode = () => {
     setRefreshPlayersInEpisode(refreshPlayersInEpisode + 1)
+    setRefreshAlliances(refreshAlliances + 1)
   }
 
   const renderTabs = () => {
@@ -111,6 +113,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
       >
         <Eliminations
           episodeId={episodeId}
+          seasonId={seasonId}
           players={players}
           eliminationCallback={incrementRefreshPlayersInEpisode}
         />
@@ -130,6 +133,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         <Alliances
           seasonId={seasonId}
           episodeId={episodeId}
+          triggerRefresh={refreshAlliances}
           allianceCallback={incrementRefreshPlayersInEpisode}
         />
       </Block>

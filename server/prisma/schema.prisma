@@ -118,6 +118,7 @@ model Vote {
 
 model Elimination {
   id				              Int			            @id @default(autoincrement())
+  order                   Int                 @default(0)
   playerInEpisode			    PlayerInEpisode	    @relation(fields: [playerInEpisodeId], references: [id])
   playerInEpisodeId		    Int			            @unique
   // ["votedOut", "rockDraw", "fireMaking", "quit", "medevac", "redemption", "edge", "ejection", "redemptionDual", "edgeChallenge"]

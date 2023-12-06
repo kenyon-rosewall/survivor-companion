@@ -4,6 +4,7 @@ import episodeController from "../controllers/episodes"
 import playerOnSeasonController from "../controllers/playerOnSeasons"
 import tribeController from "../controllers/tribes"
 import allianceController from "../controllers/alliances"
+import eliminationController from "../controllers/eliminations"
 const router = express.Router()
 
 router.get("/", seasonController.getSeasons)
@@ -35,5 +36,10 @@ router.post("/:seasonId/tribes", tribeController.addTribe)
 
 router.get("/:seasonId/alliances", allianceController.getAlliancesBySeason)
 router.post("/:seasonId/alliances", allianceController.addAlliance)
+
+router.get(
+  "/:seasonId/eliminations/count",
+  eliminationController.getTotalEliminationCount
+)
 
 export = router

@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Form } from 'react-bulma-components'
 
 type EliminationFormProps = {
   episodeId: number
+  seasonId: number
   players: any[]
   callback: () => void
 }
 
-const EliminationForm: React.FC<EliminationFormProps> = ({ episodeId, players, callback }) => {
+const EliminationForm: React.FC<EliminationFormProps> = ({ episodeId, seasonId, players, callback }) => {
+  const [eliminationCount, setEliminationCount] = useState<number>(0)
   const categories = [
     { name: 'Voted Out', value: 'votedOut' }, 
     { name: 'Rock Draw', value: 'rockDraw' }, 
@@ -21,10 +23,20 @@ const EliminationForm: React.FC<EliminationFormProps> = ({ episodeId, players, c
     { name: 'Edge of Extinction Challenge', value: 'edgeChallenge' }
   ]
   const [formData, setFormData] = useState<any>({
-    playerInEpisodeId: 0,
+    playerEpisodeIInd: 0,
+    order: eliminationCount + 1,
     category: 'votedOut',
     notes: ''
   })
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/seasons/${seasonId}/eliminations/count`)
+    .then(response => response.json())
+    .then(data => {
+      setEliminationCount(data)
+    })
+    .catch(err => console.error('Error fetching eliminations:', err))
+  }, [])
 
   const handleInputChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })

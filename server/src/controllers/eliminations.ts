@@ -3,6 +3,7 @@ import prismaClient from "../modules/prismaClient"
 
 const extractEliminationData = (req: Request) => ({
   playerInEpisodeId: Number(req.body.playerInEpisodeId),
+  order: Number(req.body.order),
   category: req.body.category,
   notes: req.body.notes,
 })
@@ -151,10 +152,35 @@ const addElimination = async (
   })
 }
 
+const getTotalEliminationCount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const seasonId: number = Number(req.params.seasonId)
+  const eliminations = await prismaClient.elimination.findMany({
+    where: {
+      playerInEpisode: {
+        episode: {
+          seasonId: seasonId,
+        },
+      },
+    },
+    select: {
+      id: true,
+    },
+  })
+
+  return res.status(200).json({
+    data: eliminations.length,
+  })
+}
+
 export default {
   getEliminationsFromEpisode,
   getElimination,
   updateElimination,
   deleteElimination,
   addElimination,
+  getTotalEliminationCount,
 }

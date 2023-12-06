@@ -3,7 +3,7 @@ import prismaClient from "../modules/prismaClient"
 import dt from "../modules/date"
 
 const extractSeasonData = (req: Request) => ({
-  order: req.body.order,
+  order: Number(req.body.order),
   name: req.body.name,
   filmingStart: dt.parse(req.body.filmingStart),
   filmingEnd: dt.parse(req.body.filmingEnd),
@@ -11,7 +11,7 @@ const extractSeasonData = (req: Request) => ({
   airingEnd: dt.parse(req.body.airingEnd),
   rating: req.body.rating,
   notes: req.body.notes,
-  episodeCount: req.body.episodeCount,
+  episodeCount: Number(req.body.episodeCount),
 })
 
 const getSeasons = async (req: Request, res: Response, next: NextFunction) => {

@@ -17,7 +17,8 @@ const SeasonForm: React.FC<SeasonFormProps> = ({ maxOrder, onSubmitComplete }) =
     airingStart: new Date(),
     airingEnd: new Date(),
     rating: '',
-    notes: ''
+    notes: '',
+    episodeCount: 0
   })
   const [disableButton, setDisableButton] = useState<boolean>(false)
 

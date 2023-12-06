@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Table } from 'react-bulma-components'
-import PlayerInEpisodeForm from '../forms/playerInEpisode'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Block, Button } from 'react-bulma-components'
+import Subtitle from '../common/subtitle'
+import PlayerTable from '../common/playerTable'
 
 type PlayersInEpisodeProps = {
   episodeId: number
@@ -37,20 +37,6 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
     .catch(err => console.error('Error fetching season:', err))
   }, [selectedSeason, episodeId, refreshPlayersInEpisode])
 
-  const renderPlayersInEpisode = () => {
-    return playersInEpisode.map((pie, index) => (
-      <PlayerInEpisodeForm
-        key={index}
-        pie={pie}
-        tribes={tribes}
-        seasonId={selectedSeason}
-        hasShotInTheDark={hasShotInTheDark}
-        callback={playersCallback}
-        // globalEditing={globalEditing}
-      />
-    ))
-  }
-
   const initPlayersInEpisode = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (episodeId === 0) return
     e.preventDefault()
@@ -74,33 +60,43 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
 
   return (
     <>
-      <h2 className='subtitle'>Players</h2>
-      <Table bordered size='fullwidth'>
-        <thead>
-          <tr>
-            <th>Player</th>
-            <th>Status</th>
-            <th>Tribe</th>
-            <th>Advantages</th>
-            <th>Alliances</th>
-            { hasShotInTheDark ? <th>Shot in the Dark</th> : null}
-            <th>Notes</th>
-            <th align='center'>
-              <Button 
-                disabled={playersInEpisode.length === 0}
-                color='primary' 
-                size={'small'} 
-                // onClick={() => setGlobalEditing(!globalEditing)}
-              >
-                <FontAwesomeIcon icon={["fas", (false ? "floppy-disk" : "edit")]} />
-              </Button>
-            </th>
-          </tr>  
-        </thead>
-        <tbody>
-          {renderPlayersInEpisode()}
-        </tbody>
-      </Table>
+      <Subtitle>Players</Subtitle>
+      
+      <Block>
+        <PlayerTable
+          players={playersInEpisode}
+          tribes={tribes}
+          selectedSeason={selectedSeason}
+          playersCallback={playersCallback}
+          hasShotInTheDark={hasShotInTheDark}
+          playerFilter='playing'
+        />
+        <PlayerTable
+          players={playersInEpisode}
+          tribes={tribes}
+          selectedSeason={selectedSeason}
+          playersCallback={playersCallback}
+          hasShotInTheDark={hasShotInTheDark}
+          playerFilter='redemption'
+        />
+        <PlayerTable
+          players={playersInEpisode}
+          tribes={tribes}
+          selectedSeason={selectedSeason}
+          playersCallback={playersCallback}
+          hasShotInTheDark={hasShotInTheDark}
+          playerFilter='edge'
+        />
+        <PlayerTable
+          players={playersInEpisode}
+          tribes={tribes}
+          selectedSeason={selectedSeason}
+          playersCallback={playersCallback}
+          hasShotInTheDark={hasShotInTheDark}
+          playerFilter='eliminated'
+        />
+      </Block>
+
       <Button
         color='danger'
         onClick={initPlayersInEpisode}

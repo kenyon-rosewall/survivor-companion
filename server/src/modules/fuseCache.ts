@@ -1,19 +1,23 @@
-import { Player } from '@prisma/client';
-import prismaClient from './prismaClient';
+import { Player } from "@prisma/client"
+import prismaClient from "./prismaClient"
 
-type PlayerCache = Player[];
-let myPlayerCache: PlayerCache = [];
+type PlayerCache = Player[]
+let myPlayerCache: PlayerCache = []
 
 export const playerFuseOptions = {
   includeScore: true,
-  keys: ['name', 'nickname']
-};
+  keys: ["name", "nickname"],
+}
 
 export const updatePlayerCache = async () => {
-  console.log('Updating player cache...');
-  myPlayerCache = await prismaClient.player.findMany();
-};
+  console.log("Updating player cache...")
+  myPlayerCache = await prismaClient.player.findMany({
+    include: {
+      playerOnSeasons: true,
+    },
+  })
+}
 
 export const getPlayerCache = (): PlayerCache => {
-  return myPlayerCache;
-};
+  return myPlayerCache
+}

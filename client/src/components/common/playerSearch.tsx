@@ -4,17 +4,22 @@ import { Form } from "react-bulma-components"
 type playerSearchProps = {
   formDisabled: boolean
   handleSelectPlayer: (player: any) => void
+  seasonId?: number
 }
 
-const PlayerSearch: React.FC<playerSearchProps> = ({ formDisabled, handleSelectPlayer }) => {
+const PlayerSearch: React.FC<playerSearchProps> = ({ formDisabled, handleSelectPlayer, seasonId }) => {
   const [players, setPlayers] = useState<any[]>([])
+  const [query, setQuery] = useState<string>('')
 
   const handleSearch = (e: any) => {
     e.preventDefault()
+    setQuery(e.target.value)
 
     const q = e.target.value
+    let seasonQuery = ''
+    if (Number(seasonId) > 0) seasonQuery = 'season/' + seasonId + '/'
     if (q.length > 2) {
-      fetch(`http://localhost:5000/players/search/${q}`)
+      fetch(`http://localhost:5000/players/${seasonQuery}search/${q}`)
         .then(response => response.json())
         .then(data => {
           setPlayers(data.data)
@@ -26,6 +31,7 @@ const PlayerSearch: React.FC<playerSearchProps> = ({ formDisabled, handleSelectP
   }
 
   const selectPlayer = (player: any) => {
+    setQuery('')
     setPlayers([])
     handleSelectPlayer(player)
   }
@@ -33,14 +39,13 @@ const PlayerSearch: React.FC<playerSearchProps> = ({ formDisabled, handleSelectP
   const renderPlayers = () => {
     if (Array.isArray(players) && players.length > 0) {
       return players.map((player, index) => (
-        <a 
-          href="#"
+        <li 
           className='dropdown-item'
           key={player.item.id}
           onClick={selectPlayer.bind(this, player.item)}
         >
           {player.item.name}
-        </a>
+        </li>
       ))
     }
   }
@@ -52,10 +57,10 @@ const PlayerSearch: React.FC<playerSearchProps> = ({ formDisabled, handleSelectP
           <div className="dropdown-trigger">
             <Form.Input
               name="q"
-              id="playerSearch"
               placeholder="Search existing players..."
               onChange={handleSearch}
               disabled={formDisabled}
+              value={query}
             />
           </div>
           <div className="dropdown-menu" role="menu">

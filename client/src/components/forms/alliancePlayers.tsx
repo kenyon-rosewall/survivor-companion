@@ -1,18 +1,19 @@
-import React, { useState } from "react"
+import React from "react"
 import { Button, Columns, Tag } from "react-bulma-components"
 import PlayerSearch from "../common/playerSearch"
 
 type AlliancePlayersFormProps = {
   alliance: any
   episodeId: number
+  seasonId: number
   callback: () => void
 }
 
-const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({ alliance, episodeId, callback }) => {
-  const [formData, setFormData] = useState<any>({
+const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({ alliance, episodeId, seasonId, callback }) => {
+  const formData = {
     playerId: 0,
     episodeId: episodeId,
-  })
+  }
 
   const selectPlayer = (player: any) => {
     fetch(`http://localhost:5000/alliances/${alliance.id}/players`, {
@@ -40,7 +41,9 @@ const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({ alliance, epi
   }
 
   const renderPlayers = () => {
-    return alliance.alliancePlayers.map((player: any, index: number) => (
+    return alliance.alliancePlayers
+            .filter((player: any) => player.episodeId === episodeId)
+            .map((player: any, index: number) => (
       <Tag key={index} color="info" size={'medium'}>
         {player.player?.name}
         <Button remove size={'small'} onClick={() => removePlayer(index)} />
@@ -54,6 +57,7 @@ const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({ alliance, epi
         <Columns.Column size={6}>
           <PlayerSearch
             formDisabled={false}
+            seasonId={seasonId}
             handleSelectPlayer={selectPlayer}
           />
         </Columns.Column>

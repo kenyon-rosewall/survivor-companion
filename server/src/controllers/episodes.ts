@@ -4,7 +4,7 @@ import dt from "../modules/date"
 
 const extractEpisodeData = (req: Request, seasonId?: number) => {
   const data: any = {
-    order: req.body.order,
+    order: Number(req.body.order),
     name: req.body.name,
     airingDate: dt.parse(req.body.airingDate),
     premiere: req.body.premiere,

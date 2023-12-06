@@ -132,12 +132,32 @@ const deleteAlliance = async (
   next: NextFunction
 ) => {
   const id: number = Number(req.params.id)
-  const deletedAlliance = await prismaClient.alliance.delete({
+  const alliance = await prismaClient.alliance.findUnique({
     where: { id: id },
+    include: {
+      alliancePlayers: true,
+    },
   })
 
-  if (deletedAlliance) {
-    return res.status(204).json({})
+  if (alliance) {
+    const updatedAlliance = await prismaClient.alliance.update({
+      where: { id: id },
+      data: {
+        alliancePlayers: {
+          disconnect: alliance.alliancePlayers.map((player) => ({
+            id: player.id,
+          })),
+        },
+      },
+    })
+
+    const deletedAlliance = await prismaClient.alliance.delete({
+      where: { id: id },
+    })
+
+    if (deletedAlliance) {
+      return res.status(204).json({})
+    }
   }
 
   return res.status(404).json({

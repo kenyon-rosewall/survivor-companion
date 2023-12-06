@@ -105,11 +105,58 @@ const updatePlayerInEpisode = async (
 // }
 
 const deletePlayersInEpisode = async (episodeId: number) => {
-  const deletedPlayersInEpisode = await prismaClient.playerInEpisode.deleteMany(
-    {
-      where: { episodeId: episodeId },
-    }
-  )
+  const playersInEpisode = await prismaClient.playerInEpisode.findMany({
+    where: { episodeId: episodeId },
+    include: {
+      advantages: true,
+      alliances: true,
+    },
+  })
+
+  for (const playerInEpisode of playersInEpisode) {
+    const deletedVotes = await prismaClient.vote.deleteMany({
+      where: {
+        OR: [
+          { voterId: playerInEpisode.id },
+          { votedForId: playerInEpisode.id },
+        ],
+      },
+    })
+
+    const updatedPlayerInEpisode = await prismaClient.playerInEpisode.update({
+      where: { id: playerInEpisode.id },
+      data: {
+        advantages: {
+          disconnect: playerInEpisode.advantages.map((advantage) => {
+            return {
+              id: advantage.id,
+            }
+          }),
+        },
+        alliances: {
+          disconnect: playerInEpisode.alliances.map((alliance) => {
+            return {
+              id: alliance.id,
+            }
+          }),
+        },
+      },
+    })
+
+    const deletedAdvantageEvents = await prismaClient.advantageEvent.deleteMany(
+      {
+        where: { playerInEpisodeId: playerInEpisode.id },
+      }
+    )
+
+    const deletedElminations = await prismaClient.elimination.deleteMany({
+      where: { playerInEpisodeId: playerInEpisode.id },
+    })
+
+    const deletedPlayerInEpisode = await prismaClient.playerInEpisode.delete({
+      where: { id: playerInEpisode.id },
+    })
+  }
 }
 
 const importPlayersInEpisode = async (episodeId: number) => {

@@ -72,7 +72,10 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
 
   const renderPlayerName = () => {
     return (
-      <td>{formData.playerName}</td>
+      <td 
+        style={{ textDecorationLine: formData.status === 'eliminated' ? 'line-through' : 'none' }}>
+        {formData.playerName}
+      </td>
     )
   }
 
@@ -147,7 +150,7 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
 
   const removeAlliance = (index: number) => {
     const allianceId = props.pie.alliances[index].id
-    fetch(`http://localhost:5000/alliances/${allianceId}/player/${props.pie.id}`, {
+    fetch(`http://localhost:5000/alliances/${allianceId}/players/${props.pie.id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({})
@@ -162,10 +165,10 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
     return (
       <td>
         <Tag.Group>
-          {props.pie.alliances.map((alliance: any) => (
+          {props.pie.alliances.map((alliance: any, index: number) => (
             <Tag key={alliance.id} style={{ backgroundColor: alliance.color }}>
               {alliance.name}
-              <Button remove size={'small'} onClick={() => removeAlliance(alliance.id)} />
+              <Button remove size={'small'} onClick={() => removeAlliance(index)} />
             </Tag>
           ))}
         </Tag.Group>  
@@ -181,15 +184,18 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
   }
   
   const renderShotInTheDark = () => {
+    if (!props.hasShotInTheDark) return null
     let i: IconName = "square"
     if (props.pie.shotInTheDark) i = "square-check"
 
     return (
-      editing ? (
+      <td align="center">
+      {editing ? (
         <Form.Checkbox checked={formData.shotInTheDark} onChange={handleShotInTheDark} />
       ) : (
         <FontAwesomeIcon icon={["fas", i]} />
-      )
+      )}
+      </td>
     )
   }
 
@@ -202,7 +208,7 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
 
   const renderNotes = () => {
     return (
-      <td>
+      <td className="is-size-7">
         {editing ? (
           <Form.Textarea size={"small"} onChange={handleNotes}>{formData.notes}</Form.Textarea>
         ) : (
@@ -237,7 +243,7 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
       {renderTribe()}
       {renderAdvantages()}
       {renderAlliances()}
-      { props.hasShotInTheDark ? renderShotInTheDark() : null}
+      {renderShotInTheDark()}
       {renderNotes()}
       {renderEdit()}
     </tr>

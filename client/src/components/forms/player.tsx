@@ -91,10 +91,10 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
       birthday: player.birthday ? player.birthday : "",
       playerNotes: player.notes ? player.notes : ""
     })
-    const searchEl = document.getElementById('playerSearch')
-    if (searchEl) {
-      searchEl.setAttribute("value", "player.name")
-    }
+    // const searchEl = document.getElementById('playerSearch')
+    // if (searchEl) {
+    //   searchEl.setAttribute("value", "player.name")
+    // }
   }
 
   return (

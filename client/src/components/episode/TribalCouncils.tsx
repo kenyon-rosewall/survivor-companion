@@ -35,6 +35,7 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({ episodeId, tribes }) =>
     })
     .then(response => response.json())
     .then(data => {
+      setDisableAddButton(false)
       setRefreshTribalCouncils(!refreshTribalCouncils)
     })
     .catch(err => console.log('Error adding tribal council:', err))

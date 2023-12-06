@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { Button, Columns, Form } from "react-bulma-components"
-import { callbackify } from "util"
 
 type AllianceFormProps = {
   seasonId: number

@@ -4,11 +4,12 @@ import EliminationForm from '../forms/elimination'
 
 type EliminationsProps = {
   episodeId: number,
+  seasonId: number,
   players: any[]
   eliminationCallback: () => void
 }
 
-const Eliminations: React.FC<EliminationsProps> = ({ episodeId, players, eliminationCallback }) => {
+const Eliminations: React.FC<EliminationsProps> = ({ episodeId, seasonId, players, eliminationCallback }) => {
   const [eliminations, setEliminations] = useState<any[]>([{}])
   const [refreshEliminations, setRefreshEliminations] = useState<boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -67,9 +68,25 @@ const Eliminations: React.FC<EliminationsProps> = ({ episodeId, players, elimina
     }
   }
 
+  const ordinalSuffix = (i: number) => {
+    var j = i % 10,
+        k = i % 100;
+    if (j == 1 && k != 11) {
+        return i + "st";
+    }
+    if (j == 2 && k != 12) {
+        return i + "nd";
+    }
+    if (j == 3 && k != 13) {
+        return i + "rd";
+    }
+    return i + "th";
+  }
+
   const renderEliminations = () => {
     return eliminations.map((elimination: any, index: number) => (
       <tr key={index}>
+        <td>{ordinalSuffix(elimination.order)}</td>
         <td>{formatElimination(elimination)}</td>
         <td width={'40%'}>{elimination.notes}</td>
         <td width={2}>
@@ -102,6 +119,7 @@ const Eliminations: React.FC<EliminationsProps> = ({ episodeId, players, elimina
           <Modal.Card.Body>
             <EliminationForm
               episodeId={episodeId}
+              seasonId={seasonId}
               players={players}
               callback={handleAddElimination}
             />

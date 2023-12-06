@@ -1,14 +1,22 @@
 import { Request, Response, NextFunction } from "express"
 import prismaClient from "../modules/prismaClient"
+import { exit } from "process"
 
-const extractVoteData = (req: Request) => ({
-  tribalCouncilId: req.body.tribalCouncilId,
-  voterId: Number(req.body.voterId),
-  votedForId: Number(req.body.votedForId),
-  doesNotCount: req.body.doesNotCount,
-  didNotVote: req.body.didNotVote,
-  category: req.body.category,
-})
+const extractVoteData = (req: Request, votedForId?: number | undefined) => {
+  const data: any = {
+    tribalCouncilId: req.body.tribalCouncilId,
+    voterId: Number(req.body.voterId),
+    doesNotCount: req.body.doesNotCount,
+    didNotVote: req.body.didNotVote,
+    category: req.body.category,
+  }
+
+  if (typeof votedForId !== "undefined" && votedForId !== 0) {
+    data.votedForId = Number(votedForId)
+  }
+
+  return data
+}
 
 const getVotesFromTribalCouncil = async (
   req: Request,
@@ -48,7 +56,7 @@ const deleteVote = async (req: Request, res: Response, next: NextFunction) => {
 
 const addVote = async (req: Request, res: Response, next: NextFunction) => {
   const vote = await prismaClient.vote.create({
-    data: extractVoteData(req),
+    data: extractVoteData(req, req.body.votedForId),
   })
 
   switch (vote.category) {
