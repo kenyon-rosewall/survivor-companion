@@ -80,7 +80,7 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, a
       <Button className='is-pulled-right' onClick={() => setIsModalOpen(true)}>
         Add Advantage Event
       </Button>
-      <h2 className='subtitle'>Advantage Events</h2>
+      <br /><br />
       <Table bordered className='is-fullwidth'>
         <tbody>
           {renderAdvantageEvents()}

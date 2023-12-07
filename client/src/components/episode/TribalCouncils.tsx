@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Level } from 'react-bulma-components'
 import TribalCouncilForm from '../forms/tribalCouncil'
-import Title from '../common/title'
 
 type TribalCouncilsProps = {
   episodeId: number
@@ -56,7 +55,7 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({ episodeId, tribes }) =>
       <Level>
         <Level.Side align="left">
           <Level.Item>
-            <Title>Tribal Councils</Title>
+            
           </Level.Item>
         </Level.Side>
         <Level.Side align="right">

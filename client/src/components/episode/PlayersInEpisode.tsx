@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Block, Button } from 'react-bulma-components'
-import Subtitle from '../common/subtitle'
 import PlayerTable from '../common/playerTable'
 
 type PlayersInEpisodeProps = {
@@ -60,8 +59,6 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
 
   return (
     <>
-      <Subtitle>Players</Subtitle>
-      
       <Block>
         <PlayerTable
           players={playersInEpisode}
@@ -69,7 +66,8 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
           selectedSeason={selectedSeason}
           playersCallback={playersCallback}
           hasShotInTheDark={hasShotInTheDark}
-          playerFilter='playing'
+          playerStatus='playing'
+          showFilter={true}
         />
         <PlayerTable
           players={playersInEpisode}
@@ -77,7 +75,8 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
           selectedSeason={selectedSeason}
           playersCallback={playersCallback}
           hasShotInTheDark={hasShotInTheDark}
-          playerFilter='redemption'
+          playerStatus='redemption'
+          showFilter={false}
         />
         <PlayerTable
           players={playersInEpisode}
@@ -85,7 +84,8 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
           selectedSeason={selectedSeason}
           playersCallback={playersCallback}
           hasShotInTheDark={hasShotInTheDark}
-          playerFilter='edge'
+          playerStatus='edge'
+          showFilter={false}
         />
         <PlayerTable
           players={playersInEpisode}
@@ -93,7 +93,8 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
           selectedSeason={selectedSeason}
           playersCallback={playersCallback}
           hasShotInTheDark={hasShotInTheDark}
-          playerFilter='eliminated'
+          playerStatus='eliminated'
+          showFilter={false}
         />
       </Block>
 

@@ -1,19 +1,37 @@
 import React from 'react'
-import { Columns } from 'react-bulma-components'
+import { useSelector } from 'react-redux'
+import { Columns, Container } from 'react-bulma-components'
 import AppSidebar from './AppSidebar'
 import MainContent from './AppContent'
 
 const AppBody: React.FC = () => {
+  const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
+
+  const sidebarHidden = () => {
+    switch (selectedMenuItem) {
+      case 'seasonInfo':
+        return true
+      default:
+        return false
+    }
+  }
+
   return (
     <Columns style={{ width: '100%' }}>
       <Columns.Column 
         size={2} 
         style={{ height: '700px', overflow: 'auto', border: '1px solid black' }}
+        className={ sidebarHidden() ? 'is-hidden' : '' }
       >
         <AppSidebar />
       </Columns.Column>
-      <Columns.Column>
-        <MainContent />
+      <Columns.Column
+        style={{ minHeight: '700px' }}
+      >
+        <Container>
+          <br />
+          <MainContent />
+        </Container>
       </Columns.Column>
     </Columns>
   )

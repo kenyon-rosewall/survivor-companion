@@ -44,38 +44,37 @@ const AllianceForm: React.FC<AllianceFormProps> = ({ seasonId, callback }) => {
       <Columns>
         <Columns.Column>
           <Form.Field>
-            <Form.Label>Name</Form.Label>
+            <Form.Label size={'small'}>Name</Form.Label>
             <Form.Control>
               <Form.Input
                 name="name"
+                size={'small'}
                 value={formData.name}
                 onChange={handleInputChange}
               />
             </Form.Control>
           </Form.Field>
-        </Columns.Column>
 
-        <Columns.Column>
           <Form.Field>
-            <Form.Label>Color</Form.Label>
+            <Form.Label size={'small'}>Color</Form.Label>
             <Form.Control>
               <Form.Input
                 name="color"
+                size={'small'}
                 value={formData.color}
                 onChange={handleInputChange}
               />
             </Form.Control>
           </Form.Field>
         </Columns.Column>
-      </Columns>
 
-      <Columns>
         <Columns.Column>
           <Form.Field>
-            <Form.Label>Notes</Form.Label>
+            <Form.Label size={'small'}>Notes</Form.Label>
             <Form.Control>
               <Form.Textarea
                 name="notes"
+                size={'small'}
                 value={formData.notes}
                 onChange={handleInputChange}
               />
@@ -89,8 +88,8 @@ const AllianceForm: React.FC<AllianceFormProps> = ({ seasonId, callback }) => {
           <Form.Field>
             <Form.Control>
               <Button
-                name="color"
-                value={formData.color}
+                color={'primary'}
+                className="is-pulled-right"
                 onClick={handleFormSubmit}
                 disabled={disableButton}
               >

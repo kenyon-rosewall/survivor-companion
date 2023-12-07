@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Table } from 'react-bulma-components'
-import PlayerInEpisodeForm from '../forms/playerInEpisode'
+import PlayerTableFilter from './playerTableFilter'
+import PlayerTableList from './playerTableList'
 
 type PlayerTableProps = {
   players: any[]
@@ -8,59 +8,65 @@ type PlayerTableProps = {
   selectedSeason: number
   playersCallback: () => void
   hasShotInTheDark: boolean
-  playerFilter?: string
+  playerStatus?: string
+  showFilter: boolean
 }
 
-const PlayerTable: React.FC<PlayerTableProps> = ({ players, tribes, selectedSeason, playersCallback, hasShotInTheDark, playerFilter }) => {
-  const tableHeaders = [
-    'Player', 'Status', 'Tribe', 'Advantages', 
-    'Alliances', 'Shot in the Dark', 'Notes'
-  ]
+const PlayerTable: React.FC<PlayerTableProps> = ({ 
+  players, tribes, selectedSeason, playersCallback, 
+  hasShotInTheDark, playerStatus, showFilter 
+}) => {
   const [filteredPlayers, setFilteredPlayers] = useState<any[]>(players)
+  const [alliances, setAlliances] = useState<any[]>([])
+  const [filter, setFilter] = useState<any>({
+    tribe: 0,
+    hasAdvantage: '',
+    alliance: 0,
+  })
 
-  useEffect(() => {
-    setFilteredPlayers(players.filter((player: any) => player.status === playerFilter))
-  }, [playerFilter, players])
+  const createUniqueAlliances = (alliances: any[]) => {
+    let unique: any[] = []
+    for (const alliance of alliances) {
+      if (unique.map((a: any) => a.id).includes(alliance.id)) continue
+      unique.push(alliance)
+    }
 
-  const renderHeaders = () => {
-    return tableHeaders.map((header: any, index: number) => (
-      <th
-        key={index}
-        className={ (header === 'Shot in the Dark' && !hasShotInTheDark) ? 'is-hidden' : '' }
-      >{header}</th>
-    ))
+    return unique
   }
 
-  const renderPlayersInEpisode = () => {
-    return players
-            .filter((player: any) => player.status === playerFilter)
-            .map((player, index) => (
-      <PlayerInEpisodeForm
-        key={index}
-        pie={player}
-        tribes={tribes}
-        seasonId={selectedSeason}
-        hasShotInTheDark={hasShotInTheDark}
-        callback={playersCallback}
-      />
-    ))
+  useEffect(() => {
+    const filterPlayers = players.filter((player: any) => player.status === playerStatus)
+    const alliances = players.map((player: any) => player.alliances)
+      .reduce((prev: any, curr: any) => prev.concat(curr), [])
+      .filter((alliance: never, index: number, arr: []) => arr.indexOf(alliance) === index)
+    if (playerStatus && playerStatus !== '') setFilteredPlayers(filterPlayers)
+    setAlliances(createUniqueAlliances(alliances))
+  }, [playerStatus, players])
+
+  const handleFilterChange = (newFilter: any) => {
+    setFilter(newFilter)
   }
 
   return (
-    <Table
-      bordered 
-      size='fullwidth' 
-      className={ (filteredPlayers.length === 0) ? 'is-hidden' : '' }
-    >
-      <thead>
-        <tr>
-          {renderHeaders()}
-        </tr>  
-      </thead>
-      <tbody>
-        {renderPlayersInEpisode()}
-      </tbody>
-    </Table>
+    <>
+      { (showFilter) ? (
+      <PlayerTableFilter
+        filter={filter}
+        tribes={tribes}
+        alliances={alliances}
+        callback={handleFilterChange}
+      />
+      ) : null }
+      <PlayerTableList
+        filter={filter}
+        players={filteredPlayers}
+        tribes={tribes}
+        alliances={alliances}
+        selectedSeason={selectedSeason}
+        playersCallback={playersCallback}
+        hasShotInTheDark={hasShotInTheDark}
+      />
+    </>
   )
 }
 

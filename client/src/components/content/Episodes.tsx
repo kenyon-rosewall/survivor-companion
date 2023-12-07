@@ -81,7 +81,6 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
       <Block
         className={selectedTab === 'Info' ? '' : 'is-hidden'}
       >
-        <h2 className='subtitle'>Info</h2>
         <EpisodeForm
           formType='update'
           seasonId={seasonId}

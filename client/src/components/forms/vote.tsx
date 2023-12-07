@@ -25,7 +25,6 @@ const VoteForm: React.FC<VoteFormProps> = ({ tribalCouncilId, players, handleFor
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target
-    console.log(name, value)
     setVoteData({ ...voteData, [name]: value })
   }
 

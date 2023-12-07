@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Block, Button, Tag } from 'react-bulma-components'
-import Title from '../common/title'
 import Subtitle from '../common/subtitle'
 import AllianceForm from '../forms/alliance'
 import AlliancePlayersForm from '../forms/alliancePlayers'
@@ -68,7 +67,6 @@ const Alliances: React.FC<AlliancesProps> = ({ seasonId, episodeId, triggerRefre
 
   return (
     <>
-      <Title>Alliances</Title>
       <AllianceForm
         seasonId={seasonId}
         callback={handleAddAlliance}

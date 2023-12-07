@@ -51,7 +51,7 @@ const AppSidebar: React.FC = () => {
       case 'events':
         return <EventsSidebar seasonId={selectedSeason} />
       default:
-        return <Menu.List.Item>No Items</Menu.List.Item>
+        return null
     }
   }
 
