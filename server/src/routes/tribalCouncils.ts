@@ -21,7 +21,7 @@ router.delete(
 )
 
 router.get("/:tribalCouncilId/votes", voteController.getVotesFromTribalCouncil)
-router.delete("/:tribalCouncilId/votes/:voterId", voteController.deleteVote)
+router.delete("/:tribalCouncilId/votes/:voteId", voteController.deleteVote)
 router.post("/:tribalCouncilId/votes", voteController.addVote)
 
 export = router

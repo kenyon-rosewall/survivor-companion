@@ -1,8 +1,5 @@
 import { Request, Response, NextFunction } from "express"
 import prismaClient from "../modules/prismaClient"
-import { Prisma } from "@prisma/client"
-import players from "./players"
-import { exit } from "process"
 
 const getPlayersInEpisode = async (
   req: Request,

@@ -6,10 +6,14 @@ type EliminationsProps = {
   episodeId: number,
   seasonId: number,
   players: any[]
-  eliminationCallback: () => void
+  toggleRefreshEpisode: () => void
+  toggleRefreshEpisodeChildren: () => void
 }
 
-const Eliminations: React.FC<EliminationsProps> = ({ episodeId, seasonId, players, eliminationCallback }) => {
+const Eliminations: React.FC<EliminationsProps> = ({ 
+  episodeId, seasonId, players,
+  toggleRefreshEpisode, toggleRefreshEpisodeChildren
+}) => {
   const [eliminations, setEliminations] = useState<any[]>([{}])
   const [refreshEliminations, setRefreshEliminations] = useState<boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -25,10 +29,10 @@ const Eliminations: React.FC<EliminationsProps> = ({ episodeId, seasonId, player
     .catch(err => console.error('Error fetching eliminations:', err))
   }, [episodeId, refreshEliminations])
 
-  const handleAddElimination = () => {
+  const onSubmitComplete = () => {
     setIsModalOpen(false)
     setRefreshEliminations(!refreshEliminations)
-    eliminationCallback()
+    toggleRefreshEpisode()
   }
 
   const handleDeleteElimination = (index: number) => {
@@ -38,7 +42,7 @@ const Eliminations: React.FC<EliminationsProps> = ({ episodeId, seasonId, player
     })
     .then(response => {
       setRefreshEliminations(!refreshEliminations)
-      eliminationCallback()
+      toggleRefreshEpisode()
     })
     .catch(err => console.error('Error deleting elimination:', err))
   }
@@ -121,7 +125,7 @@ const Eliminations: React.FC<EliminationsProps> = ({ episodeId, seasonId, player
               episodeId={episodeId}
               seasonId={seasonId}
               players={players}
-              callback={handleAddElimination}
+              onSubmitComplete={onSubmitComplete}
             />
           </Modal.Card.Body>
         </Modal.Card>

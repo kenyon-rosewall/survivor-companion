@@ -10,15 +10,19 @@ type PlayerTableFilterProps = {
 
 const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({ filter, tribes, alliances, callback }) => {
   const renderTribes = () => {
-    return tribes.map((tribe: any, index: number) => (
-      <option key={index} value={tribe.id}>{tribe.name}</option>
-    ))
+    if (Array.isArray(tribes)) {
+      return tribes.map((tribe: any, index: number) => (
+        <option key={index} value={tribe.id}>{tribe.name}</option>
+      ))
+    }
   }
 
   const renderAlliances = () => {
-    return alliances.map((alliance: any, index: number) => (
-      <option key={index} value={alliance.id}>{alliance.name}</option>
-    ))
+    if (Array.isArray(alliances)) {
+      return alliances.map((alliance: any, index: number) => (
+        <option key={index} value={alliance.id}>{alliance.name}</option>
+      ))
+    }
   }
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

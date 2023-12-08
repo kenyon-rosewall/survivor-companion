@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Block, Tabs } from 'react-bulma-components'
+import { getEpisode, getSeason, getTribes, getPlayersInEpisode } from '../../api'
 import EpisodeForm from '../forms/episode'
 import PlayersInEpisode from '../episode/PlayersInEpisode'
 import TribalCouncils from '../episode/TribalCouncils'
@@ -13,43 +14,35 @@ type EpisodesProps = {
 }
 
 const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
+  const episodeTabs = [
+    'Info', 'Players', 'Tribal Councils', 
+    'Eliminations', 'Advantage Events', 'Alliances'
+  ]
+  const [selectedTab, setSelectedTab] = useState<string>('Info')
   const [episode, setEpisode] = useState<any>({})
+  const [season, setSeason] = useState<any>({})
   const [tribes, setTribes] = useState<any[]>([{}])
   const [players, setPlayers] = useState<any[]>([{}])
   const [refreshPlayersInEpisode, setRefreshPlayersInEpisode] = useState<number>(0)
   const [refreshAlliances, setRefreshAlliances] = useState<number>(0)
-  const tabs = [
-    'Info', 'Players', 'Tribal Councils', 'Eliminations', 'Advantage Events', 'Alliances'
-  ]
-  const [selectedTab, setSelectedTab] = useState<string>('Info')
+  const [refreshEpisode, setRefreshEpisode] = useState<boolean>(false)
+  const [refreshEpisodeChildren, setRefreshEpisodeChildren] = useState<boolean>(false)
 
   useEffect(() => {
     if (episodeId === 0) return
 
-    fetch(`http://localhost:5000/episodes/${episodeId}`)
-    .then(response => response.json())
-    .then(data => {
-      setEpisode(data.data)
-    })
-    .catch(err => console.error('Error fetching episode:', err))
+    getEpisode(episodeId, setEpisode)
+    getSeason(seasonId, setSeason)
+    getTribes(seasonId, setTribes)
+    getPlayersInEpisode(episodeId, setPlayers)
+  }, [episodeId, seasonId, refreshEpisode])
 
-    fetch(`http://localhost:5000/seasons/${seasonId}/tribes`)
-    .then(response => response.json())
-    .then(data => {
-      setTribes(data.data)
-    })
-    .catch(err => console.error('Error fetching tribes:', err))
+  const toggleRefreshEpisode = () => {
+    setRefreshEpisode(!refreshEpisode)
+  }
 
-    fetch(`http://localhost:5000/episodes/${episodeId}/players`)
-    .then(response => response.json())
-    .then(data => {
-      setPlayers(data.data)
-    })
-    .catch(err => console.error('Error fetching playing players:', err))
-  }, [episodeId, seasonId])
-
-  const handleFormSubmit = (episode: any) => {
-    // TODO: update episode in state
+  const toggleRefreshEpisodeChildren = () => {
+    setRefreshEpisodeChildren(!refreshEpisodeChildren)
   }
 
   const incrementRefreshPlayersInEpisode = () => {
@@ -57,8 +50,12 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
     setRefreshAlliances(refreshAlliances + 1)
   }
 
+  const handleFormSubmit = (episode: any) => {
+    // TODO: handle form submit
+  }
+
   const renderTabs = () => {
-    return tabs.map((tab, index) => (
+    return episodeTabs.map((tab, index) => (
       <Tabs.Tab
         key={index}
         active={tab === selectedTab}
@@ -92,11 +89,13 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         className={selectedTab === 'Players' ? '' : 'is-hidden'}
       >
         <PlayersInEpisode
-          episodeId={episodeId}
+          playersInEpisode={players}
+          season={season}
           episode={episode}
           tribes={tribes}
-          refreshPlayersInEpisode={refreshPlayersInEpisode}
-          playersCallback={incrementRefreshPlayersInEpisode}
+          refreshPlayersInEpisode={refreshEpisodeChildren}
+          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
+          toggleRefreshEpisode={toggleRefreshEpisode}
         />
       </Block>
       <Block
@@ -114,7 +113,8 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
           episodeId={episodeId}
           seasonId={seasonId}
           players={players}
-          eliminationCallback={incrementRefreshPlayersInEpisode}
+          toggleRefreshEpisode={toggleRefreshEpisode}
+          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
         />
       </Block>
       <Block

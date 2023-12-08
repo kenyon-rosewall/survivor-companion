@@ -5,11 +5,12 @@ type EliminationFormProps = {
   episodeId: number
   seasonId: number
   players: any[]
-  callback: () => void
+  onSubmitComplete: () => void
 }
 
-const EliminationForm: React.FC<EliminationFormProps> = ({ episodeId, seasonId, players, callback }) => {
-  const [eliminationCount, setEliminationCount] = useState<number>(0)
+const EliminationForm: React.FC<EliminationFormProps> = ({ 
+  episodeId, seasonId, players, onSubmitComplete 
+}) => {
   const categories = [
     { name: 'Voted Out', value: 'votedOut' }, 
     { name: 'Rock Draw', value: 'rockDraw' }, 
@@ -24,7 +25,7 @@ const EliminationForm: React.FC<EliminationFormProps> = ({ episodeId, seasonId, 
   ]
   const [formData, setFormData] = useState<any>({
     playerEpisodeIInd: 0,
-    order: eliminationCount + 1,
+    order: 1,
     category: 'votedOut',
     notes: ''
   })
@@ -33,7 +34,7 @@ const EliminationForm: React.FC<EliminationFormProps> = ({ episodeId, seasonId, 
     fetch(`http://localhost:5000/seasons/${seasonId}/eliminations/count`)
     .then(response => response.json())
     .then(data => {
-      setEliminationCount(data)
+      setFormData({ ...formData, order: data + 1 })
     })
     .catch(err => console.error('Error fetching eliminations:', err))
   }, [])
@@ -42,23 +43,33 @@ const EliminationForm: React.FC<EliminationFormProps> = ({ episodeId, seasonId, 
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleFormSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     fetch(`http://localhost:5000/episodes/${episodeId}/eliminations`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     })
     .then(response => {
-      callback()
+      onSubmitComplete()
     })
     .catch(err => console.error('Error adding elimination:', err))
   }
 
   return (
-    <>
+    <form onSubmit={handleFormSubmit}>
+      <Form.Field>
+        <Form.Label>Order</Form.Label>
+        <Form.Control>
+          <Form.Input
+            name='order'
+            value={formData.order}
+            onChange={handleInputChange}
+          />
+        </Form.Control>
+      </Form.Field>
+
       <Form.Field>
         <Form.Label>Player</Form.Label>
         <Form.Control>
@@ -102,11 +113,11 @@ const EliminationForm: React.FC<EliminationFormProps> = ({ episodeId, seasonId, 
       </Form.Field>
 
       <Button
-        onClick={handleFormSubmit}
+        color={'primary'}
       >
         Add Elimination
       </Button>
-    </>
+    </form>
   )
 }
 

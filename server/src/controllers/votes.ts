@@ -34,14 +34,10 @@ const getVotesFromTribalCouncil = async (
 }
 
 const deleteVote = async (req: Request, res: Response, next: NextFunction) => {
-  const tribalCouncilId: number = Number(req.params.tribalCouncilId)
-  const voterId: number = Number(req.params.voterId)
+  const voteId: number = Number(req.params.voteId)
   const vote = await prismaClient.vote.delete({
     where: {
-      tribalCouncilId_voterId: {
-        tribalCouncilId: tribalCouncilId,
-        voterId: voterId,
-      },
+      id: voteId,
     },
   })
 
@@ -50,7 +46,7 @@ const deleteVote = async (req: Request, res: Response, next: NextFunction) => {
   }
 
   return res.status(404).json({
-    data: `Vote by ${voterId} at ${tribalCouncilId} not found.`,
+    data: `Vote ${voteId} not found.`,
   })
 }
 

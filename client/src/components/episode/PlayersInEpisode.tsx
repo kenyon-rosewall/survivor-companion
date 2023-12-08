@@ -1,47 +1,30 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState } from 'react'
 import { Block, Button } from 'react-bulma-components'
 import PlayerTable from '../common/playerTable'
 
 type PlayersInEpisodeProps = {
-  episodeId: number
+  playersInEpisode: any[]
+  season: any
   episode: any
   tribes: any[]
-  refreshPlayersInEpisode: number
-  playersCallback: () => void
+  refreshPlayersInEpisode: boolean
+  toggleRefreshEpisodeChildren: () => void
+  toggleRefreshEpisode: () => void
 }
 
-const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode, tribes, refreshPlayersInEpisode, playersCallback }) => {
-  const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
-  const [playersInEpisode, setPlayersInEpisode] = useState<any[]>([])
-  const [hasShotInTheDark, setHasShotInTheDark] = useState<any>(false)
+const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ 
+  playersInEpisode, season, episode, tribes, refreshPlayersInEpisode, 
+  toggleRefreshEpisodeChildren, toggleRefreshEpisode 
+}) => {
+  const renderShotInTheDark = season.order > 40
   const [disableButton, setDisableButton] = useState<boolean>(false)
-  // const [globalEditing, setGlobalEditing] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (episodeId === 0) return
-
-    fetch(`http://localhost:5000/episodes/${episodeId}/players`)
-    .then(response => response.json())
-    .then(data => {
-      setPlayersInEpisode(data.data)
-    })
-    .catch(err => console.error('Error fetching players:', err))
-
-    fetch(`http://localhost:5000/seasons/${selectedSeason}`)
-    .then(response => response.json())
-    .then(data => {
-      setHasShotInTheDark(data.data.order > 40)
-    })
-    .catch(err => console.error('Error fetching season:', err))
-  }, [selectedSeason, episodeId, refreshPlayersInEpisode])
 
   const initPlayersInEpisode = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (episodeId === 0) return
+    if (episode.id === 0) return
     e.preventDefault()
     setDisableButton(true)
 
-    let url = `http://localhost:5000/episodes/${episodeId}/players`
+    let url = `http://localhost:5000/episodes/${episode.id}/players`
     fetch(url, {
       method: 'POST',
       headers: {
@@ -51,48 +34,53 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
     })
     .then(response => response.json())
     .then(data => {
-      setPlayersInEpisode(data.data)
       setDisableButton(false)
+      toggleRefreshEpisode()
     })
     .catch(err => console.error('Error initializing players:', err))
   }
 
+  console.log('refresh playersin episode')
   return (
     <>
       <Block>
         <PlayerTable
-          players={playersInEpisode}
+          playersInEpisode={playersInEpisode}
           tribes={tribes}
-          selectedSeason={selectedSeason}
-          playersCallback={playersCallback}
-          hasShotInTheDark={hasShotInTheDark}
+          seasonId={season.id}
+          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
+          toggleRefreshEpisode={toggleRefreshEpisode}
+          renderShotInTheDark={renderShotInTheDark}
           playerStatus='playing'
           showFilter={true}
         />
         <PlayerTable
-          players={playersInEpisode}
+          playersInEpisode={playersInEpisode}
           tribes={tribes}
-          selectedSeason={selectedSeason}
-          playersCallback={playersCallback}
-          hasShotInTheDark={hasShotInTheDark}
+          seasonId={season.id}
+          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
+          toggleRefreshEpisode={toggleRefreshEpisode}
+          renderShotInTheDark={renderShotInTheDark}
           playerStatus='redemption'
           showFilter={false}
         />
         <PlayerTable
-          players={playersInEpisode}
+          playersInEpisode={playersInEpisode}
           tribes={tribes}
-          selectedSeason={selectedSeason}
-          playersCallback={playersCallback}
-          hasShotInTheDark={hasShotInTheDark}
+          seasonId={season.id}
+          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
+          toggleRefreshEpisode={toggleRefreshEpisode}
+          renderShotInTheDark={renderShotInTheDark}
           playerStatus='edge'
           showFilter={false}
         />
         <PlayerTable
-          players={playersInEpisode}
+          playersInEpisode={playersInEpisode}
           tribes={tribes}
-          selectedSeason={selectedSeason}
-          playersCallback={playersCallback}
-          hasShotInTheDark={hasShotInTheDark}
+          seasonId={season.id}
+          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
+          toggleRefreshEpisode={toggleRefreshEpisode}
+          renderShotInTheDark={renderShotInTheDark}
           playerStatus='eliminated'
           showFilter={false}
         />
@@ -106,7 +94,6 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ episodeId, episode,
       >
         Reset Players
       </Button>
-      <div className='is-clearfix'></div>
     </>
   )
 }

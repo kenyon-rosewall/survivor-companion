@@ -97,8 +97,8 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({ tribalCouncilId, 
   }
 
   const removeVote = (index: number) => {
-    const voterId = tribalCouncil.votes[index].voterId
-    fetch(`http://localhost:5000/tribalCouncils/${tribalCouncil.id}/votes/${voterId}`, {
+    const voteId = tribalCouncil.votes[index].id
+    fetch(`http://localhost:5000/tribalCouncils/${tribalCouncil.id}/votes/${voteId}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({}) })

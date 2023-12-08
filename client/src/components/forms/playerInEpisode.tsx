@@ -5,12 +5,12 @@ import { IconName } from '@fortawesome/fontawesome-svg-core'
 import TribeSelect from '../common/tribeSelect'
 
 type PlayerInEpisodeFormProps = {
-  pie: any
+  playerInEpisode: any
   tribes: any[]
   seasonId: number
-  hasShotInTheDark: boolean
-  // globalEditing: boolean
-  callback: () => void
+  renderShotInTheDark: boolean
+  toggleRefreshEpisodeChildren: () => void
+  toggleRefreshEpisode: () => void
 }
 
 const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerInEpisodeFormProps) => {
@@ -30,11 +30,10 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
     notes: ""
   })
   const [savingData, setSavingData] = useState<boolean>(false)
-  // const prevEditing = useRef<boolean>(editing)
 
   const saveFormData = useCallback(() => {
     setSavingData(true)
-    let url = `http://localhost:5000/playerInEpisodes/${props.pie.id}`
+    let url = `http://localhost:5000/playerInEpisodes/${props.playerInEpisode.id}`
     fetch(url, {
       method: 'PUT',
       headers: {
@@ -52,28 +51,31 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
       setSavingData(false)
     })
     .catch(err => console.error('Error:', err))
-  }, [formData, props.pie.id])
+  }, [formData, props.playerInEpisode.id])
 
   useEffect(() => {
     setFormData({
-      playerName: props.pie.player?.name,
-      status: props.pie.status,
+      playerName: props.playerInEpisode.player?.name,
+      status: props.playerInEpisode.status,
       tribe: {
-        id: props.pie.tribeId,
-        name: props.pie.tribe?.name,
-        color: props.pie.tribe?.color
+        id: props.playerInEpisode.tribeId,
+        name: props.playerInEpisode.tribe?.name,
+        color: props.playerInEpisode.tribe?.color
       },
-      advantages: props.pie.advantages,
-      alliances: props.pie.alliances,
-      shotInTheDark: props.pie.shotInTheDark,
-      notes: props.pie.notes
+      advantages: props.playerInEpisode.advantages,
+      alliances: props.playerInEpisode.alliances,
+      shotInTheDark: props.playerInEpisode.shotInTheDark,
+      notes: props.playerInEpisode.notes
     })
-  }, [props.pie])
+  }, [props.playerInEpisode])
 
   const renderPlayerName = () => {
     return (
       <td 
-        style={{ textDecorationLine: formData.status === 'eliminated' ? 'line-through' : 'none' }}>
+        style={{ 
+          textDecorationLine: formData.status === 'eliminated' ? 'line-through' : 'none' 
+        }}
+      >
         {formData.playerName}
       </td>
     )
@@ -88,7 +90,12 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
 
   const renderStatusOptions = () => {
     return playerStatuses.map((status, index) => (
-      <option key={index} value={status}>{status}</option>
+      <option
+        key={index} 
+        value={status}
+      >
+        {status}
+      </option>
     ))
   }
 
@@ -96,7 +103,10 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
     return (
       <td>
         {editing ? (
-          <Form.Select value={formData.status} onChange={handleStatus}>
+          <Form.Select
+            value={formData.status}
+            onChange={handleStatus}
+          >
             {renderStatusOptions()}
           </Form.Select>
         ) : (
@@ -128,7 +138,12 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
             handleTribeChange={handleTribe}
           />
         ) : (
-          <Tag style={{ backgroundColor: formData.tribe.color, color: 'black' }}>
+          <Tag
+            style={{ 
+              backgroundColor: formData.tribe.color,
+              color: 'black' 
+            }}
+          >
             {formData.tribe.name}
           </Tag>
         )}
@@ -140,8 +155,12 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
     return (
       <td>
         <Tag.Group>
-          {props.pie.advantages.map((advantage: any) => (
-            <Tag key={advantage.id}>{advantage.name}</Tag>
+          {props.playerInEpisode.advantages?.map((advantage: any) => (
+            <Tag
+              key={advantage.id}
+            >
+              {advantage.name}
+            </Tag>
           ))}
         </Tag.Group>
       </td>
@@ -149,14 +168,15 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
   }
 
   const removeAlliance = (index: number) => {
-    const allianceId = props.pie.alliances[index].id
-    fetch(`http://localhost:5000/alliances/${allianceId}/players/${props.pie.id}`, {
+    const allianceId = props.playerInEpisode.alliances[index].id
+    fetch(`http://localhost:5000/alliances/${allianceId}/players/${props.playerInEpisode.id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({})
     })
     .then(response => {
-      props.callback()
+      props.toggleRefreshEpisodeChildren()
+      props.toggleRefreshEpisode()
     })
     .catch(err => console.error('Error removing player from alliance:', err))
   }
@@ -165,10 +185,19 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
     return (
       <td>
         <Tag.Group>
-          {props.pie.alliances.map((alliance: any, index: number) => (
-            <Tag key={alliance.id} style={{ backgroundColor: alliance.color }}>
+          {props.playerInEpisode.alliances?.map((alliance: any, index: number) => (
+            <Tag
+              key={alliance.id}
+              style={{ 
+                backgroundColor: alliance.color 
+              }}
+            >
               {alliance.name}
-              <Button remove size={'small'} onClick={() => removeAlliance(index)} />
+              <Button
+                remove
+                size={'small'}
+                onClick={() => removeAlliance(index)} 
+              />
             </Tag>
           ))}
         </Tag.Group>  
@@ -184,17 +213,24 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
   }
   
   const renderShotInTheDark = () => {
-    if (!props.hasShotInTheDark) return null
+    if (!props.renderShotInTheDark) return null
     let i: IconName = "square"
-    if (props.pie.shotInTheDark) i = "square-check"
+    if (props.playerInEpisode.shotInTheDark) i = "square-check"
 
     return (
-      <td align="center">
-      {editing ? (
-        <Form.Checkbox checked={formData.shotInTheDark} onChange={handleShotInTheDark} />
-      ) : (
-        <FontAwesomeIcon icon={["fas", i]} />
-      )}
+      <td
+        align="center"
+      >
+        {editing ? (
+          <Form.Checkbox
+            checked={formData.shotInTheDark}
+            onChange={handleShotInTheDark}
+          />
+        ) : (
+          <FontAwesomeIcon
+            icon={["fas", i]}
+          />
+        )}
       </td>
     )
   }
@@ -208,9 +244,16 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
 
   const renderNotes = () => {
     return (
-      <td className="is-size-7">
+      <td
+        className="is-size-7"
+      >
         {editing ? (
-          <Form.Textarea size={"small"} onChange={handleNotes}>{formData.notes}</Form.Textarea>
+          <Form.Textarea
+            size={"small"}
+            onChange={handleNotes}
+          >
+            {formData.notes}
+          </Form.Textarea>
         ) : (
           formData.notes
         )}
@@ -228,16 +271,28 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = (props: PlayerIn
     let i: IconName = "edit"
     if (editing) i = "floppy-disk"
     return (
-      <td align="center" width={10}>
-        <Button disabled={savingData} color='primary' size={'small'} onClick={handleEdit}>
-          <FontAwesomeIcon icon={["fas", i]} />
+      <td
+        align="center" 
+        width={10}
+      >
+        <Button 
+          disabled={savingData} 
+          color='primary' 
+          size={'small'} 
+          onClick={handleEdit}
+        >
+          <FontAwesomeIcon
+            icon={["fas", i]}
+          />
         </Button>
       </td>
     )
   }
   
   return (
-    <tr key={props.pie.id}>
+    <tr
+      key={props.playerInEpisode.id}
+    >
       {renderPlayerName()}
       {renderStatus()}
       {renderTribe()}

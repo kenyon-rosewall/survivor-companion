@@ -7,7 +7,7 @@ type EpisodeFormProps = {
   seasonId: number,
   episodeId?: number,
   maxOrder?: number,
-  onSubmitComplete: (season: any) => void
+  onSubmitComplete: (episode: any) => void
 }
 
 const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
@@ -67,8 +67,8 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
     })
     .then(response => response.json())
     .then(data => {
-      props.onSubmitComplete(data.data)
       setDisableButton(false)
+      props.onSubmitComplete(data.data)
     })
     .catch(err => console.error('Error adding episode:', err))
   }
