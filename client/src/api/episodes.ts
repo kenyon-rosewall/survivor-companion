@@ -22,3 +22,18 @@ export async function createPlayersInEpisode(
   const body = { premiere: episodePremiere }
   post(`/episodes/${episodeId}/players`, body, callback)
 }
+
+export async function getTribalCouncilsInEpisode(
+  episodeId: number,
+  callback: (d: any) => void
+) {
+  get(`/episodes/${episodeId}/tribalCouncils`, callback)
+}
+
+export async function createTribalCouncil(
+  episodeId: number,
+  callback: (d: any) => void
+) {
+  const body = { episodeId: episodeId }
+  post(`/episodes/${episodeId}/tribalCouncils`, body, callback)
+}

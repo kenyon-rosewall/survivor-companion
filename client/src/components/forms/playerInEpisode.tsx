@@ -33,6 +33,8 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
   })
 
   useEffect(() => {
+    if (!playerInEpisode) return
+    
     setFormData({
       playerName: playerInEpisode.player?.name,
       status: playerInEpisode.status,

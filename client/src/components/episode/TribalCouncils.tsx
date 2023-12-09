@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Level } from 'react-bulma-components'
+import { getTribalCouncilsInEpisode, createTribalCouncil } from '../../api'
 import TribalCouncilForm from '../forms/tribalCouncil'
 
 type TribalCouncilsProps = {
@@ -7,43 +8,36 @@ type TribalCouncilsProps = {
   tribes: any[]
 }
 
-const TribalCouncils: React.FC<TribalCouncilsProps> = ({ episodeId, tribes }) => {
-  const [tribalCouncils, setTribalCouncils] = useState([])
-  const [refreshTribalCouncils, setRefreshTribalCouncils] = useState(false)
-  const [disableAddButton, setDisableAddButton] = useState(false)
+const TribalCouncils: React.FC<TribalCouncilsProps> = ({
+  episodeId, tribes 
+}) => {
+  const [tribalCouncils, setTribalCouncils] = useState<any[]>([])
+  const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
   useEffect(() => {
     if (episodeId === 0) return
     
-    fetch(`http://localhost:5000/episodes/${episodeId}/tribalCouncils`)
-    .then(response => response.json())
-    .then(data => {
-      setTribalCouncils(data.data)
-    })
-    .catch(err => console.log('Error fetching tribal councils:', err))
-  }, [episodeId, refreshTribalCouncils])
+    getTribalCouncilsInEpisode(episodeId, setTribalCouncils)
+  }, [episodeId, getTribalCouncilsInEpisode])
 
   const addTribalCouncil = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    setDisableAddButton(true)
+
+    if (disableAjax === true) return
+    setDisableAjax(true)
+
+    const addTribalCouncilCallback = () => {
+      setDisableAjax(false)
+      getTribalCouncilsInEpisode(episodeId, setTribalCouncils)
+    }
     
-    fetch(`http://localhost:5000/episodes/${episodeId}/tribalCouncils`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 'episodeId': episodeId })
-    })
-    .then(response => response.json())
-    .then(data => {
-      setDisableAddButton(false)
-      setRefreshTribalCouncils(!refreshTribalCouncils)
-    })
-    .catch(err => console.log('Error adding tribal council:', err))
+    createTribalCouncil(episodeId, addTribalCouncilCallback)
   }
 
   const renderTribalCouncils = () => {
-    return tribalCouncils.map((tribalCouncil: any, index: number) => (
+    return tribalCouncils.map((tribalCouncil: any) => (
       <TribalCouncilForm
-        key={index}
+        key={tribalCouncil.id}
         tribalCouncilId={tribalCouncil.id}
         tribes={tribes}
       />
@@ -53,20 +47,19 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({ episodeId, tribes }) =>
   return (
     <>
       <Level>
-        <Level.Side align="left">
-          <Level.Item>
-            
-          </Level.Item>
-        </Level.Side>
+        <Level.Side align="left" />
         <Level.Side align="right">
           <Level.Item>
             <Button
               onClick={addTribalCouncil}
-              disabled={disableAddButton}
-            >Add Tribal Council</Button>
+              disabled={disableAjax}
+            >
+              Add Tribal Council
+            </Button>
           </Level.Item>
         </Level.Side>
       </Level>
+
       {renderTribalCouncils()}
     </>
   )
