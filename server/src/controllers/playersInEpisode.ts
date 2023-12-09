@@ -81,26 +81,6 @@ const updatePlayerInEpisode = async (
   })
 }
 
-// const deletePlayerOnSeason = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   const seasonId: number = +req.params.seasonId
-//   const playerId: number = +req.params.playerId
-//   const deletedPlayerOnSeason = await prismaClient.playerOnSeason.delete({
-//     where: { playerId_seasonId: { playerId: playerId, seasonId: seasonId } },
-//   })
-
-//   if (deletedPlayerOnSeason) {
-//     return res.status(204).json({})
-//   }
-
-//   return res.status(404).json({
-//     data: `Player ${playerId} not found on season ${seasonId}.`,
-//   })
-// }
-
 const deletePlayersInEpisode = async (episodeId: number) => {
   const playersInEpisode = await prismaClient.playerInEpisode.findMany({
     where: { episodeId: episodeId },

@@ -7,12 +7,10 @@ type EliminationsProps = {
   seasonId: number,
   players: any[]
   toggleRefreshEpisode: () => void
-  toggleRefreshEpisodeChildren: () => void
 }
 
 const Eliminations: React.FC<EliminationsProps> = ({ 
-  episodeId, seasonId, players,
-  toggleRefreshEpisode, toggleRefreshEpisodeChildren
+  episodeId, seasonId, players, toggleRefreshEpisode
 }) => {
   const [eliminations, setEliminations] = useState<any[]>([{}])
   const [refreshEliminations, setRefreshEliminations] = useState<boolean>(false)

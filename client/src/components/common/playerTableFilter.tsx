@@ -8,24 +8,34 @@ type PlayerTableFilterProps = {
   callback: (o: any) => void
 }
 
-const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({ filter, tribes, alliances, callback }) => {
+const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({ 
+  filter, tribes, alliances, callback 
+}) => {
   const renderTribes = () => {
-    if (Array.isArray(tribes)) {
-      return tribes.map((tribe: any, index: number) => (
-        <option key={index} value={tribe.id}>{tribe.name}</option>
-      ))
-    }
+    if (!tribes) return
+    return tribes.map((tribe: any, index: number) => (
+      <option
+        key={index} 
+        value={tribe.id}
+      >
+        {tribe.name}
+      </option>
+    ))
   }
 
   const renderAlliances = () => {
-    if (Array.isArray(alliances)) {
-      return alliances.map((alliance: any, index: number) => (
-        <option key={index} value={alliance.id}>{alliance.name}</option>
-      ))
-    }
+    if (!alliances) return
+    return alliances.map((alliance: any, index: number) => (
+      <option 
+        key={index} 
+        value={alliance.id}
+      >
+        {alliance.name}
+      </option>
+    ))
   }
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const name = e.target.name
     let value = null
     switch (name) {
@@ -54,7 +64,7 @@ const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({ filter, tribes, a
                   size={'small'}
                   name='tribe'
                   value={filter.tribe}
-                  onChange={handleFilterChange}
+                  onChange={handleSelectChange}
                 >
                   <option value=''></option>
                   {renderTribes()}
@@ -76,7 +86,7 @@ const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({ filter, tribes, a
                 size={'small'}
                 name='hasAdvantage'
                 value={filter.hasAdvantage}
-                onChange={handleFilterChange}
+                onChange={handleSelectChange}
               >
                 <option value=''></option>
                 <option value='yes'>Yes</option>
@@ -98,7 +108,7 @@ const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({ filter, tribes, a
                 size={'small'}
                 name='alliance'
                 value={filter.alliance}
-                onChange={handleFilterChange}
+                onChange={handleSelectChange}
               >
                 <option value=''></option>
                 {renderAlliances()}

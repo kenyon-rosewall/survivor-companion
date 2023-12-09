@@ -117,7 +117,7 @@ const updateAlliance = async (
     })
 
     return res.status(200).json({
-      data: updateAlliance,
+      data: updatedAlliance,
     })
   }
 
@@ -156,7 +156,9 @@ const deleteAlliance = async (
     })
 
     if (deletedAlliance) {
-      return res.status(204).json({})
+      return res.status(204).json({
+        data: deletedAlliance,
+      })
     }
   }
 
@@ -228,7 +230,9 @@ const deletePlayer = async (
   })
 
   if (alliance) {
-    return res.status(204).json({})
+    return res.status(204).json({
+      data: alliance,
+    })
   }
 
   return res.status(404).json({

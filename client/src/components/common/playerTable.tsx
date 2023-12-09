@@ -3,19 +3,18 @@ import PlayerTableFilter from './playerTableFilter'
 import PlayerTableList from './playerTableList'
 
 type PlayerTableProps = {
+  playerStatus?: string
+  seasonId: number
   playersInEpisode: any[]
   tribes: any[]
-  seasonId: number
+  showFilter?: boolean
   renderShotInTheDark: boolean
-  toggleRefreshEpisodeChildren: () => void
   toggleRefreshEpisode: () => void
-  showFilter: boolean
-  playerStatus?: string
 }
 
 const PlayerTable: React.FC<PlayerTableProps> = ({ 
-  playersInEpisode, tribes, seasonId, toggleRefreshEpisodeChildren, 
-  toggleRefreshEpisode, renderShotInTheDark, playerStatus, showFilter 
+  playersInEpisode, tribes, seasonId, toggleRefreshEpisode, 
+  renderShotInTheDark, playerStatus, showFilter = false
 }) => {
   const [filteredPlayers, setFilteredPlayers] = useState<any[]>(playersInEpisode)
   const [alliances, setAlliances] = useState<any[]>([])
@@ -27,36 +26,32 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
 
   useEffect(() => {
     const filterPlayersByStatus = (players: any[]) => {
-      if (Array.isArray(players)) {
-        return players.filter((player: any) => player.status === playerStatus)
-      }
-
-      return []
+      if (!players) return []
+      
+      return players.filter((player: any) => player.status === playerStatus)
     }
 
     const extractAlliances = (players: any[]) => {
       if (!players) return []
       
-      let unique: any[] = []
-
       const alliances = players.map((player: any) => player.alliances)
-        
+        .reduce((prev: any, curr: any) => prev.concat(curr), [])
+        .filter((alliance: never, index: number, arr: []) => arr.indexOf(alliance) === index)
+      
+      let unique: any[] = []
       for (const alliance of alliances) {
-        if (alliance) {
-          if (unique.map((a: any) => a.id).includes(alliance.id)) continue
-          unique.push(alliance)
-        }
+        if (!alliance) continue
+        if (unique.map((a: any) => a.id).includes(alliance.id)) continue
+          
+        unique.push(alliance)
       }
   
       return unique
     }
     
-    if (Array.isArray(playersInEpisode)) {
-      if (playerStatus && playerStatus !== '') {
-        setFilteredPlayers(filterPlayersByStatus(playersInEpisode))    
-      }
-
-      setAlliances(extractAlliances(playersInEpisode))
+    setAlliances(extractAlliances(playersInEpisode))
+    if (playerStatus?.toString() !== '') {
+      setFilteredPlayers(filterPlayersByStatus(playersInEpisode))    
     }
   }, [playerStatus, playersInEpisode])
 
@@ -66,22 +61,21 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
 
   return (
     <>
-      { (showFilter) ? (
+      { (showFilter) && (
       <PlayerTableFilter
         filter={filter}
         tribes={tribes}
         alliances={alliances}
         callback={handleFilterChange}
       />
-      ) : null }
+      )}
       <PlayerTableList
         filter={filter}
+        seasonId={seasonId}
         playersInEpisode={filteredPlayers}
         tribes={tribes}
         alliances={alliances}
-        seasonId={seasonId}
         renderShotInTheDark={renderShotInTheDark}
-        toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
         toggleRefreshEpisode={toggleRefreshEpisode}
       />
     </>

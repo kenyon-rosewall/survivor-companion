@@ -104,7 +104,9 @@ const deleteEpisode = async (
   })
 
   if (deletedEpisode) {
-    return res.status(204).json({})
+    return res.status(204).json({
+      data: deletedEpisode,
+    })
   }
 
   return res.status(404).json({

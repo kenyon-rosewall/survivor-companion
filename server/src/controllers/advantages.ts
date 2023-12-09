@@ -56,7 +56,7 @@ const updateAdvantage = async (
     })
 
     return res.status(200).json({
-      data: updateAdvantage,
+      data: updatedAdvantage,
     })
   }
 
@@ -76,7 +76,9 @@ const deleteAdvantage = async (
   })
 
   if (deletedAdvantage) {
-    return res.status(204).json({})
+    return res.status(204).json({
+      data: deletedAdvantage,
+    })
   }
 
   return res.status(404).json({

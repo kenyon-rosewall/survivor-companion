@@ -110,7 +110,9 @@ const deletePlayerOnSeason = async (
   })
 
   if (deletedPlayerOnSeason) {
-    return res.status(204).json({})
+    return res.status(204).json({
+      data: deletedPlayerOnSeason,
+    })
   }
 
   return res.status(404).json({

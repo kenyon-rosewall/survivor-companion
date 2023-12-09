@@ -7,11 +7,10 @@ import AlliancePlayersForm from '../forms/alliancePlayers'
 type AlliancesProps = {
   seasonId: number
   episodeId: number
-  triggerRefresh: number
-  allianceCallback: () => void
+  toggleRefreshEpisode: () => void
 }
 
-const Alliances: React.FC<AlliancesProps> = ({ seasonId, episodeId, triggerRefresh, allianceCallback }) => {
+const Alliances: React.FC<AlliancesProps> = ({ seasonId, episodeId, toggleRefreshEpisode }) => {
   const [alliances, setAlliances] = useState<any[]>([])
   const [refreshAlliances, setRefreshAlliances] = useState<boolean>(true)
 
@@ -22,7 +21,7 @@ const Alliances: React.FC<AlliancesProps> = ({ seasonId, episodeId, triggerRefre
       setAlliances(data.data)
     })
     .catch(err => console.error('Error fetching alliances:', err))
-  }, [seasonId, episodeId, refreshAlliances, triggerRefresh])
+  }, [seasonId, episodeId, refreshAlliances])
 
   const removeAlliance = (allianceId: number) => {
     fetch(`http://localhost:5000/alliances/${allianceId}`, {
@@ -32,7 +31,7 @@ const Alliances: React.FC<AlliancesProps> = ({ seasonId, episodeId, triggerRefre
     })
     .then(response => {
       setRefreshAlliances(!refreshAlliances)
-      allianceCallback()
+      toggleRefreshEpisode()
     })
     .catch(err => console.error('Error removing alliance:', err))
   }
@@ -62,7 +61,7 @@ const Alliances: React.FC<AlliancesProps> = ({ seasonId, episodeId, triggerRefre
 
   const handleAddAlliance = () => {
     setRefreshAlliances(!refreshAlliances)
-    allianceCallback()
+    toggleRefreshEpisode()
   }
 
   return (

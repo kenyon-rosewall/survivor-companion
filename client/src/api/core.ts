@@ -43,3 +43,19 @@ export async function post(url: string, body: any, callback: (d: any) => void) {
     callback
   )
 }
+
+export async function put(url: string, body: any, callback: (d: any) => void) {
+  doFetch(
+    url,
+    {
+      method: "PUT",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    },
+    callback
+  )
+}
+
+export async function del(url: string, callback: (d: any) => void) {
+  doFetch(url, { method: "DELETE" }, callback)
+}

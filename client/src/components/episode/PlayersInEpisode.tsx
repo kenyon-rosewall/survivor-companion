@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Block, Button } from 'react-bulma-components'
+import { createPlayersInEpisode } from '../../api'
 import PlayerTable from '../common/playerTable'
 
 type PlayersInEpisodeProps = {
@@ -7,82 +8,65 @@ type PlayersInEpisodeProps = {
   season: any
   episode: any
   tribes: any[]
-  refreshPlayersInEpisode: boolean
-  toggleRefreshEpisodeChildren: () => void
   toggleRefreshEpisode: () => void
 }
 
 const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ 
-  playersInEpisode, season, episode, tribes, refreshPlayersInEpisode, 
-  toggleRefreshEpisodeChildren, toggleRefreshEpisode 
+  playersInEpisode, season, episode, tribes, toggleRefreshEpisode 
 }) => {
+  // TODO: This should be a property of the season
   const renderShotInTheDark = season.order > 40
-  const [disableButton, setDisableButton] = useState<boolean>(false)
+  const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
   const initPlayersInEpisode = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (episode.id === 0) return
     e.preventDefault()
-    setDisableButton(true)
+    
+    if (disableAjax === true) return
+    setDisableAjax(true)
 
-    let url = `http://localhost:5000/episodes/${episode.id}/players`
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ premiere: episode.premiere  })
-    })
-    .then(response => response.json())
-    .then(data => {
-      setDisableButton(false)
+    const initPlayersInEpisodeCallback = (d: any) => {
+      setDisableAjax(false)
       toggleRefreshEpisode()
-    })
-    .catch(err => console.error('Error initializing players:', err))
+    }
+
+    createPlayersInEpisode(episode.id, episode.premiere, initPlayersInEpisodeCallback)
   }
 
-  console.log('refresh playersin episode')
   return (
     <>
       <Block>
         <PlayerTable
-          playersInEpisode={playersInEpisode}
-          tribes={tribes}
-          seasonId={season.id}
-          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
-          toggleRefreshEpisode={toggleRefreshEpisode}
-          renderShotInTheDark={renderShotInTheDark}
           playerStatus='playing'
-          showFilter={true}
-        />
-        <PlayerTable
+          seasonId={season.id}
           playersInEpisode={playersInEpisode}
           tribes={tribes}
-          seasonId={season.id}
-          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
-          toggleRefreshEpisode={toggleRefreshEpisode}
+          showFilter
           renderShotInTheDark={renderShotInTheDark}
+          toggleRefreshEpisode={toggleRefreshEpisode}
+        />
+        <PlayerTable
           playerStatus='redemption'
-          showFilter={false}
-        />
-        <PlayerTable
+          seasonId={season.id}
           playersInEpisode={playersInEpisode}
           tribes={tribes}
-          seasonId={season.id}
-          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
-          toggleRefreshEpisode={toggleRefreshEpisode}
           renderShotInTheDark={renderShotInTheDark}
+          toggleRefreshEpisode={toggleRefreshEpisode}
+        />
+        <PlayerTable
           playerStatus='edge'
-          showFilter={false}
-        />
-        <PlayerTable
+          seasonId={season.id}
           playersInEpisode={playersInEpisode}
           tribes={tribes}
-          seasonId={season.id}
-          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
-          toggleRefreshEpisode={toggleRefreshEpisode}
           renderShotInTheDark={renderShotInTheDark}
+          toggleRefreshEpisode={toggleRefreshEpisode}
+        />
+        <PlayerTable
           playerStatus='eliminated'
-          showFilter={false}
+          seasonId={season.id}
+          playersInEpisode={playersInEpisode}
+          tribes={tribes}
+          renderShotInTheDark={renderShotInTheDark}
+          toggleRefreshEpisode={toggleRefreshEpisode}
         />
       </Block>
 
@@ -90,7 +74,7 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
         color='danger'
         onClick={initPlayersInEpisode}
         className='is-pulled-right'
-        disabled={disableButton}
+        disabled={disableAjax}
       >
         Reset Players
       </Button>

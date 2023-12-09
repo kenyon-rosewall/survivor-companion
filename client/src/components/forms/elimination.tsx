@@ -34,7 +34,7 @@ const EliminationForm: React.FC<EliminationFormProps> = ({
     fetch(`http://localhost:5000/seasons/${seasonId}/eliminations/count`)
     .then(response => response.json())
     .then(data => {
-      setFormData({ ...formData, order: data + 1 })
+      setFormData({ ...formData, order: Number(data.data) + 1 })
     })
     .catch(err => console.error('Error fetching eliminations:', err))
   }, [])

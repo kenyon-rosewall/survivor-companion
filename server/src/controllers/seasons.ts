@@ -78,7 +78,9 @@ const deleteSeason = async (
   })
 
   if (season) {
-    return res.status(204).json({})
+    return res.status(204).json({
+      data: season,
+    })
   }
 
   return res.status(404).json({

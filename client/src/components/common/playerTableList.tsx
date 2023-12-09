@@ -4,18 +4,17 @@ import PlayerInEpisodeForm from '../forms/playerInEpisode'
 
 type PlayerTableListProps = {
   filter: any
+  renderShotInTheDark: boolean
+  seasonId: number
   playersInEpisode: any[]
   tribes: any[]
   alliances: any[]
-  seasonId: number
-  renderShotInTheDark: boolean
-  toggleRefreshEpisodeChildren: () => void
   toggleRefreshEpisode: () => void
 }
 
 const PlayerTableList: React.FC<PlayerTableListProps> = ({ 
-  filter, playersInEpisode, tribes, seasonId, toggleRefreshEpisodeChildren, 
-  toggleRefreshEpisode, renderShotInTheDark 
+  filter, playersInEpisode, tribes, seasonId, toggleRefreshEpisode, 
+  renderShotInTheDark 
 }) => {
   const tableHeaders = [
     'Player', 'Status', 'Tribe', 'Advantages', 
@@ -72,7 +71,6 @@ const PlayerTableList: React.FC<PlayerTableListProps> = ({
         tribes={tribes}
         seasonId={seasonId}
         renderShotInTheDark={renderShotInTheDark}
-        toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
         toggleRefreshEpisode={toggleRefreshEpisode}
       />
     ))

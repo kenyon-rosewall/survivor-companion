@@ -5,16 +5,17 @@ import AdvantageEventForm from "../forms/advantageEvent"
 type AdvantageEventsProps = {
   episodeId: number
   players: any[]
-  advantageEventCallback: () => void
+  toggleRefreshEpisode: () => void
 }
 
-const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, advantageEventCallback }) => {
+const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, toggleRefreshEpisode }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [refreshAdvantageEvents, setRefreshAdvantageEvents] = useState<boolean>(false)
   const [advantageEvents, setAdvantageEvents] = useState<any[]>([])
 
   useEffect(() => {
     if (episodeId === 0) return
+
     fetch(`http://localhost:5000/episodes/${episodeId}/advantageEvents`)
     .then(response => response.json())
     .then(data => {
@@ -27,7 +28,7 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, a
   const handleAddAdvantageEvent = () => {
     setIsModalOpen(false)
     setRefreshAdvantageEvents(!refreshAdvantageEvents)
-    advantageEventCallback()
+    toggleRefreshEpisode()
   }
 
   const handleDeleteAdvantageEvent = (index: number) => {
@@ -37,7 +38,7 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, a
     })
     .then(response => {
       setRefreshAdvantageEvents(!refreshAdvantageEvents)
-      advantageEventCallback()
+      toggleRefreshEpisode()
     })
     .catch(err => console.error('Error deleting advantage event:', err))
   }

@@ -13,3 +13,12 @@ export async function getPlayersInEpisode(
 ) {
   get(`/episodes/${episodeId}/players`, callback)
 }
+
+export async function createPlayersInEpisode(
+  episodeId: number,
+  episodePremiere: boolean,
+  callback: (d: any) => void
+) {
+  const body = { premiere: episodePremiere }
+  post(`/episodes/${episodeId}/players`, body, callback)
+}

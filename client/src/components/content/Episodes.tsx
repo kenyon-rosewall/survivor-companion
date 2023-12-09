@@ -23,10 +23,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
   const [season, setSeason] = useState<any>({})
   const [tribes, setTribes] = useState<any[]>([{}])
   const [players, setPlayers] = useState<any[]>([{}])
-  const [refreshPlayersInEpisode, setRefreshPlayersInEpisode] = useState<number>(0)
-  const [refreshAlliances, setRefreshAlliances] = useState<number>(0)
   const [refreshEpisode, setRefreshEpisode] = useState<boolean>(false)
-  const [refreshEpisodeChildren, setRefreshEpisodeChildren] = useState<boolean>(false)
 
   useEffect(() => {
     if (episodeId === 0) return
@@ -41,17 +38,8 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
     setRefreshEpisode(!refreshEpisode)
   }
 
-  const toggleRefreshEpisodeChildren = () => {
-    setRefreshEpisodeChildren(!refreshEpisodeChildren)
-  }
-
-  const incrementRefreshPlayersInEpisode = () => {
-    setRefreshPlayersInEpisode(refreshPlayersInEpisode + 1)
-    setRefreshAlliances(refreshAlliances + 1)
-  }
-
   const handleFormSubmit = (episode: any) => {
-    // TODO: handle form submit
+    toggleRefreshEpisode()
   }
 
   const renderTabs = () => {
@@ -89,12 +77,10 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         className={selectedTab === 'Players' ? '' : 'is-hidden'}
       >
         <PlayersInEpisode
-          playersInEpisode={players}
           season={season}
           episode={episode}
+          playersInEpisode={players}
           tribes={tribes}
-          refreshPlayersInEpisode={refreshEpisodeChildren}
-          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
           toggleRefreshEpisode={toggleRefreshEpisode}
         />
       </Block>
@@ -110,11 +96,10 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         className={selectedTab === 'Eliminations' ? '' : 'is-hidden'}
       >
         <Eliminations
-          episodeId={episodeId}
           seasonId={seasonId}
+          episodeId={episodeId}
           players={players}
           toggleRefreshEpisode={toggleRefreshEpisode}
-          toggleRefreshEpisodeChildren={toggleRefreshEpisodeChildren}
         />
       </Block>
       <Block
@@ -123,7 +108,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         <AdvantageEvents
           episodeId={episodeId}
           players={players}
-          advantageEventCallback={incrementRefreshPlayersInEpisode}
+          toggleRefreshEpisode={toggleRefreshEpisode}
         />
       </Block>
       <Block
@@ -132,8 +117,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         <Alliances
           seasonId={seasonId}
           episodeId={episodeId}
-          triggerRefresh={refreshAlliances}
-          allianceCallback={incrementRefreshPlayersInEpisode}
+          toggleRefreshEpisode={toggleRefreshEpisode}
         />
       </Block>
     </>
