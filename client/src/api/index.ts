@@ -1,4 +1,5 @@
 export * from "./alliances"
+export * from "./eliminations"
 export * from "./episodes"
 export * from "./playerInEpisodes"
 export * from "./seasons"

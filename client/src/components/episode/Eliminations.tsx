@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Modal, Table } from 'react-bulma-components'
+import { readEpisodeEliminations, deleteElimination } from '../../api'
 import EliminationForm from '../forms/elimination'
 
 type EliminationsProps = {
@@ -13,36 +14,22 @@ const Eliminations: React.FC<EliminationsProps> = ({
   episodeId, seasonId, players, toggleRefreshEpisode
 }) => {
   const [eliminations, setEliminations] = useState<any[]>([{}])
-  const [refreshEliminations, setRefreshEliminations] = useState<boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
     if (episodeId === 0) return
-    
-    fetch(`http://localhost:5000/episodes/${episodeId}/eliminations`)
-    .then(response => response.json())
-    .then(data => {
-      setEliminations(data.data)
-    })
-    .catch(err => console.error('Error fetching eliminations:', err))
-  }, [episodeId, refreshEliminations])
 
-  const onSubmitComplete = () => {
+    readEpisodeEliminations(episodeId, setEliminations)
+  }, [episodeId])
+
+  const onSubmitComplete = (d?: any) => {
     setIsModalOpen(false)
-    setRefreshEliminations(!refreshEliminations)
+    readEpisodeEliminations(episodeId, setEliminations)
     toggleRefreshEpisode()
   }
 
-  const handleDeleteElimination = (index: number) => {
-    const eliminationId = eliminations[index].id
-    fetch(`http://localhost:5000/eliminations/${eliminationId}`, {
-      method: 'DELETE'
-    })
-    .then(response => {
-      setRefreshEliminations(!refreshEliminations)
-      toggleRefreshEpisode()
-    })
-    .catch(err => console.error('Error deleting elimination:', err))
+  const handleDeleteElimination = (eliminationId: number) => {
+    deleteElimination(eliminationId, onSubmitComplete)
   }
 
   const formatElimination = (elimination: any) => {
@@ -71,35 +58,55 @@ const Eliminations: React.FC<EliminationsProps> = ({
   }
 
   const ordinalSuffix = (i: number) => {
-    var j = i % 10,
-        k = i % 100;
+    const j = i % 10
+    const k = i % 100
+
     if (j === 1 && k !== 11) {
-        return i + "st";
+        return i + "st"
     }
+
     if (j === 2 && k !== 12) {
-        return i + "nd";
+        return i + "nd"
     }
+
     if (j === 3 && k !== 13) {
         return i + "rd";
     }
+
     return i + "th";
   }
 
   const renderEliminations = () => {
-    return eliminations.map((elimination: any, index: number) => (
-      <tr key={index}>
-        <td>{ordinalSuffix(elimination.order)}</td>
-        <td>{formatElimination(elimination)}</td>
-        <td width={'40%'}>{elimination.notes}</td>
-        <td width={2}>
-          <Button
-            remove
-            size={'small'}
-            onClick={() => handleDeleteElimination(index)}
-          />
-        </td>
-      </tr>
-    ))
+    return (
+      <tbody>
+        {eliminations.map((elimination: any) => (
+          <tr
+            key={elimination.id}
+          >
+            <td>
+              {ordinalSuffix(elimination.order)}
+            </td>
+            <td>
+              {formatElimination(elimination)}
+            </td>
+            <td 
+              width={'40%'}
+            >
+              {elimination.notes}
+            </td>
+            <td
+              width={2}
+            >
+              <Button
+                remove
+                size={'small'}
+                onClick={() => handleDeleteElimination(elimination.id)}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    )
   }
 
   return (

@@ -22,15 +22,9 @@ const Alliances: React.FC<AlliancesProps> = ({
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
   useEffect(() => {
-    if (seasonId === 0 || disableAjax === true) return
-    setDisableAjax(true)
+    if (seasonId === 0) return
 
-    const readSeasonAlliancesCallback = (data: any) => {
-      setAlliances(data)
-      setDisableAjax(false)
-    }
-
-    readSeasonAlliances(seasonId, readSeasonAlliancesCallback)
+    readSeasonAlliances(seasonId, setAlliances)
   }, [seasonId, refreshAlliances])
 
   const allianceCallback = (d?: any) => {

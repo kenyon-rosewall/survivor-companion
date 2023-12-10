@@ -30,6 +30,13 @@ export async function readEpisodeTribalCouncils(
   get(`/episodes/${episodeId}/tribalCouncils`, callback)
 }
 
+export async function readEpisodeEliminations(
+  episodeId: number,
+  callback: (d: any) => void
+) {
+  get(`/episodes/${episodeId}/eliminations`, callback)
+}
+
 export async function createEpisodeTribalCouncil(
   episodeId: number,
   callback: (d: any) => void

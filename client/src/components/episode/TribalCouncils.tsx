@@ -26,7 +26,7 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({
     if (disableAjax === true) return
     setDisableAjax(true)
 
-    const addTribalCouncilCallback = () => {
+    const addTribalCouncilCallback = (d?: any) => {
       setDisableAjax(false)
       readEpisodeTribalCouncils(episodeId, setTribalCouncils)
     }
