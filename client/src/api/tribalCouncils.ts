@@ -1,20 +1,20 @@
 import { get, post, del } from "./core"
 
-export async function getTribalCouncil(
+export async function readTribalCouncil(
   tribalCouncilId: number,
   callback: (d: any) => void
 ) {
   get(`/tribalCouncils/${tribalCouncilId}`, callback)
 }
 
-export async function getPlayersInTribalCouncil(
+export async function readTribalCouncilPlayers(
   tribalCouncilId: number,
   callback: (d: any) => void
 ) {
   get(`/tribalCouncils/${tribalCouncilId}/players`, callback)
 }
 
-export async function addTribeToTribalCouncil(
+export async function createTribalCouncilTribe(
   tribeData: any,
   callback: (d: any) => void
 ) {
@@ -25,7 +25,7 @@ export async function addTribeToTribalCouncil(
   )
 }
 
-export async function removeTribeFromTribalCouncil(
+export async function deleteTribalCouncilTribe(
   tribalCouncilId: number,
   tribeId: number,
   callback: (d: any) => void
@@ -33,7 +33,7 @@ export async function removeTribeFromTribalCouncil(
   del(`/tribalCouncils/${tribalCouncilId}/tribes/${tribeId}`, callback)
 }
 
-export async function addVoteToTribalCouncil(
+export async function createTribalCouncilVote(
   tribalCouncilId: number,
   vote: any,
   callback: (d: any) => void
@@ -41,7 +41,7 @@ export async function addVoteToTribalCouncil(
   post(`/tribalCouncils/${tribalCouncilId}/votes`, vote, callback)
 }
 
-export async function removeVoteFromTribalCouncil(
+export async function deleteTribalCouncilVote(
   tribalCouncilId: number,
   voteId: number,
   callback: (d: any) => void

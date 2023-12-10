@@ -1,52 +1,60 @@
-import React from "react"
+import React, { useState } from "react"
 import { Button, Columns, Tag } from "react-bulma-components"
+import { createAlliancePlayer, deleteAlliancePlayer } from "../../api"
 import PlayerSearch from "../common/playerSearch"
 
 type AlliancePlayersFormProps = {
   alliance: any
   episodeId: number
   seasonId: number
-  callback: () => void
+  allianceCallback: () => void
 }
 
-const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({ alliance, episodeId, seasonId, callback }) => {
+const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({ 
+  alliance, episodeId, seasonId, allianceCallback 
+}) => {
+  const [disableAjax, setDisableAjax] = useState<boolean>(false)
   const formData = {
     playerId: 0,
     episodeId: episodeId,
   }
 
-  const selectPlayer = (player: any) => {
-    fetch(`http://localhost:5000/alliances/${alliance.id}/players`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...formData, playerId: player.id })
-    })
-    .then(response => {
-      callback()
-    })
-    .catch(err => console.error('Error adding player to alliance:', err))
+  const alliancePlayerCallback = (d?: any) => {
+    setDisableAjax(false)
+    allianceCallback()
   }
 
-  const removePlayer = (index: number) => {
-    const alliancePlayerId = alliance.alliancePlayers[index].id
-    fetch(`http://localhost:5000/alliances/${alliance.id}/players/${alliancePlayerId}`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({})
-    })
-    .then(response => {
-      callback()
-    })
-    .catch(err => console.error('Error removing player from alliance:', err))
+  const selectPlayer = (player: any) => {
+    if (disableAjax === true) return
+    setDisableAjax(true)
+
+    formData.playerId = player.id
+    createAlliancePlayer(alliance.id, formData, alliancePlayerCallback)
+  }
+
+  const removePlayer = (alliancePlayerId: number) => {
+    if (disableAjax === true) return
+    setDisableAjax(true)
+
+    deleteAlliancePlayer(alliance.id, alliancePlayerId, alliancePlayerCallback)
   }
 
   const renderPlayers = () => {
-    return alliance.alliancePlayers
-            .filter((player: any) => player.episodeId === episodeId)
-            .map((player: any, index: number) => (
-      <Tag key={index} color="info" size={'medium'}>
+    const players = alliance.alliancePlayers
+      .filter((player: any) => player.episodeId === episodeId)
+  
+    return players.map((player: any) => (
+      <Tag 
+        key={player.id} 
+        color="info" 
+        size={'medium'}
+      >
         {player.player?.name}
-        <Button remove size={'small'} onClick={() => removePlayer(index)} />
+        <Button 
+          remove 
+          size={'small'} 
+          onClick={() => removePlayer(player.id)} 
+        />
       </Tag>
     ))
   }
@@ -54,7 +62,9 @@ const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({ alliance, epi
   return (
     <>
       <Columns>
-        <Columns.Column size={6}>
+        <Columns.Column 
+          size={6}
+        >
           <PlayerSearch
             formDisabled={false}
             seasonId={seasonId}

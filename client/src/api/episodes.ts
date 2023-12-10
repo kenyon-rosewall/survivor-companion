@@ -1,20 +1,20 @@
 import { get, post } from "./core"
 
-export async function getEpisode(
+export async function readEpisode(
   episodeId: number,
   callback: (d: any) => void
 ) {
   get(`/episodes/${episodeId}`, callback)
 }
 
-export async function getPlayersInEpisode(
+export async function readEpisodePlayers(
   episodeId: number,
   callback: (d: any) => void
 ) {
   get(`/episodes/${episodeId}/players`, callback)
 }
 
-export async function createPlayersInEpisode(
+export async function createEpisodePlayers(
   episodeId: number,
   episodePremiere: boolean,
   callback: (d: any) => void
@@ -23,14 +23,14 @@ export async function createPlayersInEpisode(
   post(`/episodes/${episodeId}/players`, body, callback)
 }
 
-export async function getTribalCouncilsInEpisode(
+export async function readEpisodeTribalCouncils(
   episodeId: number,
   callback: (d: any) => void
 ) {
   get(`/episodes/${episodeId}/tribalCouncils`, callback)
 }
 
-export async function createTribalCouncil(
+export async function createEpisodeTribalCouncil(
   episodeId: number,
   callback: (d: any) => void
 ) {

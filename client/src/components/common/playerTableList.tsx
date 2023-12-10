@@ -8,13 +8,14 @@ type PlayerTableListProps = {
   seasonId: number
   playersInEpisode: any[]
   tribes: any[]
-  alliances: any[]
+  refreshAlliances: boolean
   toggleRefreshEpisode: () => void
+  setRefreshAlliances: (refresh: boolean) => void
 }
 
 const PlayerTableList: React.FC<PlayerTableListProps> = ({ 
-  filter, playersInEpisode, tribes, seasonId, toggleRefreshEpisode, 
-  renderShotInTheDark 
+  filter, renderShotInTheDark, seasonId, playersInEpisode, tribes,
+  refreshAlliances, toggleRefreshEpisode, setRefreshAlliances
 }) => {
   const tableHeaders = [
     'Player', 'Status', 'Tribe', 'Advantages', 
@@ -22,12 +23,20 @@ const PlayerTableList: React.FC<PlayerTableListProps> = ({
   ]
 
   const renderHeaders = () => {
-    return tableHeaders.map((header: any, index: number) => (
-      <th
-        key={index}
-        className={ (header === 'Shot in the Dark' && !renderShotInTheDark) ? 'is-hidden' : '' }
-      >{header}</th>
-    ))
+    return (
+      <thead>
+        <tr>
+        {tableHeaders.map((header: any, index: number) => (
+          <th
+            key={index}
+            className={ (header === 'Shot in the Dark' && !renderShotInTheDark) ? 'is-hidden' : '' }
+          >
+            {header}
+          </th>
+        ))}
+        </tr>
+      </thead>
+    )
   }
 
   const filterPlayersInEpisode = (players: any[]) => {
@@ -65,14 +74,17 @@ const PlayerTableList: React.FC<PlayerTableListProps> = ({
   const renderPlayersInEpisode = () => {
     const players = filterPlayersInEpisode(playersInEpisode)
     return players.map((player, index) => (
-      <PlayerInEpisodeForm
-        key={index}
-        playerInEpisode={player}
-        tribes={tribes}
-        seasonId={seasonId}
-        renderShotInTheDark={renderShotInTheDark}
-        toggleRefreshEpisode={toggleRefreshEpisode}
-      />
+      <tbody>
+        <PlayerInEpisodeForm
+          key={index}
+          playerInEpisode={player}
+          tribes={tribes}
+          renderShotInTheDark={renderShotInTheDark}
+          refreshAlliances={refreshAlliances}
+          toggleRefreshEpisode={toggleRefreshEpisode}
+          setRefreshAlliances={setRefreshAlliances}
+        />
+      </tbody>
     ))
   }
 
@@ -82,14 +94,8 @@ const PlayerTableList: React.FC<PlayerTableListProps> = ({
       size='fullwidth' 
       className={ (playersInEpisode.length === 0) ? 'is-hidden' : '' }
     >
-      <thead>
-        <tr>
-          {renderHeaders()}
-        </tr>  
-      </thead>
-      <tbody>
-        {renderPlayersInEpisode()}
-      </tbody>
+      {renderHeaders()}
+      {renderPlayersInEpisode()}
     </Table>
   )
 }

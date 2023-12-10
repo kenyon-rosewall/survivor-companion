@@ -156,7 +156,7 @@ const deleteAlliance = async (
     })
 
     if (deletedAlliance) {
-      return res.status(204).json({
+      return res.status(200).json({
         data: deletedAlliance,
       })
     }
@@ -230,7 +230,7 @@ const deletePlayer = async (
   })
 
   if (alliance) {
-    return res.status(204).json({
+    return res.status(200).json({
       data: alliance,
     })
   }

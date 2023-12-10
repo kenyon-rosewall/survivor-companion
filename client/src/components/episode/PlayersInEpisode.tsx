@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Block, Button } from 'react-bulma-components'
-import { createPlayersInEpisode } from '../../api'
+import { createEpisodePlayers } from '../../api'
 import PlayerTable from '../common/playerTable'
 
 type PlayersInEpisodeProps = {
@@ -8,11 +8,14 @@ type PlayersInEpisodeProps = {
   season: any
   episode: any
   tribes: any[]
+  refreshAlliances: boolean
   toggleRefreshEpisode: () => void
+  setRefreshAlliances: (refresh: boolean) => void
 }
 
 const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({ 
-  playersInEpisode, season, episode, tribes, toggleRefreshEpisode 
+  playersInEpisode, season, episode, tribes, refreshAlliances,
+  toggleRefreshEpisode, setRefreshAlliances 
 }) => {
   // TODO: This should be a property of the season
   const renderShotInTheDark = season.order > 40
@@ -29,7 +32,7 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
       toggleRefreshEpisode()
     }
 
-    createPlayersInEpisode(episode.id, episode.premiere, initPlayersInEpisodeCallback)
+    createEpisodePlayers(episode.id, episode.premiere, initPlayersInEpisodeCallback)
   }
 
   return (
@@ -42,7 +45,9 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
           tribes={tribes}
           showFilter
           renderShotInTheDark={renderShotInTheDark}
+          refreshAlliances={refreshAlliances}
           toggleRefreshEpisode={toggleRefreshEpisode}
+          setRefreshAlliances={setRefreshAlliances}
         />
         <PlayerTable
           playerStatus='redemption'
@@ -50,7 +55,9 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
           playersInEpisode={playersInEpisode}
           tribes={tribes}
           renderShotInTheDark={renderShotInTheDark}
+          refreshAlliances={refreshAlliances}
           toggleRefreshEpisode={toggleRefreshEpisode}
+          setRefreshAlliances={setRefreshAlliances}
         />
         <PlayerTable
           playerStatus='edge'
@@ -58,7 +65,9 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
           playersInEpisode={playersInEpisode}
           tribes={tribes}
           renderShotInTheDark={renderShotInTheDark}
+          refreshAlliances={refreshAlliances}
           toggleRefreshEpisode={toggleRefreshEpisode}
+          setRefreshAlliances={setRefreshAlliances}
         />
         <PlayerTable
           playerStatus='eliminated'
@@ -66,7 +75,9 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
           playersInEpisode={playersInEpisode}
           tribes={tribes}
           renderShotInTheDark={renderShotInTheDark}
+          refreshAlliances={refreshAlliances}
           toggleRefreshEpisode={toggleRefreshEpisode}
+          setRefreshAlliances={setRefreshAlliances}
         />
       </Block>
 

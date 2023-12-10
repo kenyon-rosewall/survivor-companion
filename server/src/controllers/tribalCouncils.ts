@@ -92,7 +92,7 @@ const deleteTribalCouncil = async (
   })
 
   if (tribalCouncil) {
-    return res.status(204).json({
+    return res.status(200).json({
       data: tribalCouncil,
     })
   }
@@ -156,7 +156,7 @@ const deleteTribe = async (req: Request, res: Response, next: NextFunction) => {
   })
 
   if (tribalCouncil) {
-    return res.status(204).json({
+    return res.status(200).json({
       data: tribalCouncil,
     })
   }

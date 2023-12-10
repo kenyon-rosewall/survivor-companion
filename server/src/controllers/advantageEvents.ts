@@ -119,7 +119,7 @@ const deleteAdvantageEvent = async (
       },
     })
 
-    return res.status(204).json({
+    return res.status(200).json({
       data: advantageEvent,
     })
   }

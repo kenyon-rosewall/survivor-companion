@@ -30,14 +30,18 @@ const EliminationForm: React.FC<EliminationFormProps> = ({
     notes: ''
   })
 
+  const updateEliminationOrder = (count: number) => {
+    setFormData({ ...formData, order: count + 1 })
+  }
+
   useEffect(() => {
     fetch(`http://localhost:5000/seasons/${seasonId}/eliminations/count`)
     .then(response => response.json())
     .then(data => {
-      setFormData({ ...formData, order: Number(data.data) + 1 })
+      updateEliminationOrder(Number(data.data))
     })
     .catch(err => console.error('Error fetching eliminations:', err))
-  }, [])
+  }, [seasonId, updateEliminationOrder])
 
   const handleInputChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })

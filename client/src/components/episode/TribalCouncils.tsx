@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Level } from 'react-bulma-components'
-import { getTribalCouncilsInEpisode, createTribalCouncil } from '../../api'
+import { readEpisodeTribalCouncils, createEpisodeTribalCouncil } from '../../api'
 import TribalCouncilForm from '../forms/tribalCouncil'
 
 type TribalCouncilsProps = {
@@ -17,8 +17,8 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({
   useEffect(() => {
     if (episodeId === 0) return
     
-    getTribalCouncilsInEpisode(episodeId, setTribalCouncils)
-  }, [episodeId, getTribalCouncilsInEpisode])
+    readEpisodeTribalCouncils(episodeId, setTribalCouncils)
+  }, [episodeId])
 
   const addTribalCouncil = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -28,10 +28,10 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({
 
     const addTribalCouncilCallback = () => {
       setDisableAjax(false)
-      getTribalCouncilsInEpisode(episodeId, setTribalCouncils)
+      readEpisodeTribalCouncils(episodeId, setTribalCouncils)
     }
     
-    createTribalCouncil(episodeId, addTribalCouncilCallback)
+    createEpisodeTribalCouncil(episodeId, addTribalCouncilCallback)
   }
 
   const renderTribalCouncils = () => {

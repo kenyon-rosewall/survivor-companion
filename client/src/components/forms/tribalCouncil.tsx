@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Columns, Modal, Table, Tag } from 'react-bulma-components'
+import { Button, Columns, Table, Tag } from 'react-bulma-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
-  getTribalCouncil, getPlayersInTribalCouncil, 
-  addTribeToTribalCouncil, removeTribeFromTribalCouncil,
-  addVoteToTribalCouncil, removeVoteFromTribalCouncil
+  readTribalCouncil, readTribalCouncilPlayers, 
+  createTribalCouncilTribe, deleteTribalCouncilTribe,
+  createTribalCouncilVote, deleteTribalCouncilVote
 } from '../../api'
 import Subtitle from '../common/subtitle'
 import TribeSelect from '../common/tribeSelect'
@@ -32,15 +32,17 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
   useEffect(() => {
     if (tribalCouncilId === 0) return
 
-    getTribalCouncil(tribalCouncilId, setTribalCouncil)
-    getPlayersInTribalCouncil(tribalCouncilId, setPlayers)
-  }, [tribalCouncilId, getTribalCouncil, getPlayersInTribalCouncil])
+    readTribalCouncil(tribalCouncilId, setTribalCouncil)
+    readTribalCouncilPlayers(tribalCouncilId, setPlayers)
+  }, [tribalCouncilId])
 
   const changeCallback = (d: any) => {
     setDisableAjax(false)
     setIsTribeModalOpen(false)
-    getTribalCouncil(tribalCouncilId, setTribalCouncil)
-    getPlayersInTribalCouncil(tribalCouncilId, setPlayers)
+    setIsVoteModalOpen(false)
+
+    readTribalCouncil(tribalCouncilId, setTribalCouncil)
+    readTribalCouncilPlayers(tribalCouncilId, setPlayers)
   }
 
   const addTribe = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -49,28 +51,28 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
     if (disableAjax === true || tribeData.tribeId === 0) return
     setDisableAjax(true)
 
-    addTribeToTribalCouncil(tribeData, changeCallback)
+    createTribalCouncilTribe(tribeData, changeCallback)
   }
 
   const removeTribe = (tribeId: number) => {
     if (disableAjax === true) return
     setDisableAjax(true)
 
-    removeTribeFromTribalCouncil(tribalCouncilId, tribeId, changeCallback)
+    deleteTribalCouncilTribe(tribalCouncilId, tribeId, changeCallback)
   }
 
   const addVote = (voteData: any) => {
     if (disableAjax === true) return
     setDisableAjax(true)
 
-    addVoteToTribalCouncil(tribalCouncilId, voteData, changeCallback)
+    createTribalCouncilVote(tribalCouncilId, voteData, changeCallback)
   }
 
   const removeVote = (voteId: number) => {
     if (disableAjax === true) return
     setDisableAjax(true)
 
-    removeVoteFromTribalCouncil(tribalCouncilId, voteId, changeCallback)
+    deleteTribalCouncilVote(tribalCouncilId, voteId, changeCallback)
   }
 
   const formatVote = (vote: any) => {
@@ -193,7 +195,7 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
 
           <Button onClick={addTribe}>Add Tribe</Button>
         </ModalForm>
-        
+
       </Columns.Column>
 
       <Columns.Column 

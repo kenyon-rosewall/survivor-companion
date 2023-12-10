@@ -91,7 +91,7 @@ const deleteTribe = async (req: Request, res: Response, next: NextFunction) => {
   })
 
   if (tribe) {
-    return res.status(204).json({
+    return res.status(200).json({
       data: tribe,
     })
   }

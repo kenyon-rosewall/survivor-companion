@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react"
 import { Button, Form, Tag } from "react-bulma-components"
-import { updatePlayerInEpisode, removeAlliancePlayer } from "../../api"
+import { updatePlayerInEpisode, deleteAlliancePlayer } from "../../api"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import TribeSelect from '../common/tribeSelect'
 
 type PlayerInEpisodeFormProps = {
-  seasonId: number
   playerInEpisode: any
   tribes: any[]
   renderShotInTheDark: boolean
+  refreshAlliances: boolean
   toggleRefreshEpisode: () => void
+  setRefreshAlliances: (refresh: boolean) => void
 }
 
 const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
-  seasonId, playerInEpisode, tribes, renderShotInTheDark, toggleRefreshEpisode
+  playerInEpisode, tribes, renderShotInTheDark, 
+  refreshAlliances, toggleRefreshEpisode, setRefreshAlliances
 }) => {
   const playerStatuses = ["playing", "eliminated", "redemption", "edge"]
   const [editing, setEditing] = useState<boolean>(false)
@@ -171,12 +173,13 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
     
     const allianceId = playerInEpisode.alliances[index].id
 
-    const removePlayerFromAllianceCallback = () => {
+    const deleteAlliancePlayerCallback = () => {
       toggleRefreshEpisode()
       setDisableAjax(false)
+      setRefreshAlliances(!refreshAlliances)
     }
 
-    removeAlliancePlayer(allianceId, playerInEpisode.id, removePlayerFromAllianceCallback)
+    deleteAlliancePlayer(allianceId, playerInEpisode.id, deleteAlliancePlayerCallback)
   }
 
   const renderAlliances = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Block, Tabs } from 'react-bulma-components'
-import { getEpisode, getSeason, getTribes, getPlayersInEpisode } from '../../api'
+import { readEpisode, readSeason, readSeasonTribes, readEpisodePlayers, readSeasonAlliances } from '../../api'
 import EpisodeForm from '../forms/episode'
 import PlayersInEpisode from '../episode/PlayersInEpisode'
 import TribalCouncils from '../episode/TribalCouncils'
@@ -24,14 +24,15 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
   const [tribes, setTribes] = useState<any[]>([{}])
   const [players, setPlayers] = useState<any[]>([{}])
   const [refreshEpisode, setRefreshEpisode] = useState<boolean>(false)
+  const [refreshAlliances, setRefreshAlliances] = useState<boolean>(false)
 
   useEffect(() => {
     if (episodeId === 0) return
 
-    getEpisode(episodeId, setEpisode)
-    getSeason(seasonId, setSeason)
-    getTribes(seasonId, setTribes)
-    getPlayersInEpisode(episodeId, setPlayers)
+    readEpisode(episodeId, setEpisode)
+    readSeason(seasonId, setSeason)
+    readSeasonTribes(seasonId, setTribes)
+    readEpisodePlayers(episodeId, setPlayers)
   }, [episodeId, seasonId, refreshEpisode])
 
   const toggleRefreshEpisode = () => {
@@ -81,7 +82,9 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
           episode={episode}
           playersInEpisode={players}
           tribes={tribes}
+          refreshAlliances={refreshAlliances}
           toggleRefreshEpisode={toggleRefreshEpisode}
+          setRefreshAlliances={setRefreshAlliances}
         />
       </Block>
       <Block
@@ -117,7 +120,9 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         <Alliances
           seasonId={seasonId}
           episodeId={episodeId}
+          refreshAlliances={refreshAlliances}
           toggleRefreshEpisode={toggleRefreshEpisode}
+          setRefreshAlliances={setRefreshAlliances}
         />
       </Block>
     </>

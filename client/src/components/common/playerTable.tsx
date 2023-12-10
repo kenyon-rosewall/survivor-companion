@@ -9,12 +9,14 @@ type PlayerTableProps = {
   tribes: any[]
   showFilter?: boolean
   renderShotInTheDark: boolean
+  refreshAlliances: boolean
   toggleRefreshEpisode: () => void
+  setRefreshAlliances: (refresh: boolean) => void
 }
 
 const PlayerTable: React.FC<PlayerTableProps> = ({ 
-  playersInEpisode, tribes, seasonId, toggleRefreshEpisode, 
-  renderShotInTheDark, playerStatus, showFilter = false
+  playerStatus, seasonId, playersInEpisode, tribes, showFilter = false,
+  renderShotInTheDark, refreshAlliances, toggleRefreshEpisode, setRefreshAlliances
 }) => {
   const [filteredPlayers, setFilteredPlayers] = useState<any[]>(playersInEpisode)
   const [alliances, setAlliances] = useState<any[]>([])
@@ -74,9 +76,10 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
         seasonId={seasonId}
         playersInEpisode={filteredPlayers}
         tribes={tribes}
-        alliances={alliances}
         renderShotInTheDark={renderShotInTheDark}
+        refreshAlliances={refreshAlliances}
         toggleRefreshEpisode={toggleRefreshEpisode}
+        setRefreshAlliances={setRefreshAlliances}
       />
     </>
   )

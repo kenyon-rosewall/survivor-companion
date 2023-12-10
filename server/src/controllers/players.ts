@@ -75,7 +75,7 @@ const deletePlayer = async (
   if (deletedPlayer) {
     fuseCache.updatePlayerCache()
 
-    return res.status(204).json({
+    return res.status(200).json({
       data: deletedPlayer,
     })
   }

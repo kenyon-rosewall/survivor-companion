@@ -76,7 +76,7 @@ const deleteAdvantage = async (
   })
 
   if (deletedAdvantage) {
-    return res.status(204).json({
+    return res.status(200).json({
       data: deletedAdvantage,
     })
   }

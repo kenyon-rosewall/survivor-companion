@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Block, Button, Tag } from 'react-bulma-components'
+import { readSeasonAlliances, deleteAlliance } from '../../api'
 import Subtitle from '../common/subtitle'
 import AllianceForm from '../forms/alliance'
 import AlliancePlayersForm from '../forms/alliancePlayers'
@@ -7,38 +8,49 @@ import AlliancePlayersForm from '../forms/alliancePlayers'
 type AlliancesProps = {
   seasonId: number
   episodeId: number
+  refreshAlliances: boolean
   toggleRefreshEpisode: () => void
+  setRefreshAlliances: (refresh: boolean) => void
 }
 
-const Alliances: React.FC<AlliancesProps> = ({ seasonId, episodeId, toggleRefreshEpisode }) => {
+// TODO: Add/delete ui elements instead of refreshing the component
+const Alliances: React.FC<AlliancesProps> = ({ 
+  seasonId, episodeId, refreshAlliances,
+  toggleRefreshEpisode, setRefreshAlliances 
+}) => {
   const [alliances, setAlliances] = useState<any[]>([])
-  const [refreshAlliances, setRefreshAlliances] = useState<boolean>(true)
+  const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
   useEffect(() => {
-    fetch(`http://localhost:5000/seasons/${seasonId}/alliances`)
-    .then(response => response.json())
-    .then(data => {
-      setAlliances(data.data)
-    })
-    .catch(err => console.error('Error fetching alliances:', err))
-  }, [seasonId, episodeId, refreshAlliances])
+    if (seasonId === 0 || disableAjax === true) return
+    setDisableAjax(true)
+
+    const readSeasonAlliancesCallback = (data: any) => {
+      setAlliances(data)
+      setDisableAjax(false)
+    }
+
+    readSeasonAlliances(seasonId, readSeasonAlliancesCallback)
+  }, [seasonId, refreshAlliances])
+
+  const allianceCallback = (d?: any) => {
+    setRefreshAlliances(!refreshAlliances)
+    toggleRefreshEpisode()
+    setDisableAjax(false)
+  }
 
   const removeAlliance = (allianceId: number) => {
-    fetch(`http://localhost:5000/alliances/${allianceId}`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({})
-    })
-    .then(response => {
-      setRefreshAlliances(!refreshAlliances)
-      toggleRefreshEpisode()
-    })
-    .catch(err => console.error('Error removing alliance:', err))
+    if (disableAjax === true) return
+    setDisableAjax(true)
+
+    deleteAlliance(allianceId, allianceCallback)
   }
 
   const renderAlliances = () => {
-    return alliances.map((alliance: any, index: number) => (
-      <Block key={index}>
+    return alliances.map((alliance: any) => (
+      <Block
+        key={alliance.id}
+      >
         <Subtitle>
           <Tag
             rounded={false}
@@ -46,29 +58,28 @@ const Alliances: React.FC<AlliancesProps> = ({ seasonId, episodeId, toggleRefres
             size={'large'}
           >
             {alliance.name}
-            <Button remove size={'small'} onClick={() => removeAlliance(alliance.id)} />
+            <Button
+              remove 
+              size={'small'} 
+              onClick={() => removeAlliance(alliance.id)} 
+            />
           </Tag>
         </Subtitle>
         <AlliancePlayersForm
           alliance={alliance}
           episodeId={episodeId}
           seasonId={seasonId}
-          callback={handleAddAlliance}
+          allianceCallback={allianceCallback}
         />
       </Block>
     ))
-  }
-
-  const handleAddAlliance = () => {
-    setRefreshAlliances(!refreshAlliances)
-    toggleRefreshEpisode()
   }
 
   return (
     <>
       <AllianceForm
         seasonId={seasonId}
-        callback={handleAddAlliance}
+        allianceCallback={allianceCallback}
       />
       <br />
       {renderAlliances()}

@@ -1,18 +1,23 @@
 import React, { useState } from "react"
 import { Button, Columns, Form } from "react-bulma-components"
+import { createSeasonAlliance } from "../../api"
 
 type AllianceFormProps = {
   seasonId: number
-  callback: () => void
+  allianceCallback: () => void
 }
 
-const AllianceForm: React.FC<AllianceFormProps> = ({ seasonId, callback }) => {
-  const [disableButton, setDisableButton] = useState<boolean>(false)
-  const [formData, setFormData] = useState<any>({
-    name: "",
-    color: "",
-    notes: ""
-  })
+const AllianceForm: React.FC<AllianceFormProps> = ({ 
+  seasonId, allianceCallback 
+}) => {
+  const [disableAjax, setDisableAjax] = useState<boolean>(false)
+  const [formData, setFormData] = useState<any>({ name: "", color: "", notes: "" })
+
+  const handleFormSubmitCallback = (d: any) => {
+    setDisableAjax(false)
+    setFormData({ name: "", color: "", notes: "" })
+    allianceCallback()
+  }
 
   const handleInputChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -20,31 +25,25 @@ const AllianceForm: React.FC<AllianceFormProps> = ({ seasonId, callback }) => {
 
   const handleFormSubmit = (e: any) => {
     e.preventDefault()
-    setDisableButton(true)
-    fetch(`http://localhost:5000/seasons/${seasonId}/alliances`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      setDisableButton(false)
-      setFormData({
-        name: "",
-        color: "",
-        notes: ""
-      })
-      callback()
-    })
-    .catch(err => console.error("Error adding alliance:", err))
+
+    if (disableAjax === true) return
+    setDisableAjax(true)
+    
+    createSeasonAlliance(seasonId, formData, handleFormSubmitCallback)
   }
 
   return (
-    <form>
+    <form 
+      onSubmit={handleFormSubmit}
+    >
       <Columns>
         <Columns.Column>
           <Form.Field>
-            <Form.Label size={'small'}>Name</Form.Label>
+            <Form.Label
+              size={'small'}
+            >
+              Name
+            </Form.Label>
             <Form.Control>
               <Form.Input
                 name="name"
@@ -56,7 +55,11 @@ const AllianceForm: React.FC<AllianceFormProps> = ({ seasonId, callback }) => {
           </Form.Field>
 
           <Form.Field>
-            <Form.Label size={'small'}>Color</Form.Label>
+            <Form.Label
+              size={'small'}
+            >
+              Color
+            </Form.Label>
             <Form.Control>
               <Form.Input
                 name="color"
@@ -70,7 +73,11 @@ const AllianceForm: React.FC<AllianceFormProps> = ({ seasonId, callback }) => {
 
         <Columns.Column>
           <Form.Field>
-            <Form.Label size={'small'}>Notes</Form.Label>
+            <Form.Label
+              size={'small'}
+            >
+              Notes
+            </Form.Label>
             <Form.Control>
               <Form.Textarea
                 name="notes"
@@ -90,8 +97,7 @@ const AllianceForm: React.FC<AllianceFormProps> = ({ seasonId, callback }) => {
               <Button
                 color={'primary'}
                 className="is-pulled-right"
-                onClick={handleFormSubmit}
-                disabled={disableButton}
+                disabled={disableAjax}
               >
                 Add Alliance
               </Button>

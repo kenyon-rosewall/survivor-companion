@@ -112,7 +112,7 @@ const deleteElimination = async (
       data: { status: "playing" },
     })
 
-    return res.status(204).json({
+    return res.status(200).json({
       data: elimination,
     })
   }

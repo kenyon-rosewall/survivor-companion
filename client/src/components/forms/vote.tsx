@@ -8,6 +8,7 @@ type VoteFormProps = {
 }
 
 const VoteForm: React.FC<VoteFormProps> = ({ tribalCouncilId, players, handleFormSubmit }) => {
+  // TODO: Shot in the Dark should be hidden on seasons below 41
   const voteCategories = [
     { name: 'Vote', value: 'vote' }, 
     { name: 'Shot in the Dark', value: 'shotInTheDark' },

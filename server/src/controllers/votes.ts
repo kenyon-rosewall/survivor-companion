@@ -42,7 +42,7 @@ const deleteVote = async (req: Request, res: Response, next: NextFunction) => {
   })
 
   if (vote) {
-    return res.status(204).json({
+    return res.status(200).json({
       data: vote,
     })
   }
