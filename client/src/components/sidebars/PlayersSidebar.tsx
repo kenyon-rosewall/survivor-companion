@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Modal, Menu } from 'react-bulma-components'
+import { Menu } from 'react-bulma-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { readSeasonPlayers } from '../../api'
 import { setSelectedPlayer } from '../../actions/seasons'
+import ModalForm from '../common/modalForm'
 import PlayerForm from '../forms/player'
 
 type PlayersSidebarProps = {
@@ -10,76 +12,69 @@ type PlayersSidebarProps = {
   playerId: number
 }
 
-const PlayersSidebar: React.FC<PlayersSidebarProps> = ({ seasonId, playerId }) => {
+const PlayersSidebar: React.FC<PlayersSidebarProps> = ({ 
+  seasonId, playerId 
+}) => {
   const dispatch = useDispatch()
   const [players, setPlayers] = useState<any[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  const [reloadPlayers, setReloadPlayers] = useState<boolean>(false)
 
   useEffect(() => {
-    fetch(`http://localhost:5000/seasons/${seasonId}/players`)
-      .then(response => response.json())
-      .then(data => {
-        setPlayers(data.data)
-      })
-      .catch(err => console.error('Error fetching players:', err))
-  }, [seasonId, reloadPlayers])
+    if (seasonId === 0) return
+
+    readSeasonPlayers(seasonId, setPlayers)
+  }, [seasonId])
 
   useEffect(() => {
     if (isModalOpen) {
       const modalEl = document.querySelector('.modal')
-      if (modalEl) {
-        modalEl.scrollTop = 0
-      }
+      if (modalEl) modalEl.scrollTop = 0
     }
   }, [isModalOpen])
 
   const renderPlayers = () => {
-    if (Array.isArray(players) && players.length > 0) {
-      return players.map((player, index) => (
-        <Menu.List.Item
-          key={player.playerId}
-          active={player.playerId === playerId}
-          onClick={() => dispatch(setSelectedPlayer(player.playerId))}
-        >
-          {player.player.name} {player.player.nickname ? `(${player.player.nickname})` : ''}
-        </Menu.List.Item>
-      ))
-    }
-  }
+    if (!players) return
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen)
+    return players.map((player: any) => (
+      <Menu.List.Item
+        key={player.playerId}
+        active={player.playerId === playerId}
+        onClick={() => dispatch(setSelectedPlayer(player.playerId))}
+      >
+        {player.player.name} {player.player.nickname ? `(${player.player.nickname})` : ''}
+      </Menu.List.Item>
+    ))
   }
 
   const handleFormSubmit = () => {
-    toggleModal()
-    setReloadPlayers(!reloadPlayers)
+    setIsModalOpen(false)
+    readSeasonPlayers(seasonId, setPlayers)
   }
 
   return (
     <>
       <Menu.List.Item
-        onClick={toggleModal}
+        onClick={() => setIsModalOpen(true)}
       >
-        <FontAwesomeIcon icon={["fas", "plus"]} />
-        <span>Add Player</span>
+        <FontAwesomeIcon 
+          icon={["fas", "plus"]} 
+        /> 
+        Add Player
       </Menu.List.Item>
       {renderPlayers()}
-      <Modal show={isModalOpen} onClose={toggleModal}>
-        <Modal.Card>
-          <Modal.Card.Header>
-            <Modal.Card.Title>Add Player</Modal.Card.Title>
-          </Modal.Card.Header>
-          <Modal.Card.Body>
-            <PlayerForm 
-              formType="add"
-              seasonId={seasonId}
-              onSubmitComplete={handleFormSubmit} 
-            />
-          </Modal.Card.Body>
-        </Modal.Card>
-      </Modal>
+
+      <ModalForm
+        title="Add Player"
+        isModalOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+      >
+        <PlayerForm 
+          formType="add"
+          seasonId={seasonId}
+          onSubmitComplete={handleFormSubmit} 
+        />
+      </ModalForm>
+
     </>
   )
 }

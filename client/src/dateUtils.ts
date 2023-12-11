@@ -1,10 +1,10 @@
-const fixDates = (obj: any, fields: string[]) => {
-  fields.forEach((field) => {
-    if (obj[field]) {
-      obj[field] = obj[field].split("T")[0]
-    }
-  })
-  return obj
-}
+export function fixDate(dt: string) {
+  const dateOptions: any = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }
 
-export { fixDates }
+  if (dt === "") return new Date().toLocaleDateString("en-US", dateOptions)
+  else return new Date(dt).toLocaleDateString("en-US", dateOptions)
+}

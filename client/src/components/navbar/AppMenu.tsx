@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconName } from '@fortawesome/fontawesome-svg-core'
 import { Navbar } from 'react-bulma-components'
 import { setMenuItem } from '../../actions/menu'
+import { setSelectedPlayer, setSelectedEpisode, setSelectedAdvantage, setSelectedTribe } from '../../actions/seasons'
 
 interface LevelItem {
   icon: IconName,
@@ -25,6 +26,10 @@ const AppMenu: React.FC = () => {
 
   const handleItemClick = (itemName: string) => {
     dispatch(setMenuItem(itemName))
+    dispatch(setSelectedPlayer(0))
+    dispatch(setSelectedEpisode(0))
+    dispatch(setSelectedAdvantage(0))
+    dispatch(setSelectedTribe(0))
   }
 
   const renderLevelItems = () => {

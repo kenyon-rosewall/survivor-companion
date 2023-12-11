@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Modal, Table } from 'react-bulma-components'
 import { readEpisodeEliminations, deleteElimination } from '../../api'
+import ModalForm from '../common/modalForm'
 import EliminationForm from '../forms/elimination'
 
 type EliminationsProps = {
@@ -111,27 +112,41 @@ const Eliminations: React.FC<EliminationsProps> = ({
 
   return (
     <>
-      <Button className='is-pulled-right' onClick={() => setIsModalOpen(true)}>
+      <Button 
+        className='is-pulled-right' 
+        onClick={() => setIsModalOpen(true)}
+      >
         Add Elimination
       </Button>
+      
       <br /><br />
-      <Table bordered className='is-fullwidth'>
-        <tbody>
-          {renderEliminations()}
-        </tbody>
+
+      <Table 
+        bordered 
+        className='is-fullwidth'
+      >
+        {renderEliminations()}
       </Table>
+
+      <ModalForm 
+        title='Add Elimination'
+        isModalOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+      >
+        <EliminationForm
+          episodeId={episodeId}
+          seasonId={seasonId}
+          players={players}
+          onSubmitComplete={onSubmitComplete}
+        />
+      </ModalForm>
       <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <Modal.Card>
           <Modal.Card.Header>
             <Modal.Card.Title>Add Elimination</Modal.Card.Title>
           </Modal.Card.Header>
           <Modal.Card.Body>
-            <EliminationForm
-              episodeId={episodeId}
-              seasonId={seasonId}
-              players={players}
-              onSubmitComplete={onSubmitComplete}
-            />
+            
           </Modal.Card.Body>
         </Modal.Card>
       </Modal>

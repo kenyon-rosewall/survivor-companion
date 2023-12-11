@@ -66,7 +66,6 @@ const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({
           size={6}
         >
           <PlayerSearch
-            formDisabled={false}
             seasonId={seasonId}
             handleSelectPlayer={selectPlayer}
           />

@@ -2,12 +2,13 @@ import React, { useState } from "react"
 import { Form } from "react-bulma-components"
 
 type playerSearchProps = {
-  formDisabled: boolean
   handleSelectPlayer: (player: any) => void
   seasonId?: number
 }
 
-const PlayerSearch: React.FC<playerSearchProps> = ({ formDisabled, handleSelectPlayer, seasonId }) => {
+const PlayerSearch: React.FC<playerSearchProps> = ({ 
+  handleSelectPlayer, seasonId 
+}) => {
   const [players, setPlayers] = useState<any[]>([])
   const [query, setQuery] = useState<string>('')
 
@@ -59,7 +60,6 @@ const PlayerSearch: React.FC<playerSearchProps> = ({ formDisabled, handleSelectP
               name="q"
               placeholder="Search existing players..."
               onChange={handleSearch}
-              disabled={formDisabled}
               value={query}
             />
           </div>

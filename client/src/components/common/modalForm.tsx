@@ -4,17 +4,17 @@ import { Modal } from 'react-bulma-components'
 type ModalFormProps = {
   title: string
   isModalOpen: boolean
-  toggleModal: () => void
+  closeModal: () => void
   children: React.ReactNode
 }
 
 const ModalForm : React.FC<ModalFormProps> = ({ 
-  title, isModalOpen, toggleModal, children 
+  title, isModalOpen, closeModal, children 
 }) => {
   return (
     <Modal
       show={isModalOpen} 
-      onClose={() => toggleModal()}
+      onClose={() => closeModal()}
     >
       <Modal.Card>
         <Modal.Card.Header>

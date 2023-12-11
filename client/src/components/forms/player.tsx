@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { Block, Columns, Form, Button } from 'react-bulma-components'
+import { readSeasonPlayer, createSeasonPlayer, updateSeasonPlayer } from '../../api'
 import DatePicker from 'react-datepicker'
+import { fixDate } from '../../dateUtils'
 import PlayerSearch from '../common/playerSearch'
 
 type PlayerFormProps = {
-  formType: string,
-  seasonId: number,
-  playerOnSeasonId?: number,
+  formType: string
+  seasonId: number
+  playerOnSeasonId?: number
   onSubmitComplete: (season: any) => void
 }
 
-const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
-  const buttonText = props.formType === 'update' ? 'Update Player' : 'Add Player'
-  const formDisabled = props.formType === 'update' && !props.playerOnSeasonId
-  const dateOptions: any = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }
+const PlayerForm: React.FC<PlayerFormProps> = ({
+  formType, seasonId, playerOnSeasonId, 
+  onSubmitComplete
+}) => {
   const [formData, setFormData] = useState<any>({
     playerId: 0,
     name: '',
     nickname: '',
-    birthday: new Date().toLocaleDateString('en-US', dateOptions),
+    birthday: fixDate(""),
     headshot: 'images/players/default.jpg',
     occupation: '',
     bornLocation: '',
@@ -30,56 +28,48 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
     playerNotes: '',
     playerOnSeasonNotes: ''
   })
-  const [disableButton, setDisableButton] = useState<boolean>(false)
+  const [disableAjax, setDisableAjax] = useState<boolean>(false)
+
+  const updatePlayerInformation = (data: any) => {
+    setFormData({
+      ...data,
+      name: data.player.name,
+      nickname: data.player.nickname ? data.player.nickname : "",
+      birthday: data.player.birthday ? data.player.birthday : "",
+      playerNotes: data.player.notes ? data.player.notes : ""
+    })
+  }
 
   useEffect(() => {
-    if (props.formType === 'update' && props.playerOnSeasonId) {
-      fetch(`http://localhost:5000/seasons/${props.seasonId}/players/${props.playerOnSeasonId}`)
-      .then(response => response.json())
-      .then(data => {
-        setFormData({
-          ...data.data,
-          name: data.data.player.name,
-          nickname: data.data.player.nickname ? data.data.player.nickname : "",
-          birthday: data.data.player.birthday ? data.data.player.birthday : "",
-        })
-      })
-      .catch(err => console.error('Error fetching episode:', err))
+    if (formType === 'update' && playerOnSeasonId) {
+      readSeasonPlayer(seasonId, playerOnSeasonId, updatePlayerInformation)
     }
-  }, [props.playerOnSeasonId, props.formType, props.seasonId])
+  }, [seasonId, formType, playerOnSeasonId])
 
   const handleInputChange = (e: any) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   const handleFileUpload = (e: any) => {
-    const { name, files } = e.target
-    setFormData({ ...formData, [name]: files[0] })
+    // TODO: upload file to server
+  }
+
+  const formSubmitCallback = (data: any) => {
+    onSubmitComplete(data)
+    setDisableAjax(false)
   }
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setDisableButton(true)
 
-    let url = `http://localhost:5000/seasons/${props.seasonId}/players`
-    let method = 'POST'
-    if (props.formType === 'update') {
-      url = `http://localhost:5000/seasons/${props.seasonId}/players/${props.playerOnSeasonId}`
-      method = 'PUT'
+    if (disableAjax === true) return
+    setDisableAjax(true)
+
+    if (formType === 'update' && playerOnSeasonId) {
+      updateSeasonPlayer(seasonId, playerOnSeasonId, formData, formSubmitCallback)
+    } else {
+      createSeasonPlayer(seasonId, formData, formSubmitCallback)
     }
-
-    fetch(url, {
-      method: method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      props.onSubmitComplete(data.data)
-      setDisableButton(false)
-    })
-    .catch(err => console.error('Error adding player:', err))
   }
 
   const selectPlayer = (player: any) => {
@@ -91,28 +81,29 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
       birthday: player.birthday ? player.birthday : "",
       playerNotes: player.notes ? player.notes : ""
     })
-    // const searchEl = document.getElementById('playerSearch')
-    // if (searchEl) {
-    //   searchEl.setAttribute("value", "player.name")
-    // }
   }
 
   return (
-    <form onSubmit={handleFormSubmit}>
+    <form 
+      onSubmit={handleFormSubmit}
+    >
       <Columns>
         <Columns.Column>
           <PlayerSearch
-            formDisabled={formDisabled}
             handleSelectPlayer={selectPlayer}
           />
         </Columns.Column>
       </Columns>
 
       <Columns>
-        <Columns.Column size={6}>
-          {props.formType === 'add' && (
+        <Columns.Column 
+          size={6}
+        >
+          {formType === 'add' && (
             <Form.Field>
-              <Form.Label>Name</Form.Label>
+              <Form.Label>
+                Name
+              </Form.Label>
               <Form.Control>
                 <Form.Input
                   name="name"
@@ -122,18 +113,22 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
               </Form.Control>
             </Form.Field>
           )}
-          {props.formType === 'update' && (
+          {formType === 'update' && (
             <Block>
-              <Form.Label>Name</Form.Label>
+              <Form.Label>
+                Name
+              </Form.Label>
               {formData.name}
             </Block>
           )}
         </Columns.Column>
 
         <Columns.Column>
-          {props.formType === 'add' && (
+          {formType === 'add' && (
             <Form.Field>
-              <Form.Label>Nickname</Form.Label>
+              <Form.Label>
+                Nickname
+              </Form.Label>
               <Form.Control>
                 <Form.Input
                   name="nickname"
@@ -143,9 +138,11 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
               </Form.Control>
             </Form.Field>
           )}
-          {props.formType === 'update' && (
+          {formType === 'update' && (
             <Block>
-              <Form.Label>Nickname</Form.Label>
+              <Form.Label>
+                Nickname
+              </Form.Label>
               {formData.nickname}
             </Block>
           )}
@@ -153,9 +150,13 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
       </Columns>
 
       <Columns>
-        <Columns.Column size={6}>
+        <Columns.Column 
+          size={6}
+        >
           <Form.Field>
-            <Form.Label>Headshot</Form.Label>
+            <Form.Label>
+              Headshot
+            </Form.Label>
             <Form.InputFile
                 filename={formData.headshot}
                 onChange={handleFileUpload}
@@ -164,39 +165,45 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
         </Columns.Column>
 
         <Columns.Column>
-          {props.formType === 'add' && (
+          {formType === 'add' && (
             <Form.Field>
-              <Form.Label>Birthday</Form.Label>
+              <Form.Label>
+                Birthday
+              </Form.Label>
               <Form.Control>
                 <DatePicker
                   dateFormat={'yyyy-MM-dd'}
                   selected={new Date(formData.birthday)}
                   onChange={(date) => setFormData({ ...formData, birthday: date })}
                   showIcon
-                  disabled={formDisabled}
                 />
               </Form.Control>
             </Form.Field>
           )}
-          {props.formType === 'update' && (
+          {formType === 'update' && (
             <Block>
-              <Form.Label>Birthday</Form.Label>
-              {new Date(formData.birthday).toLocaleDateString('en-US', dateOptions)}
+              <Form.Label>
+                Birthday
+              </Form.Label>
+              {fixDate(formData.birthday)}
             </Block>
           )}
         </Columns.Column>
       </Columns>
 
       <Columns>
-        <Columns.Column size={6}>
+        <Columns.Column 
+          size={6}
+        >
           <Form.Field>
-            <Form.Label>Birth Location</Form.Label>
+            <Form.Label>
+              Birth Location
+            </Form.Label>
             <Form.Control>
               <Form.Input
                 name="bornLocation"
                 value={formData.bornLocation}
                 onChange={handleInputChange}
-                disabled={formDisabled}
               />
             </Form.Control>
           </Form.Field>
@@ -204,13 +211,14 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
 
         <Columns.Column>
           <Form.Field>
-            <Form.Label>Current Residence</Form.Label>
+            <Form.Label>
+              Current Residence
+            </Form.Label>
             <Form.Control>
               <Form.Input
                 name="residenceLocation"
                 value={formData.residenceLocation}
                 onChange={handleInputChange}
-                disabled={formDisabled}
               />
             </Form.Control>
           </Form.Field>
@@ -218,47 +226,56 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
       </Columns>
 
       <Columns>
-        <Columns.Column size={6}>
+        <Columns.Column 
+          size={6}
+        >
           <Form.Field>
-            <Form.Label>Occupation</Form.Label>
+            <Form.Label>
+              Occupation
+            </Form.Label>
             <Form.Control>
               <Form.Input
                 name="occupation"
                 value={formData.occupation}
                 onChange={handleInputChange}
-                disabled={formDisabled}
               />
             </Form.Control>
           </Form.Field>
         </Columns.Column>
       </Columns>
 
-      {props.formType === 'add' && (
+      {formType === 'add' && (
         <Form.Field>
-          <Form.Label>Player Notes</Form.Label>
+          <Form.Label>
+            Player Notes
+          </Form.Label>
           <Form.Control>
             <Form.Textarea
               name="playerNotes"
+              value={formData.playerNotes}
               onChange={handleInputChange}
-              disabled={formDisabled}
             />
           </Form.Control>
         </Form.Field>
       )}
-      {props.formType === 'update' && (
+      {formType === 'update' && (
         <Block>
-          <Form.Label>Player Notes</Form.Label>
+          <Form.Label>
+            Player Notes
+          </Form.Label>
           {formData.playerNotes}
         </Block>
       )}
 
       <Form.Field>
-        <Form.Label>Notes</Form.Label>
+        <Form.Label>
+          Notes
+        </Form.Label>
         <Form.Control>
           <Form.Textarea
             name="playerOnSeasonNotes"
+            value={formData.playerOnSeasonNotes}
             onChange={handleInputChange}
-            disabled={formDisabled}
           />
         </Form.Control>
       </Form.Field>
@@ -266,9 +283,9 @@ const PlayerForm: React.FC<PlayerFormProps> = (props: PlayerFormProps) => {
       <Button
         color="primary"
         type="submit"
-        disabled={formDisabled || disableButton}
+        disabled={disableAjax}
       >
-        {buttonText}
+        { formType === "update" ? "Update Player" : "Add Player" }
       </Button>
     </form>
   )

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Icon, Menu, Modal } from 'react-bulma-components'
+import { Icon, Menu } from 'react-bulma-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { readSeasonTribes } from '../../api'
 import { setSelectedTribe } from '../../actions/seasons'
+import ModalForm from '../common/modalForm'
 import TribeForm from '../forms/tribe'
 
 type TribesSidebarProps = {
@@ -14,16 +16,12 @@ const TribesSidebar: React.FC<TribesSidebarProps> = ({ seasonId, tribeId }) => {
   const dispatch = useDispatch()
   const [tribes, setTribes] = useState<any[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  const [reloadTribes, setReloadTribes] = useState<boolean>(false)
 
   useEffect(() => {
-    fetch(`http://localhost:5000/seasons/${seasonId}/tribes`)
-      .then(response => response.json())
-      .then(data => {
-        setTribes(data.data)
-      })
-      .catch(err => console.error('Error fetching tribes:', err))
-  }, [seasonId, reloadTribes])
+    if (seasonId === 0) return
+
+    readSeasonTribes(seasonId, setTribes)
+  }, [seasonId])
 
   useEffect(() => {
     if (isModalOpen) {
@@ -35,57 +33,59 @@ const TribesSidebar: React.FC<TribesSidebarProps> = ({ seasonId, tribeId }) => {
   }, [isModalOpen])
 
   const renderTribes = () => {
-    if (Array.isArray(tribes) && tribes.length > 0) {
-      return tribes.map((tribe, index) => (
-        <Menu.List.Item
-          key={tribe.id}
-          active={tribe.id === tribeId}
-          onClick={() => dispatch(setSelectedTribe(tribe.id))}
-        >
-          {tribe.name} 
-          <Icon
-            className='is-pulled-right'
-            size="small"
-          >
-            <FontAwesomeIcon icon={["fas", "circle"]} style={{ color: tribe.color }} />
-          </Icon>
-        </Menu.List.Item>
-      ))
-    }
-  }
+    if (!tribes) return 
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen)
+    return tribes.map((tribe: any) => (
+      <Menu.List.Item
+        key={tribe.id}
+        active={tribe.id === tribeId}
+        onClick={() => dispatch(setSelectedTribe(tribe.id))}
+      >
+        {tribe.name} 
+        <Icon
+          className='is-pulled-right'
+          size="small"
+        >
+          <FontAwesomeIcon 
+            icon={["fas", "circle"]} 
+            style={{ 
+              color: tribe.color
+            }} 
+          />
+        </Icon>
+      </Menu.List.Item>
+    ))
   }
 
   const handleFormSubmit = () => {
-    toggleModal()
-    setReloadTribes(!reloadTribes)
+    setIsModalOpen(false)
+    readSeasonTribes(seasonId, setTribes)
   }
 
   return (
     <>
       <Menu.List.Item
-        onClick={toggleModal}
+        onClick={() => setIsModalOpen(true)}
       >
-        <FontAwesomeIcon icon={["fas", "plus"]} />
-        <span>Add Tribe</span>
+        <FontAwesomeIcon 
+          icon={["fas", "plus"]}  
+        />
+        Add Tribe
       </Menu.List.Item>
       {renderTribes()}
-      <Modal show={isModalOpen} onClose={toggleModal}>
-        <Modal.Card>
-          <Modal.Card.Header>
-            <Modal.Card.Title>Add Tribe</Modal.Card.Title>
-          </Modal.Card.Header>
-          <Modal.Card.Body>
-            <TribeForm 
-              formType="add"
-              seasonId={seasonId}
-              onSubmitComplete={handleFormSubmit} 
-            />
-          </Modal.Card.Body>
-        </Modal.Card>
-      </Modal>
+
+      <ModalForm
+        title='Add Tribe'
+        isModalOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+      >
+        <TribeForm 
+          formType="add"
+          seasonId={seasonId}
+          onSubmitComplete={handleFormSubmit} 
+        />
+      </ModalForm>
+      
     </>
   )
 }

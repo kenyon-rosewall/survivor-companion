@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Block, Tabs } from 'react-bulma-components'
-import { readEpisode, readSeason, readSeasonTribes, readEpisodePlayers, readSeasonAlliances } from '../../api'
+import { readEpisode, readSeason, readSeasonTribes, readEpisodePlayers } from '../../api'
 import EpisodeForm from '../forms/episode'
 import PlayersInEpisode from '../episode/PlayersInEpisode'
 import TribalCouncils from '../episode/TribalCouncils'
@@ -56,7 +56,9 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
   }
 
   return (
-    <>
+    <Block
+      className={ episodeId === 0 ? 'is-hidden' : '' }
+    >
       <Tabs 
         align='center'
         fullwidth={true}
@@ -125,7 +127,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
           setRefreshAlliances={setRefreshAlliances}
         />
       </Block>
-    </>
+    </Block>
   )
 }
 

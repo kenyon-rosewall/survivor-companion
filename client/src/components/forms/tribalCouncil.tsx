@@ -185,7 +185,7 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
         <ModalForm
           title='Add Tribe to Tribal Council'
           isModalOpen={isTribeModalOpen}
-          toggleModal={() => setIsTribeModalOpen(false)}
+          closeModal={() => setIsTribeModalOpen(false)}
         >
           <TribeSelect
             tribes={tribes}
@@ -220,7 +220,7 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
         <ModalForm
           title='Add Vote to Tribal Council'
           isModalOpen={isVoteModalOpen}
-          toggleModal={() => setIsVoteModalOpen(false)}
+          closeModal={() => setIsVoteModalOpen(false)}
         >
           <VoteForm
             tribalCouncilId={tribalCouncilId}
