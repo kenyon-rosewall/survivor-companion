@@ -1,3 +1,4 @@
+export * from "./advantages"
 export * from "./alliances"
 export * from "./eliminations"
 export * from "./episodes"

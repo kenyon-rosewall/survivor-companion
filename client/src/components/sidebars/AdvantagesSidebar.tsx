@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Menu, Modal } from 'react-bulma-components'
+import { Menu } from 'react-bulma-components'
+import { readAdvantages } from '../../api'
 import { setSelectedAdvantage } from '../../actions/seasons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ModalForm from '../common/modalForm'
 import AdvantageForm from '../forms/advantage'
+import { read } from 'fs'
 
 type AdvantagesSidebarProps = {
   advantageId: number
@@ -13,16 +16,10 @@ const AdvantagesSidebar: React.FC<AdvantagesSidebarProps> = ({ advantageId }) =>
   const dispatch = useDispatch()
   const [advantages, setAdvantages] = useState<any[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  const [reloadAdvantages, setReloadAdvantages] = useState<boolean>(false)
 
   useEffect(() => {
-    fetch(`http://localhost:5000/advantages`)
-      .then(response => response.json())
-      .then(data => {
-        setAdvantages(data.data)
-      })
-      .catch(err => console.error('Error fetching advantages:', err))
-  }, [reloadAdvantages])
+    readAdvantages(setAdvantages)
+  }, [])
 
   useEffect(() => {
     if (isModalOpen) {
@@ -34,50 +31,47 @@ const AdvantagesSidebar: React.FC<AdvantagesSidebarProps> = ({ advantageId }) =>
   }, [isModalOpen])
 
   const renderAdvantages = () => {
-    if (Array.isArray(advantages) && advantages.length > 0) {
-      return advantages.map((advantage, index) => (
-        <Menu.List.Item
-          key={advantage.id}
-          active={advantage.id === advantageId}
-          onClick={() => dispatch(setSelectedAdvantage(advantage.id))}
-        >
-          {advantage.name}
-        </Menu.List.Item>
-      ))
-    }
-  }
+    if (!advantages) return
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen)
+    return advantages.map((advantage: any) => (
+      <Menu.List.Item
+        key={advantage.id}
+        active={advantage.id === advantageId}
+        onClick={() => dispatch(setSelectedAdvantage(advantage.id))}
+      >
+        {advantage.name}
+      </Menu.List.Item>
+    ))
   }
 
   const handleFormSubmit = () => {
-    toggleModal()
-    setReloadAdvantages(!reloadAdvantages)
+    setIsModalOpen(false)
+    readAdvantages(setAdvantages)
   }
 
   return (
     <>
       <Menu.List.Item
-        onClick={toggleModal}
+        onClick={() => setIsModalOpen(true)}
       >
-        <FontAwesomeIcon icon={["fas", "plus"]} />
-        <span>Add Advantage</span>
+        <FontAwesomeIcon 
+          icon={["fas", "plus"]}
+        />
+        Add Advantage
       </Menu.List.Item>
       {renderAdvantages()}
-      <Modal show={isModalOpen} onClose={toggleModal}>
-        <Modal.Card>
-          <Modal.Card.Header>
-            <Modal.Card.Title>Add Advantage</Modal.Card.Title>
-          </Modal.Card.Header>
-          <Modal.Card.Body>
-            <AdvantageForm
-              formType='create'
-              onSubmitComplete={handleFormSubmit}
-            />
-          </Modal.Card.Body>
-        </Modal.Card>
-      </Modal>
+
+      <ModalForm
+        title='Add Advantage'
+        isModalOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+      >
+        <AdvantageForm
+          formType='create'
+          onSubmitComplete={handleFormSubmit}
+        />
+      </ModalForm>
+      
     </>
   )
 }

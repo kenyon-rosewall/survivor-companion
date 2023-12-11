@@ -122,6 +122,69 @@ const addTribe = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
+const getMembersFromEpisode = async (
+  seasonId: number,
+  tribeId: number,
+  premiere: boolean,
+  merge: boolean
+) => {
+  if (premiere) {
+    const premiereEpisode = await prismaClient.episode.findFirst({
+      where: { seasonId: seasonId, premiere: true },
+    })
+
+    if (premiereEpisode) {
+      const members = await prismaClient.playerInEpisode.findMany({
+        where: { episodeId: premiereEpisode.id, tribeId: tribeId },
+        include: { player: true },
+      })
+
+      return members
+    }
+  } else if (merge) {
+    const mergeEpisode = await prismaClient.episode.findFirst({
+      where: { seasonId: seasonId, merge: true },
+    })
+
+    if (mergeEpisode) {
+      const members = await prismaClient.playerInEpisode.findMany({
+        where: { episodeId: mergeEpisode.id, tribeId: tribeId },
+        include: { player: true },
+      })
+
+      return members
+    }
+  }
+
+  return []
+}
+
+const getTribeMembers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id: number = Number(req.params.id)
+  const tribe = await prismaClient.tribe.findUnique({
+    where: { id: id },
+  })
+
+  if (tribe) {
+    let members = await getMembersFromEpisode(tribe.seasonId, id, true, false)
+    if (members.length === 0) {
+      members = await getMembersFromEpisode(tribe.seasonId, id, false, true)
+    }
+
+    return res.status(200).json({
+      data: members,
+    })
+  }
+
+  return res.status(404).json({
+    data: `Tribe ${id} not found.`,
+  })
+}
+
 export default {
   getTribes,
   getTribesBySeason,
@@ -129,4 +192,5 @@ export default {
   updateTribe,
   deleteTribe,
   addTribe,
+  getTribeMembers,
 }

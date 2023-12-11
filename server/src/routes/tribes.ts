@@ -7,4 +7,6 @@ router.get("/:id", controller.getTribe)
 router.put("/:id", controller.updateTribe)
 router.delete("/:id", controller.deleteTribe)
 
+router.get("/:id/members", controller.getTribeMembers)
+
 export = router

@@ -1,5 +1,6 @@
 import React from 'react'
 import AdvantageForm from '../forms/advantage'
+import { Block } from 'react-bulma-components'
 
 type AdvantagesProps = {
   advantageId: number
@@ -11,13 +12,15 @@ const Advantages: React.FC<AdvantagesProps> = ({ advantageId }) => {
   }
 
   return (
-    <>
+    <Block
+      className={ advantageId === 0 ? 'is-hidden' : '' }
+    >
       <AdvantageForm
         formType='update'
         advantageId={advantageId}
         onSubmitComplete={handleFormSubmit}
       />
-    </>
+    </Block>
   )
 }
 

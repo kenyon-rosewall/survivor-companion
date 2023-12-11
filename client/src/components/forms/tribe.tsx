@@ -7,10 +7,11 @@ type TribeFormProps = {
   seasonId: number,
   tribeId?: number,
   onSubmitComplete: () => void
+  setTribeColor?: (color: string) => void
 }
 
 const TribeForm: React.FC<TribeFormProps> = ({
-  formType, seasonId, tribeId, onSubmitComplete
+  formType, seasonId, tribeId, onSubmitComplete, setTribeColor
 }) => {
   const [formData, setFormData] = useState<any>({
     name: '',
@@ -19,11 +20,17 @@ const TribeForm: React.FC<TribeFormProps> = ({
   })
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
+  const tribeCallback = (d: any) => {
+    setFormData(d)
+    if (setTribeColor)
+      setTribeColor(d.color)
+  }
+
   useEffect(() => {
     if (tribeId === 0) return
 
     if (formType === 'update' && tribeId) {
-      readTribe(tribeId, setFormData)
+      readTribe(tribeId, tribeCallback)
     }
   }, [tribeId, formType])
 

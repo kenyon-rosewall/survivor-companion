@@ -11,3 +11,10 @@ export async function updateTribe(
 ) {
   put(`/tribes/${tribeId}`, tribeData, callback)
 }
+
+export async function readTribeMembers(
+  tribeId: number,
+  callback: (d: any) => void
+) {
+  get(`/tribes/${tribeId}/members`, callback)
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Form } from 'react-bulma-components'
+import { createAdvantage, readAdvantage, readAdvantages, updateAdvantage } from '../../api'
 
 type AdvantageFormProps = {
   formType: string,
@@ -7,80 +8,71 @@ type AdvantageFormProps = {
   onSubmitComplete: (season: any) => void
 }
 
-const AdvantageForm: React.FC<AdvantageFormProps> = (props: AdvantageFormProps) => {
-  const buttonText = props.formType === 'update' ? 'Update Advantage' : 'Add Advantage'
-  const formDisabled = props.formType === 'update' && !props.advantageId
-  const [disableButton, setDisableButton] = useState<boolean>(false)
+const AdvantageForm: React.FC<AdvantageFormProps> = ({
+  formType, advantageId, onSubmitComplete
+}) => {
+  const [disableAjax, setDisableAjax] = useState<boolean>(false)
   const [formData, setFormData] = useState<any>({
     name: '',
     description: ''
   })
 
   useEffect(() => {
-    if (props.advantageId === 0) return
-    if (props.formType === 'update' && props.advantageId) {
-      fetch(`http://localhost:5000/advantages/${props.advantageId}`)
-      .then(response => response.json())
-      .then(data => {
-        setFormData(data.data)
-      })
-      .catch(err => console.error('Error fetching advantage:', err))
+    if (advantageId === 0) return
+
+    if (formType === 'update' && advantageId) {
+      readAdvantage(advantageId, setFormData)
     }
-  }, [props.advantageId, props.formType])
+  }, [advantageId, formType])
 
   const handleInputChange = (e: any) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleFormSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const formSubmitCallback = (d: any) => {
+    setDisableAjax(false)
+    onSubmitComplete(d)
+  }
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setDisableButton(true)
 
-    let url = `http://localhost:5000/advantages`
-    let method = 'POST'
-    if (props.formType === 'update') {
-      url = `http://localhost:5000/advantages/${props.advantageId}`
-      method = 'PUT'
+    if (disableAjax === true) return
+    setDisableAjax(true)
+
+    if (formType === 'update' && advantageId) {
+      updateAdvantage(advantageId, formData, formSubmitCallback)
+    } else {
+      createAdvantage(formData, formSubmitCallback)
     }
-
-    fetch(url, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      props.onSubmitComplete(data.data)
-      setDisableButton(false)
-    })
-    .catch(err => console.error('Error adding advantage:', err))
   }
 
   return (
-    <>
+    <form
+      onSubmit={handleFormSubmit}
+    >
       <Form.Field>
-        <Form.Label>Name</Form.Label>
+        <Form.Label>
+          Name
+        </Form.Label>
         <Form.Control>
           <Form.Input
             name="name"
             value={formData.name}
             onChange={handleInputChange}
-            disabled={formDisabled}
           />
         </Form.Control>
       </Form.Field>
 
       <Form.Field>
-        <Form.Label>Description</Form.Label>
+        <Form.Label>
+          Description
+        </Form.Label>
         <Form.Control>
           <Form.Textarea
             name="description"
             value={formData.description}
             onChange={handleInputChange}
-            disabled={formDisabled}
           />
         </Form.Control>
       </Form.Field>
@@ -88,13 +80,12 @@ const AdvantageForm: React.FC<AdvantageFormProps> = (props: AdvantageFormProps) 
       <Button
         color="primary"
         type="submit"
-        disabled={formDisabled || disableButton}
+        disabled={disableAjax}
         className='is-pulled-right'
-        onClick={handleFormSubmit}
       >
-        {buttonText}
+        { formType === 'update' ? 'Update Advantage' : 'Add Advantage' }
       </Button>
-    </>
+    </form>
   )
 }
 
