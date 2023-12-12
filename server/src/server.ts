@@ -44,7 +44,7 @@ router.use('/eliminations', eliminations)
 router.use('/advantageEvents', advantageEvents)
 router.use('/alliances', alliances)
 
-router.use((req, res, next) => {
+router.use((req, res) => {
   return res.status(404).json({
     message: `Not found`
   })

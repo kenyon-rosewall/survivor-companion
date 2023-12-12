@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import prismaClient from '../modules/prismaClient'
 
 const extractTribeData = (req: Request, seasonId?: number) => {
@@ -15,7 +15,7 @@ const extractTribeData = (req: Request, seasonId?: number) => {
   return data
 }
 
-const getTribes = async (req: Request, res: Response, next: NextFunction) => {
+const getTribes = async (req: Request, res: Response) => {
   const tribes = await prismaClient.tribe.findMany()
 
   return res.status(200).json({
@@ -23,11 +23,7 @@ const getTribes = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const getTribesBySeason = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getTribesBySeason = async (req: Request, res: Response) => {
   const seasonId: number = +req.params.seasonId
 
   if (seasonId > 0) {
@@ -45,7 +41,7 @@ const getTribesBySeason = async (
   })
 }
 
-const getTribe = async (req: Request, res: Response, next: NextFunction) => {
+const getTribe = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const tribe = await prismaClient.tribe.findUnique({
     where: { id: id }
@@ -62,7 +58,7 @@ const getTribe = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const updateTribe = async (req: Request, res: Response, next: NextFunction) => {
+const updateTribe = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const tribe = await prismaClient.tribe.findUnique({
     where: { id: id }
@@ -84,7 +80,7 @@ const updateTribe = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const deleteTribe = async (req: Request, res: Response, next: NextFunction) => {
+const deleteTribe = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const tribe = await prismaClient.tribe.delete({
     where: { id: id }
@@ -101,7 +97,7 @@ const deleteTribe = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const addTribe = async (req: Request, res: Response, next: NextFunction) => {
+const addTribe = async (req: Request, res: Response) => {
   const seasonId: number = +req.params.seasonId
   const season = await prismaClient.season.findUnique({
     where: { id: seasonId }
@@ -159,11 +155,7 @@ const getMembersFromEpisode = async (
   return []
 }
 
-const getTribeMembers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getTribeMembers = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const tribe = await prismaClient.tribe.findUnique({
     where: { id: id }

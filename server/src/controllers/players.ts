@@ -1,8 +1,7 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import Fuse from 'fuse.js'
 import prismaClient from '../modules/prismaClient'
 import * as fuseCache from '../modules/fuseCache'
-import dt from '../modules/date'
 
 const extractPlayerData = (req: Request) => ({
   name: req.body.name,
@@ -11,13 +10,13 @@ const extractPlayerData = (req: Request) => ({
   notes: req.body.notes
 })
 
-const getPlayers = async (req: Request, res: Response, next: NextFunction) => {
+const getPlayers = async (req: Request, res: Response) => {
   return res.status(200).json({
     data: fuseCache.getPlayerCache()
   })
 }
 
-const getPlayer = async (req: Request, res: Response, next: NextFunction) => {
+const getPlayer = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const player = await prismaClient.player.findUnique({
     where: { id: id }
@@ -34,11 +33,7 @@ const getPlayer = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const updatePlayer = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updatePlayer = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const player = await prismaClient.player.findUnique({
     where: { id: id }
@@ -62,11 +57,7 @@ const updatePlayer = async (
   })
 }
 
-const deletePlayer = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deletePlayer = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const deletedPlayer = await prismaClient.player.delete({
     where: { id: id }
@@ -85,7 +76,7 @@ const deletePlayer = async (
   })
 }
 
-const addPlayer = async (req: Request, res: Response, next: NextFunction) => {
+const addPlayer = async (req: Request, res: Response) => {
   const newPlayer = await prismaClient.player.create({
     data: extractPlayerData(req)
   })
@@ -97,11 +88,7 @@ const addPlayer = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const searchPlayers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const searchPlayers = async (req: Request, res: Response) => {
   const searchQuery: string = req.params.q as string
   const seasonId: number = Number(req.params.seasonId)
 

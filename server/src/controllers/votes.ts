@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import prismaClient from '../modules/prismaClient'
-import { exit } from 'process'
 
 const extractVoteData = (req: Request, votedForId?: number | undefined) => {
   const data: any = {
@@ -18,11 +17,7 @@ const extractVoteData = (req: Request, votedForId?: number | undefined) => {
   return data
 }
 
-const getVotesFromTribalCouncil = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getVotesFromTribalCouncil = async (req: Request, res: Response) => {
   const tribalCouncilId: number = Number(req.params.tribalCouncilId)
   const votes = await prismaClient.vote.findMany({
     where: { tribalCouncilId: tribalCouncilId }
@@ -33,7 +28,7 @@ const getVotesFromTribalCouncil = async (
   })
 }
 
-const deleteVote = async (req: Request, res: Response, next: NextFunction) => {
+const deleteVote = async (req: Request, res: Response) => {
   const voteId: number = Number(req.params.voteId)
   const vote = await prismaClient.vote.delete({
     where: {
@@ -52,7 +47,7 @@ const deleteVote = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const addVote = async (req: Request, res: Response, next: NextFunction) => {
+const addVote = async (req: Request, res: Response) => {
   const vote = await prismaClient.vote.create({
     data: extractVoteData(req, req.body.votedForId)
   })

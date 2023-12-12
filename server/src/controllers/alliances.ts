@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import prismaClient from '../modules/prismaClient'
 import legalColors from '../modules/colors'
 
@@ -45,11 +45,7 @@ const getAllianceColor = async (seasonId: number, color: string) => {
   return ''
 }
 
-const getAlliancesBySeason = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getAlliancesBySeason = async (req: Request, res: Response) => {
   const seasonId: number = Number(req.params.seasonId)
 
   if (seasonId > 0) {
@@ -74,7 +70,7 @@ const getAlliancesBySeason = async (
   })
 }
 
-const getAlliance = async (req: Request, res: Response, next: NextFunction) => {
+const getAlliance = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const alliance = await prismaClient.alliance.findUnique({
     where: { id: id },
@@ -98,11 +94,7 @@ const getAlliance = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const updateAlliance = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updateAlliance = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const alliance = await prismaClient.alliance.findUnique({
     where: { id: id }
@@ -126,11 +118,7 @@ const updateAlliance = async (
   })
 }
 
-const deleteAlliance = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deleteAlliance = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const alliance = await prismaClient.alliance.findUnique({
     where: { id: id },
@@ -140,7 +128,7 @@ const deleteAlliance = async (
   })
 
   if (alliance) {
-    const updatedAlliance = await prismaClient.alliance.update({
+    await prismaClient.alliance.update({
       where: { id: id },
       data: {
         alliancePlayers: {
@@ -167,7 +155,7 @@ const deleteAlliance = async (
   })
 }
 
-const addAlliance = async (req: Request, res: Response, next: NextFunction) => {
+const addAlliance = async (req: Request, res: Response) => {
   const seasonId: number = Number(req.params.seasonId)
   const color: string = await getAllianceColor(seasonId, req.body.color)
   const alliance = await prismaClient.alliance.create({
@@ -179,7 +167,7 @@ const addAlliance = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const addPlayer = async (req: Request, res: Response, next: NextFunction) => {
+const addPlayer = async (req: Request, res: Response) => {
   const allianceId: number = Number(req.params.id)
   const playerId: number = Number(req.body.playerId)
   const episodeId: number = Number(req.body.episodeId)
@@ -209,11 +197,7 @@ const addPlayer = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-const deletePlayer = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deletePlayer = async (req: Request, res: Response) => {
   const allianceId: number = Number(req.params.id)
   const playerId: number = Number(req.params.playerId)
   const alliance = await prismaClient.alliance.update({

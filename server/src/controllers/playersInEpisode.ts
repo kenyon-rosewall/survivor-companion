@@ -1,11 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import prismaClient from '../modules/prismaClient'
 
-const getPlayersInEpisode = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getPlayersInEpisode = async (req: Request, res: Response) => {
   const episodeId: number = +req.params.episodeId
   const playersInEpisode = await prismaClient.playerInEpisode.findMany({
     where: { episodeId: episodeId },
@@ -23,11 +19,7 @@ const getPlayersInEpisode = async (
   })
 }
 
-const getPlayerInEpisode = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getPlayerInEpisode = async (req: Request, res: Response) => {
   const playerInEpisodeId: number = +req.params.playerInEpisodeId
   const playerInEpisode = await prismaClient.playerInEpisode.findUnique({
     where: { id: playerInEpisodeId },
@@ -50,11 +42,7 @@ const getPlayerInEpisode = async (
   })
 }
 
-const updatePlayerInEpisode = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updatePlayerInEpisode = async (req: Request, res: Response) => {
   const playerInEpisodeId: number = Number(req.params.id)
   const playerInEpisode = await prismaClient.playerInEpisode.findUnique({
     where: { id: playerInEpisodeId }
@@ -91,7 +79,7 @@ const deletePlayersInEpisode = async (episodeId: number) => {
   })
 
   for (const playerInEpisode of playersInEpisode) {
-    const deletedVotes = await prismaClient.vote.deleteMany({
+    await prismaClient.vote.deleteMany({
       where: {
         OR: [
           { voterId: playerInEpisode.id },
@@ -100,7 +88,7 @@ const deletePlayersInEpisode = async (episodeId: number) => {
       }
     })
 
-    const updatedPlayerInEpisode = await prismaClient.playerInEpisode.update({
+    await prismaClient.playerInEpisode.update({
       where: { id: playerInEpisode.id },
       data: {
         advantages: {
@@ -120,17 +108,15 @@ const deletePlayersInEpisode = async (episodeId: number) => {
       }
     })
 
-    const deletedAdvantageEvents = await prismaClient.advantageEvent.deleteMany(
-      {
-        where: { playerInEpisodeId: playerInEpisode.id }
-      }
-    )
-
-    const deletedElminations = await prismaClient.elimination.deleteMany({
+    await prismaClient.advantageEvent.deleteMany({
       where: { playerInEpisodeId: playerInEpisode.id }
     })
 
-    const deletedPlayerInEpisode = await prismaClient.playerInEpisode.delete({
+    await prismaClient.elimination.deleteMany({
+      where: { playerInEpisodeId: playerInEpisode.id }
+    })
+
+    await prismaClient.playerInEpisode.delete({
       where: { id: playerInEpisode.id }
     })
   }
@@ -146,7 +132,7 @@ const importPlayersInEpisode = async (episodeId: number) => {
     })
     if (players) {
       for (const player of players) {
-        const playerInEpisode = await prismaClient.playerInEpisode.create({
+        await prismaClient.playerInEpisode.create({
           data: {
             playerId: player.playerId,
             episodeId: episodeId,
@@ -177,7 +163,7 @@ const copyPlayersInEpisode = async (episodeId: number) => {
 
   if (prevEpisode) {
     for (const playerInEpisode of prevEpisode.playersInEpisode) {
-      const player = await prismaClient.playerInEpisode.create({
+      await prismaClient.playerInEpisode.create({
         data: {
           playerId: playerInEpisode.playerId,
           episodeId: episodeId,
@@ -247,11 +233,7 @@ const initPlayersInEpisode = async (
   }
 }
 
-const getPlayingPlayersInEpisode = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getPlayingPlayersInEpisode = async (req: Request, res: Response) => {
   const episodeId: number = Number(req.params.episodeId)
 
   const players = await prismaClient.playerInEpisode.findMany({
@@ -273,7 +255,6 @@ export default {
   getPlayersInEpisode,
   getPlayerInEpisode,
   updatePlayerInEpisode,
-  // deletePlayerOnSeason,
   initPlayersInEpisode,
   getPlayingPlayersInEpisode
 }

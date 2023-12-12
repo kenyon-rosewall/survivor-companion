@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import prismaClient from '../modules/prismaClient'
 import dt from '../modules/date'
 
@@ -20,7 +20,7 @@ const extractEpisodeData = (req: Request, seasonId?: number) => {
   return data
 }
 
-const getEpisodes = async (req: Request, res: Response, next: NextFunction) => {
+const getEpisodes = async (req: Request, res: Response) => {
   const episodes = await prismaClient.episode.findMany()
 
   return res.status(200).json({
@@ -28,11 +28,7 @@ const getEpisodes = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const getEpisodesBySeason = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getEpisodesBySeason = async (req: Request, res: Response) => {
   const seasonId: number = +req.params.seasonId
 
   if (seasonId > 0) {
@@ -50,7 +46,7 @@ const getEpisodesBySeason = async (
   })
 }
 
-const getEpisode = async (req: Request, res: Response, next: NextFunction) => {
+const getEpisode = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const episode = await prismaClient.episode.findUnique({
     where: { id: id }
@@ -67,11 +63,7 @@ const getEpisode = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const updateEpisode = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updateEpisode = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const episode = await prismaClient.episode.findUnique({
     where: { id: id }
@@ -93,11 +85,7 @@ const updateEpisode = async (
   })
 }
 
-const deleteEpisode = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deleteEpisode = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const deletedEpisode = await prismaClient.episode.delete({
     where: { id: id }
@@ -114,7 +102,7 @@ const deleteEpisode = async (
   })
 }
 
-const addEpisode = async (req: Request, res: Response, next: NextFunction) => {
+const addEpisode = async (req: Request, res: Response) => {
   const episode = await prismaClient.episode.create({
     data: extractEpisodeData(req, +req.params.seasonId)
   })

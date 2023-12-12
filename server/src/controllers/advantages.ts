@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import prismaClient from '../modules/prismaClient'
 
 const extractAdvantageData = (req: Request) => ({
@@ -6,11 +6,7 @@ const extractAdvantageData = (req: Request) => ({
   description: req.body.description
 })
 
-const getAdvantages = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getAdvantages = async (req: Request, res: Response) => {
   const advantages = await prismaClient.advantage.findMany()
 
   return res.status(200).json({
@@ -18,11 +14,7 @@ const getAdvantages = async (
   })
 }
 
-const getAdvantage = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getAdvantage = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const advantage = await prismaClient.advantage.findUnique({
     where: { id: id }
@@ -39,11 +31,7 @@ const getAdvantage = async (
   })
 }
 
-const updateAdvantage = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updateAdvantage = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const advantage = await prismaClient.advantage.findUnique({
     where: { id: id }
@@ -65,11 +53,7 @@ const updateAdvantage = async (
   })
 }
 
-const deleteAdvantage = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deleteAdvantage = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const deletedAdvantage = await prismaClient.advantage.delete({
     where: { id: id }
@@ -86,11 +70,7 @@ const deleteAdvantage = async (
   })
 }
 
-const addAdvantage = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const addAdvantage = async (req: Request, res: Response) => {
   const newAdvantage = await prismaClient.advantage.create({
     data: extractAdvantageData(req)
   })

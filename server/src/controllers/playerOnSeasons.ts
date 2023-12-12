@@ -31,11 +31,7 @@ const extractPlayerData = (req: Request) => ({
   notes: req.body.playerNotes
 })
 
-const getPlayerOnSeasons = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getPlayerOnSeasons = async (req: Request, res: Response) => {
   const seasonId: number = +req.params.seasonId
   const playerOnSeasons = await prismaClient.playerOnSeason.findMany({
     where: { seasonId: seasonId },
@@ -48,11 +44,7 @@ const getPlayerOnSeasons = async (
   })
 }
 
-const getPlayerOnSeason = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getPlayerOnSeason = async (req: Request, res: Response) => {
   const seasonId: number = +req.params.seasonId
   const playerId: number = +req.params.playerId
   const playerOnSeason = await prismaClient.playerOnSeason.findUnique({
@@ -71,11 +63,7 @@ const getPlayerOnSeason = async (
   })
 }
 
-const updatePlayerOnSeason = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updatePlayerOnSeason = async (req: Request, res: Response) => {
   const seasonId: number = +req.params.seasonId
   const playerId: number = +req.params.playerId
   const playerOnSeason = await prismaClient.playerOnSeason.findUnique({
@@ -98,11 +86,7 @@ const updatePlayerOnSeason = async (
   })
 }
 
-const deletePlayerOnSeason = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deletePlayerOnSeason = async (req: Request, res: Response) => {
   const seasonId: number = +req.params.seasonId
   const playerId: number = +req.params.playerId
   const deletedPlayerOnSeason = await prismaClient.playerOnSeason.delete({

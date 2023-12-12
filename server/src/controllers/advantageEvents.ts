@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import prismaClient from '../modules/prismaClient'
-import players from './players'
 
 const extractAdvantageEventData = (req: Request) => ({
   playerInEpisodeId: Number(req.body.playerInEpisodeId),
@@ -9,11 +8,7 @@ const extractAdvantageEventData = (req: Request) => ({
   notes: req.body.notes
 })
 
-const getAdvantageEventsFromEpisode = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getAdvantageEventsFromEpisode = async (req: Request, res: Response) => {
   const episodeId: number = Number(req.params.episodeId)
   const playersInEpisode = await prismaClient.playerInEpisode.findMany({
     where: {
@@ -50,11 +45,7 @@ const getAdvantageEventsFromEpisode = async (
   })
 }
 
-const getAdvantageEvent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getAdvantageEvent = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const advantageEvent = await prismaClient.advantageEvent.findUnique({
     where: { id: id }
@@ -71,11 +62,7 @@ const getAdvantageEvent = async (
   })
 }
 
-const updateAdvantageEvent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updateAdvantageEvent = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const advantageEvent = await prismaClient.advantageEvent.findUnique({
     where: { id: id }
@@ -88,7 +75,7 @@ const updateAdvantageEvent = async (
     })
 
     return res.status(200).json({
-      data: updateAdvantageEvent
+      data: updatedAdvantageEvent
     })
   }
 
@@ -97,18 +84,14 @@ const updateAdvantageEvent = async (
   })
 }
 
-const deleteAdvantageEvent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deleteAdvantageEvent = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const advantageEvent = await prismaClient.advantageEvent.delete({
     where: { id: id }
   })
 
   if (advantageEvent) {
-    const updatedPlayerInEpisode = await prismaClient.playerInEpisode.update({
+    await prismaClient.playerInEpisode.update({
       where: { id: advantageEvent.playerInEpisodeId },
       data: {
         advantages: {
@@ -129,11 +112,7 @@ const deleteAdvantageEvent = async (
   })
 }
 
-const addAdvantageEvent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const addAdvantageEvent = async (req: Request, res: Response) => {
   const advantageEvent = await prismaClient.advantageEvent.create({
     data: extractAdvantageEventData(req)
   })

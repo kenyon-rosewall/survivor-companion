@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import prismaClient from '../modules/prismaClient'
 
 const extractEliminationData = (req: Request) => ({
@@ -8,11 +8,7 @@ const extractEliminationData = (req: Request) => ({
   notes: req.body.notes
 })
 
-const getEliminationsFromEpisode = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getEliminationsFromEpisode = async (req: Request, res: Response) => {
   const episodeId: number = Number(req.params.episodeId)
   const eliminatedPlayers = await prismaClient.playerInEpisode.findMany({
     where: {
@@ -49,11 +45,7 @@ const getEliminationsFromEpisode = async (
   })
 }
 
-const getElimination = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getElimination = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const elimination = await prismaClient.elimination.findUnique({
     where: { id: id }
@@ -70,11 +62,7 @@ const getElimination = async (
   })
 }
 
-const updateElimination = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updateElimination = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const elimination = await prismaClient.elimination.findUnique({
     where: { id: id }
@@ -96,18 +84,14 @@ const updateElimination = async (
   })
 }
 
-const deleteElimination = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deleteElimination = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const elimination = await prismaClient.elimination.delete({
     where: { id: id }
   })
 
   if (elimination) {
-    const playerInEpisode = await prismaClient.playerInEpisode.update({
+    prismaClient.playerInEpisode.update({
       where: { id: elimination.playerInEpisodeId },
       data: { status: 'playing' }
     })
@@ -122,11 +106,7 @@ const deleteElimination = async (
   })
 }
 
-const addElimination = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const addElimination = async (req: Request, res: Response) => {
   const elimination = await prismaClient.elimination.create({
     data: extractEliminationData(req)
   })
@@ -144,7 +124,7 @@ const addElimination = async (
       break
   }
 
-  const playerInEpisode = await prismaClient.playerInEpisode.update({
+  await prismaClient.playerInEpisode.update({
     where: { id: elimination.playerInEpisodeId },
     data: { status: newStatus }
   })
@@ -154,11 +134,7 @@ const addElimination = async (
   })
 }
 
-const getTotalEliminationCount = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getTotalEliminationCount = async (req: Request, res: Response) => {
   const seasonId: number = Number(req.params.seasonId)
   const eliminations = await prismaClient.elimination.findMany({
     where: {

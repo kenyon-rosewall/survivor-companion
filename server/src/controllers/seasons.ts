@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import prismaClient from '../modules/prismaClient'
 import dt from '../modules/date'
 
@@ -14,7 +14,7 @@ const extractSeasonData = (req: Request) => ({
   episodeCount: Number(req.body.episodeCount)
 })
 
-const getSeasons = async (req: Request, res: Response, next: NextFunction) => {
+const getSeasons = async (req: Request, res: Response) => {
   const seasons = await prismaClient.season.findMany({
     orderBy: { order: 'asc' }
   })
@@ -24,7 +24,7 @@ const getSeasons = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const getSeason = async (req: Request, res: Response, next: NextFunction) => {
+const getSeason = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const season = await prismaClient.season.findUnique({
     where: { id: id }
@@ -41,11 +41,7 @@ const getSeason = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const updateSeason = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updateSeason = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const season = await prismaClient.season.findUnique({
     where: { id: id }
@@ -67,11 +63,7 @@ const updateSeason = async (
   })
 }
 
-const deleteSeason = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deleteSeason = async (req: Request, res: Response) => {
   const id: number = +req.params.id
   const season = await prismaClient.season.delete({
     where: { id: id }
@@ -88,7 +80,7 @@ const deleteSeason = async (
   })
 }
 
-const addSeason = async (req: Request, res: Response, next: NextFunction) => {
+const addSeason = async (req: Request, res: Response) => {
   const season = await prismaClient.season.create({
     data: extractSeasonData(req)
   })

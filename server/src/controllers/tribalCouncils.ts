@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import prismaClient from '../modules/prismaClient'
 
 const extractTribalCouncilData = (req: Request) => ({
@@ -6,11 +6,7 @@ const extractTribalCouncilData = (req: Request) => ({
   notes: req.body.notes
 })
 
-const getTribalCouncilsFromEpisode = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getTribalCouncilsFromEpisode = async (req: Request, res: Response) => {
   const episodeId: number = Number(req.params.episodeId)
   const tribalCouncils = await prismaClient.tribalCouncil.findMany({
     where: { episodeId: episodeId }
@@ -21,11 +17,7 @@ const getTribalCouncilsFromEpisode = async (
   })
 }
 
-const getTribalCouncil = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getTribalCouncil = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const tribalCouncil = await prismaClient.tribalCouncil.findUnique({
     where: { id: id },
@@ -59,11 +51,7 @@ const getTribalCouncil = async (
   })
 }
 
-const updateTribalCouncil = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const updateTribalCouncil = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const tribalCouncil = await prismaClient.tribalCouncil.update({
     where: { id: id },
@@ -81,11 +69,7 @@ const updateTribalCouncil = async (
   })
 }
 
-const deleteTribalCouncil = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deleteTribalCouncil = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id)
   const tribalCouncil = await prismaClient.tribalCouncil.delete({
     where: { id: id }
@@ -102,11 +86,7 @@ const deleteTribalCouncil = async (
   })
 }
 
-const addTribalCouncil = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const addTribalCouncil = async (req: Request, res: Response) => {
   const tribalCouncil = await prismaClient.tribalCouncil.create({
     data: extractTribalCouncilData(req)
   })
@@ -116,7 +96,7 @@ const addTribalCouncil = async (
   })
 }
 
-const addTribe = async (req: Request, res: Response, next: NextFunction) => {
+const addTribe = async (req: Request, res: Response) => {
   const tribalCouncilId: number = Number(req.params.tribalCouncilId)
   const tribeId: number = Number(req.params.tribeId)
   const tribalCouncil = await prismaClient.tribalCouncil.update({
@@ -141,7 +121,7 @@ const addTribe = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const deleteTribe = async (req: Request, res: Response, next: NextFunction) => {
+const deleteTribe = async (req: Request, res: Response) => {
   const tribalCouncilId: number = Number(req.params.tribalCouncilId)
   const tribeId: number = Number(req.params.tribeId)
   const tribalCouncil = await prismaClient.tribalCouncil.update({
@@ -166,11 +146,7 @@ const deleteTribe = async (req: Request, res: Response, next: NextFunction) => {
   })
 }
 
-const getPlayersFromTribalCouncil = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getPlayersFromTribalCouncil = async (req: Request, res: Response) => {
   const tribalCouncilId: number = Number(req.params.tribalCouncilId)
   const tribalCouncil = await prismaClient.tribalCouncil.findUnique({
     where: { id: tribalCouncilId },
