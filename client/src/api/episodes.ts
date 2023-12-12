@@ -1,4 +1,4 @@
-import { get, post } from "./core"
+import { get, post } from './core'
 
 export async function readEpisode(
   episodeId: number,

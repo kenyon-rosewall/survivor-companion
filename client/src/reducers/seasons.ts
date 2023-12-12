@@ -1,11 +1,11 @@
-import { createReducer } from "@reduxjs/toolkit"
+import { createReducer } from '@reduxjs/toolkit'
 import {
   setSelectedSeason,
   setSelectedEpisode,
   setSelectedPlayer,
   setSelectedTribe,
-  setSelectedAdvantage,
-} from "../actions/seasons"
+  setSelectedAdvantage
+} from '../actions/seasons'
 
 interface SeasonsState {
   selectedSeason: number
@@ -20,7 +20,7 @@ const initialState: SeasonsState = {
   selectedEpisode: 0,
   selectedPlayer: 0,
   selectedTribe: 0,
-  selectedAdvantage: 0,
+  selectedAdvantage: 0
 }
 
 const seasonsReducer = createReducer(initialState, (builder) => {

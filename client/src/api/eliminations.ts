@@ -1,4 +1,4 @@
-import { del } from "./core"
+import { del } from './core'
 
 export async function deleteElimination(
   eliminationId: number,

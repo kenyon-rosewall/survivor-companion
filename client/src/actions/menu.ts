@@ -1,3 +1,3 @@
-import { createAction } from "@reduxjs/toolkit";
+import { createAction } from '@reduxjs/toolkit'
 
-export const setMenuItem = createAction<string>("menu/setMenuItem");
+export const setMenuItem = createAction<string>('menu/setMenuItem')

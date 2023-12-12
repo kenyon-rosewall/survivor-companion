@@ -1,4 +1,4 @@
-import { get, post, put } from "./core"
+import { get, post, put } from './core'
 
 export async function readAdvantages(callback: (data: any) => void) {
   return get(`/advantages`, callback)

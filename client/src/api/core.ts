@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000"
+const BASE_URL = 'http://localhost:5000'
 
 async function doFetch(
   url: string,
@@ -24,7 +24,7 @@ async function doFetch(
       callback(data.data)
     })
     .catch((error) => {
-      console.error("Error:", error)
+      console.error('Error:', error)
     })
 }
 
@@ -36,9 +36,9 @@ export async function post(url: string, body: any, callback: (d: any) => void) {
   doFetch(
     url,
     {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' }
     },
     callback
   )
@@ -48,14 +48,14 @@ export async function put(url: string, body: any, callback: (d: any) => void) {
   doFetch(
     url,
     {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' }
     },
     callback
   )
 }
 
 export async function del(url: string, callback: (d: any) => void) {
-  doFetch(url, { method: "DELETE" }, callback)
+  doFetch(url, { method: 'DELETE' }, callback)
 }

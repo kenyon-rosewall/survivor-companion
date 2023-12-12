@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from "express"
-import prismaClient from "../modules/prismaClient"
+import { Request, Response, NextFunction } from 'express'
+import prismaClient from '../modules/prismaClient'
 
 const extractEliminationData = (req: Request) => ({
   playerInEpisodeId: Number(req.body.playerInEpisodeId),
   order: Number(req.body.order),
   category: req.body.category,
-  notes: req.body.notes,
+  notes: req.body.notes
 })
 
 const getEliminationsFromEpisode = async (
@@ -17,35 +17,35 @@ const getEliminationsFromEpisode = async (
   const eliminatedPlayers = await prismaClient.playerInEpisode.findMany({
     where: {
       episodeId: episodeId,
-      status: { not: "playing" },
-    },
+      status: { not: 'playing' }
+    }
   })
 
   if (eliminatedPlayers.length > 0) {
     const eliminations = await prismaClient.elimination.findMany({
       where: {
         playerInEpisodeId: {
-          in: eliminatedPlayers.map((player) => player.id),
-        },
+          in: eliminatedPlayers.map((player) => player.id)
+        }
       },
       include: {
         playerInEpisode: {
           include: {
-            player: true,
-          },
-        },
-      },
+            player: true
+          }
+        }
+      }
     })
 
     if (eliminations) {
       return res.status(200).json({
-        data: eliminations,
+        data: eliminations
       })
     }
   }
 
   return res.status(200).json({
-    data: [],
+    data: []
   })
 }
 
@@ -56,17 +56,17 @@ const getElimination = async (
 ) => {
   const id: number = Number(req.params.id)
   const elimination = await prismaClient.elimination.findUnique({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (elimination) {
     return res.status(200).json({
-      data: elimination,
+      data: elimination
     })
   }
 
   return res.status(404).json({
-    data: `Elimination ${id} not found.`,
+    data: `Elimination ${id} not found.`
   })
 }
 
@@ -77,22 +77,22 @@ const updateElimination = async (
 ) => {
   const id: number = Number(req.params.id)
   const elimination = await prismaClient.elimination.findUnique({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (elimination) {
     const updatedElimination = await prismaClient.elimination.update({
       where: { id: id },
-      data: extractEliminationData(req),
+      data: extractEliminationData(req)
     })
 
     return res.status(200).json({
-      data: updatedElimination,
+      data: updatedElimination
     })
   }
 
   return res.status(404).json({
-    data: `Elimination ${id} not found.`,
+    data: `Elimination ${id} not found.`
   })
 }
 
@@ -103,22 +103,22 @@ const deleteElimination = async (
 ) => {
   const id: number = Number(req.params.id)
   const elimination = await prismaClient.elimination.delete({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (elimination) {
     const playerInEpisode = await prismaClient.playerInEpisode.update({
       where: { id: elimination.playerInEpisodeId },
-      data: { status: "playing" },
+      data: { status: 'playing' }
     })
 
     return res.status(200).json({
-      data: elimination,
+      data: elimination
     })
   }
 
   return res.status(404).json({
-    data: `Elimination ${id} not found.`,
+    data: `Elimination ${id} not found.`
   })
 }
 
@@ -128,29 +128,29 @@ const addElimination = async (
   next: NextFunction
 ) => {
   const elimination = await prismaClient.elimination.create({
-    data: extractEliminationData(req),
+    data: extractEliminationData(req)
   })
 
-  let newStatus = ""
+  let newStatus = ''
   switch (elimination.category) {
-    case "redemption":
-      newStatus = "redemption"
+    case 'redemption':
+      newStatus = 'redemption'
       break
-    case "edge":
-      newStatus = "edge"
+    case 'edge':
+      newStatus = 'edge'
       break
     default:
-      newStatus = "eliminated"
+      newStatus = 'eliminated'
       break
   }
 
   const playerInEpisode = await prismaClient.playerInEpisode.update({
     where: { id: elimination.playerInEpisodeId },
-    data: { status: newStatus },
+    data: { status: newStatus }
   })
 
   return res.status(201).json({
-    data: elimination,
+    data: elimination
   })
 }
 
@@ -164,17 +164,17 @@ const getTotalEliminationCount = async (
     where: {
       playerInEpisode: {
         episode: {
-          seasonId: seasonId,
-        },
-      },
+          seasonId: seasonId
+        }
+      }
     },
     select: {
-      id: true,
-    },
+      id: true
+    }
   })
 
   return res.status(200).json({
-    data: eliminations.length,
+    data: eliminations.length
   })
 }
 
@@ -184,5 +184,5 @@ export default {
   updateElimination,
   deleteElimination,
   addElimination,
-  getTotalEliminationCount,
+  getTotalEliminationCount
 }

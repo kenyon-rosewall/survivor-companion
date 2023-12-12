@@ -1,4 +1,4 @@
-import { get, post, put } from "./core"
+import { get, post, put } from './core'
 
 export async function readSeason(seasonId: number, callback: (d: any) => void) {
   get(`/seasons/${seasonId}`, callback)

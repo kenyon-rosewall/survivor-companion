@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express"
-import prismaClient from "../modules/prismaClient"
+import { Request, Response, NextFunction } from 'express'
+import prismaClient from '../modules/prismaClient'
 
 const getPlayersInEpisode = async (
   req: Request,
@@ -13,13 +13,13 @@ const getPlayersInEpisode = async (
       player: true,
       tribe: true,
       advantages: true,
-      alliances: true,
+      alliances: true
     },
-    orderBy: { player: { name: "asc" } },
+    orderBy: { player: { name: 'asc' } }
   })
 
   return res.status(200).json({
-    data: playersInEpisode,
+    data: playersInEpisode
   })
 }
 
@@ -35,18 +35,18 @@ const getPlayerInEpisode = async (
       player: true,
       tribe: true,
       advantages: true,
-      alliances: true,
-    },
+      alliances: true
+    }
   })
 
   if (playerInEpisode) {
     return res.status(200).json({
-      data: playerInEpisode,
+      data: playerInEpisode
     })
   }
 
   return res.status(404).json({
-    data: `Player ${playerInEpisodeId} not found.`,
+    data: `Player ${playerInEpisodeId} not found.`
   })
 }
 
@@ -57,7 +57,7 @@ const updatePlayerInEpisode = async (
 ) => {
   const playerInEpisodeId: number = Number(req.params.id)
   const playerInEpisode = await prismaClient.playerInEpisode.findUnique({
-    where: { id: playerInEpisodeId },
+    where: { id: playerInEpisodeId }
   })
 
   if (playerInEpisode) {
@@ -67,17 +67,17 @@ const updatePlayerInEpisode = async (
         status: req.body.status,
         tribeId: req.body.tribeId,
         shotInTheDark: req.body.shotInTheDark,
-        notes: req.body.notes,
-      },
+        notes: req.body.notes
+      }
     })
 
     return res.status(200).json({
-      data: updatedPlayerInEpisode,
+      data: updatedPlayerInEpisode
     })
   }
 
   return res.status(404).json({
-    data: `Player ${playerInEpisodeId} not found.`,
+    data: `Player ${playerInEpisodeId} not found.`
   })
 }
 
@@ -86,8 +86,8 @@ const deletePlayersInEpisode = async (episodeId: number) => {
     where: { episodeId: episodeId },
     include: {
       advantages: true,
-      alliances: true,
-    },
+      alliances: true
+    }
   })
 
   for (const playerInEpisode of playersInEpisode) {
@@ -95,9 +95,9 @@ const deletePlayersInEpisode = async (episodeId: number) => {
       where: {
         OR: [
           { voterId: playerInEpisode.id },
-          { votedForId: playerInEpisode.id },
-        ],
-      },
+          { votedForId: playerInEpisode.id }
+        ]
+      }
     })
 
     const updatedPlayerInEpisode = await prismaClient.playerInEpisode.update({
@@ -106,43 +106,43 @@ const deletePlayersInEpisode = async (episodeId: number) => {
         advantages: {
           disconnect: playerInEpisode.advantages.map((advantage) => {
             return {
-              id: advantage.id,
+              id: advantage.id
             }
-          }),
+          })
         },
         alliances: {
           disconnect: playerInEpisode.alliances.map((alliance) => {
             return {
-              id: alliance.id,
+              id: alliance.id
             }
-          }),
-        },
-      },
+          })
+        }
+      }
     })
 
     const deletedAdvantageEvents = await prismaClient.advantageEvent.deleteMany(
       {
-        where: { playerInEpisodeId: playerInEpisode.id },
+        where: { playerInEpisodeId: playerInEpisode.id }
       }
     )
 
     const deletedElminations = await prismaClient.elimination.deleteMany({
-      where: { playerInEpisodeId: playerInEpisode.id },
+      where: { playerInEpisodeId: playerInEpisode.id }
     })
 
     const deletedPlayerInEpisode = await prismaClient.playerInEpisode.delete({
-      where: { id: playerInEpisode.id },
+      where: { id: playerInEpisode.id }
     })
   }
 }
 
 const importPlayersInEpisode = async (episodeId: number) => {
   const episode = await prismaClient.episode.findUnique({
-    where: { id: episodeId },
+    where: { id: episodeId }
   })
   if (episode) {
     const players = await prismaClient.playerOnSeason.findMany({
-      where: { seasonId: episode.seasonId },
+      where: { seasonId: episode.seasonId }
     })
     if (players) {
       for (const player of players) {
@@ -150,9 +150,9 @@ const importPlayersInEpisode = async (episodeId: number) => {
           data: {
             playerId: player.playerId,
             episodeId: episodeId,
-            status: "playing",
-            shotInTheDark: true,
-          },
+            status: 'playing',
+            shotInTheDark: true
+          }
         })
       }
     }
@@ -169,10 +169,10 @@ const copyPlayersInEpisode = async (episodeId: number) => {
           player: true,
           tribe: true,
           advantages: true,
-          alliances: true,
-        },
-      },
-    },
+          alliances: true
+        }
+      }
+    }
   })
 
   if (prevEpisode) {
@@ -187,18 +187,18 @@ const copyPlayersInEpisode = async (episodeId: number) => {
           advantages: {
             connect: playerInEpisode.advantages.map((advantage) => {
               return {
-                id: advantage.id,
+                id: advantage.id
               }
-            }),
+            })
           },
           alliances: {
             connect: playerInEpisode.alliances.map((alliance) => {
               return {
-                id: alliance.id,
+                id: alliance.id
               }
-            }),
-          },
-        },
+            })
+          }
+        }
       })
     }
   }
@@ -227,20 +227,20 @@ const initPlayersInEpisode = async (
         player: true,
         tribe: true,
         advantages: true,
-        alliances: true,
+        alliances: true
       },
       orderBy: [
         {
-          status: "desc",
+          status: 'desc'
         },
         {
-          player: { id: "asc" },
-        },
-      ],
+          player: { id: 'asc' }
+        }
+      ]
     })
 
     return res.status(201).json({
-      data: playersInEpisode,
+      data: playersInEpisode
     })
   } catch (err) {
     next(err)
@@ -258,14 +258,14 @@ const getPlayingPlayersInEpisode = async (
     where: {
       episodeId: episodeId,
       status: {
-        not: "eliminated",
-      },
+        not: 'eliminated'
+      }
     },
-    include: { player: true },
+    include: { player: true }
   })
 
   return res.status(200).json({
-    data: players,
+    data: players
   })
 }
 
@@ -275,5 +275,5 @@ export default {
   updatePlayerInEpisode,
   // deletePlayerOnSeason,
   initPlayersInEpisode,
-  getPlayingPlayersInEpisode,
+  getPlayingPlayersInEpisode
 }

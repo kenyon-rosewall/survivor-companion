@@ -1,4 +1,4 @@
-import { get, post, del } from "./core"
+import { get, post, del } from './core'
 
 export async function createAlliancePlayer(
   allianceId: number,

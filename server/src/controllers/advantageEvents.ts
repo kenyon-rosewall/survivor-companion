@@ -1,12 +1,12 @@
-import { Request, Response, NextFunction } from "express"
-import prismaClient from "../modules/prismaClient"
-import players from "./players"
+import { Request, Response, NextFunction } from 'express'
+import prismaClient from '../modules/prismaClient'
+import players from './players'
 
 const extractAdvantageEventData = (req: Request) => ({
   playerInEpisodeId: Number(req.body.playerInEpisodeId),
   advantageId: Number(req.body.advantageId),
   category: req.body.category,
-  notes: req.body.notes,
+  notes: req.body.notes
 })
 
 const getAdvantageEventsFromEpisode = async (
@@ -17,36 +17,36 @@ const getAdvantageEventsFromEpisode = async (
   const episodeId: number = Number(req.params.episodeId)
   const playersInEpisode = await prismaClient.playerInEpisode.findMany({
     where: {
-      episodeId: episodeId,
-    },
+      episodeId: episodeId
+    }
   })
 
   if (playersInEpisode.length > 0) {
     const advantageEvents = await prismaClient.advantageEvent.findMany({
       where: {
         playerInEpisodeId: {
-          in: playersInEpisode.map((player) => player.id),
-        },
+          in: playersInEpisode.map((player) => player.id)
+        }
       },
       include: {
         playerInEpisode: {
           include: {
-            player: true,
-          },
+            player: true
+          }
         },
-        advantage: true,
-      },
+        advantage: true
+      }
     })
 
     if (advantageEvents) {
       return res.status(200).json({
-        data: advantageEvents,
+        data: advantageEvents
       })
     }
   }
 
   return res.status(200).json({
-    data: [],
+    data: []
   })
 }
 
@@ -57,17 +57,17 @@ const getAdvantageEvent = async (
 ) => {
   const id: number = Number(req.params.id)
   const advantageEvent = await prismaClient.advantageEvent.findUnique({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (advantageEvent) {
     return res.status(200).json({
-      data: advantageEvent,
+      data: advantageEvent
     })
   }
 
   return res.status(404).json({
-    data: `Advantage Event ${id} not found.`,
+    data: `Advantage Event ${id} not found.`
   })
 }
 
@@ -78,22 +78,22 @@ const updateAdvantageEvent = async (
 ) => {
   const id: number = Number(req.params.id)
   const advantageEvent = await prismaClient.advantageEvent.findUnique({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (advantageEvent) {
     const updatedAdvantageEvent = await prismaClient.advantageEvent.update({
       where: { id: id },
-      data: extractAdvantageEventData(req),
+      data: extractAdvantageEventData(req)
     })
 
     return res.status(200).json({
-      data: updateAdvantageEvent,
+      data: updateAdvantageEvent
     })
   }
 
   return res.status(404).json({
-    data: `Advantage Event ${id} not found.`,
+    data: `Advantage Event ${id} not found.`
   })
 }
 
@@ -104,7 +104,7 @@ const deleteAdvantageEvent = async (
 ) => {
   const id: number = Number(req.params.id)
   const advantageEvent = await prismaClient.advantageEvent.delete({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (advantageEvent) {
@@ -113,19 +113,19 @@ const deleteAdvantageEvent = async (
       data: {
         advantages: {
           disconnect: {
-            id: advantageEvent.advantageId,
-          },
-        },
-      },
+            id: advantageEvent.advantageId
+          }
+        }
+      }
     })
 
     return res.status(200).json({
-      data: advantageEvent,
+      data: advantageEvent
     })
   }
 
   return res.status(404).json({
-    data: `Advantage Event ${id} not found.`,
+    data: `Advantage Event ${id} not found.`
   })
 }
 
@@ -135,49 +135,49 @@ const addAdvantageEvent = async (
   next: NextFunction
 ) => {
   const advantageEvent = await prismaClient.advantageEvent.create({
-    data: extractAdvantageEventData(req),
+    data: extractAdvantageEventData(req)
   })
 
   if (advantageEvent) {
     const playerInEpisodeId: number = advantageEvent.playerInEpisodeId
     const playerInEpisode = await prismaClient.playerInEpisode.findUnique({
-      where: { id: playerInEpisodeId },
+      where: { id: playerInEpisodeId }
     })
 
     if (playerInEpisode) {
       switch (advantageEvent.category) {
-        case "obtained":
+        case 'obtained':
           await prismaClient.playerInEpisode.update({
             where: { id: playerInEpisodeId },
             data: {
               advantages: {
                 connect: {
-                  id: advantageEvent.advantageId,
-                },
-              },
-            },
+                  id: advantageEvent.advantageId
+                }
+              }
+            }
           })
           break
-        case "played":
-        case "transferred":
-        case "lost":
-        case "expired":
+        case 'played':
+        case 'transferred':
+        case 'lost':
+        case 'expired':
           await prismaClient.playerInEpisode.update({
             where: { id: playerInEpisodeId },
             data: {
               advantages: {
                 disconnect: {
-                  id: advantageEvent.advantageId,
-                },
-              },
-            },
+                  id: advantageEvent.advantageId
+                }
+              }
+            }
           })
           break
       }
     }
 
     return res.status(201).json({
-      data: advantageEvent,
+      data: advantageEvent
     })
   }
 }
@@ -187,5 +187,5 @@ export default {
   getAdvantageEvent,
   updateAdvantageEvent,
   deleteAdvantageEvent,
-  addAdvantageEvent,
+  addAdvantageEvent
 }

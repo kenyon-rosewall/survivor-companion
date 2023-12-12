@@ -1,4 +1,4 @@
-import { put } from "./core"
+import { put } from './core'
 
 export async function updatePlayerInEpisode(
   playerInEpisodeId: number,

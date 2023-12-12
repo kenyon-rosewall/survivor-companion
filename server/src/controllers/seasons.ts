@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express"
-import prismaClient from "../modules/prismaClient"
-import dt from "../modules/date"
+import { Request, Response, NextFunction } from 'express'
+import prismaClient from '../modules/prismaClient'
+import dt from '../modules/date'
 
 const extractSeasonData = (req: Request) => ({
   order: Number(req.body.order),
@@ -11,33 +11,33 @@ const extractSeasonData = (req: Request) => ({
   airingEnd: dt.parse(req.body.airingEnd),
   rating: req.body.rating,
   notes: req.body.notes,
-  episodeCount: Number(req.body.episodeCount),
+  episodeCount: Number(req.body.episodeCount)
 })
 
 const getSeasons = async (req: Request, res: Response, next: NextFunction) => {
   const seasons = await prismaClient.season.findMany({
-    orderBy: { order: "asc" },
+    orderBy: { order: 'asc' }
   })
 
   return res.status(200).json({
-    data: seasons,
+    data: seasons
   })
 }
 
 const getSeason = async (req: Request, res: Response, next: NextFunction) => {
   const id: number = +req.params.id
   const season = await prismaClient.season.findUnique({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (season) {
     return res.status(200).json({
-      data: season,
+      data: season
     })
   }
 
   return res.status(404).json({
-    data: `Season ${id} not found.`,
+    data: `Season ${id} not found.`
   })
 }
 
@@ -48,22 +48,22 @@ const updateSeason = async (
 ) => {
   const id: number = +req.params.id
   const season = await prismaClient.season.findUnique({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (season) {
     const updatedSeason = await prismaClient.season.update({
       where: { id: id },
-      data: extractSeasonData(req),
+      data: extractSeasonData(req)
     })
 
     return res.status(200).json({
-      data: updatedSeason,
+      data: updatedSeason
     })
   }
 
   return res.status(404).json({
-    data: `Season ${id} not found.`,
+    data: `Season ${id} not found.`
   })
 }
 
@@ -74,27 +74,27 @@ const deleteSeason = async (
 ) => {
   const id: number = +req.params.id
   const season = await prismaClient.season.delete({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (season) {
     return res.status(200).json({
-      data: season,
+      data: season
     })
   }
 
   return res.status(404).json({
-    data: `Season ${id} not found.`,
+    data: `Season ${id} not found.`
   })
 }
 
 const addSeason = async (req: Request, res: Response, next: NextFunction) => {
   const season = await prismaClient.season.create({
-    data: extractSeasonData(req),
+    data: extractSeasonData(req)
   })
 
   return res.status(201).json({
-    data: season,
+    data: season
   })
 }
 

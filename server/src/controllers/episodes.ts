@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express"
-import prismaClient from "../modules/prismaClient"
-import dt from "../modules/date"
+import { Request, Response, NextFunction } from 'express'
+import prismaClient from '../modules/prismaClient'
+import dt from '../modules/date'
 
 const extractEpisodeData = (req: Request, seasonId?: number) => {
   const data: any = {
@@ -10,10 +10,10 @@ const extractEpisodeData = (req: Request, seasonId?: number) => {
     premiere: req.body.premiere,
     merge: req.body.merge,
     final: req.body.final,
-    notes: req.body.notes,
+    notes: req.body.notes
   }
 
-  if (typeof seasonId !== "undefined") {
+  if (typeof seasonId !== 'undefined') {
     data.seasonId = seasonId
   }
 
@@ -24,7 +24,7 @@ const getEpisodes = async (req: Request, res: Response, next: NextFunction) => {
   const episodes = await prismaClient.episode.findMany()
 
   return res.status(200).json({
-    data: episodes,
+    data: episodes
   })
 }
 
@@ -37,33 +37,33 @@ const getEpisodesBySeason = async (
 
   if (seasonId > 0) {
     const episodes = await prismaClient.episode.findMany({
-      where: { seasonId: seasonId },
+      where: { seasonId: seasonId }
     })
 
     return res.status(200).json({
-      data: episodes,
+      data: episodes
     })
   }
 
   return res.status(404).json({
-    data: `Season ${seasonId} not found.`,
+    data: `Season ${seasonId} not found.`
   })
 }
 
 const getEpisode = async (req: Request, res: Response, next: NextFunction) => {
   const id: number = +req.params.id
   const episode = await prismaClient.episode.findUnique({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (episode) {
     return res.status(200).json({
-      data: episode,
+      data: episode
     })
   }
 
   return res.status(404).json({
-    data: `Episode ${id} not found.`,
+    data: `Episode ${id} not found.`
   })
 }
 
@@ -74,22 +74,22 @@ const updateEpisode = async (
 ) => {
   const id: number = +req.params.id
   const episode = await prismaClient.episode.findUnique({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (episode) {
     const updatedEpisode = await prismaClient.episode.update({
       where: { id: id },
-      data: extractEpisodeData(req),
+      data: extractEpisodeData(req)
     })
 
     return res.status(200).json({
-      data: updatedEpisode,
+      data: updatedEpisode
     })
   }
 
   return res.status(404).json({
-    data: `Episode ${id} not found.`,
+    data: `Episode ${id} not found.`
   })
 }
 
@@ -100,39 +100,39 @@ const deleteEpisode = async (
 ) => {
   const id: number = +req.params.id
   const deletedEpisode = await prismaClient.episode.delete({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (deletedEpisode) {
     return res.status(200).json({
-      data: deletedEpisode,
+      data: deletedEpisode
     })
   }
 
   return res.status(404).json({
-    data: `Episode ${id} not found.`,
+    data: `Episode ${id} not found.`
   })
 }
 
 const addEpisode = async (req: Request, res: Response, next: NextFunction) => {
   const episode = await prismaClient.episode.create({
-    data: extractEpisodeData(req, +req.params.seasonId),
+    data: extractEpisodeData(req, +req.params.seasonId)
   })
 
   const season = await prismaClient.season.findUnique({
-    where: { id: +req.params.seasonId },
+    where: { id: +req.params.seasonId }
   })
   if (season) {
     await prismaClient.season.update({
       where: { id: +req.params.seasonId },
       data: {
-        episodeCount: +season.episodeCount + 1,
-      },
+        episodeCount: +season.episodeCount + 1
+      }
     })
   }
 
   return res.status(201).json({
-    data: episode,
+    data: episode
   })
 }
 
@@ -142,5 +142,5 @@ export default {
   getEpisode,
   updateEpisode,
   deleteEpisode,
-  addEpisode,
+  addEpisode
 }

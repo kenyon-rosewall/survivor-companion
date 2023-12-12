@@ -1,47 +1,47 @@
-import express from "express"
-import episodeController from "../controllers/episodes"
-import playerInEpisodeController from "../controllers/playersInEpisode"
-import tribalCouncilController from "../controllers/tribalCouncils"
-import eliminationController from "../controllers/eliminations"
-import advantageEventController from "../controllers/advantageEvents"
+import express from 'express'
+import episodeController from '../controllers/episodes'
+import playerInEpisodeController from '../controllers/playersInEpisode'
+import tribalCouncilController from '../controllers/tribalCouncils'
+import eliminationController from '../controllers/eliminations'
+import advantageEventController from '../controllers/advantageEvents'
 const router = express.Router()
 
-router.get("/", episodeController.getEpisodes)
-router.get("/:id", episodeController.getEpisode)
-router.put("/:id", episodeController.updateEpisode)
-router.delete("/:id", episodeController.deleteEpisode)
+router.get('/', episodeController.getEpisodes)
+router.get('/:id', episodeController.getEpisode)
+router.put('/:id', episodeController.updateEpisode)
+router.delete('/:id', episodeController.deleteEpisode)
 
-router.get("/:episodeId/players", playerInEpisodeController.getPlayersInEpisode)
+router.get('/:episodeId/players', playerInEpisodeController.getPlayersInEpisode)
 router.get(
-  "/:episodeId/players/playing",
+  '/:episodeId/players/playing',
   playerInEpisodeController.getPlayingPlayersInEpisode
 )
 router.post(
-  "/:episodeId/players",
+  '/:episodeId/players',
   playerInEpisodeController.initPlayersInEpisode
 )
 
 router.get(
-  "/:episodeId/tribalCouncils",
+  '/:episodeId/tribalCouncils',
   tribalCouncilController.getTribalCouncilsFromEpisode
 )
 router.post(
-  "/:episodeId/tribalCouncils",
+  '/:episodeId/tribalCouncils',
   tribalCouncilController.addTribalCouncil
 )
 
 router.get(
-  "/:episodeId/eliminations",
+  '/:episodeId/eliminations',
   eliminationController.getEliminationsFromEpisode
 )
-router.post("/:episodeId/eliminations", eliminationController.addElimination)
+router.post('/:episodeId/eliminations', eliminationController.addElimination)
 
 router.get(
-  "/:episodeId/advantageEvents",
+  '/:episodeId/advantageEvents',
   advantageEventController.getAdvantageEventsFromEpisode
 )
 router.post(
-  "/:episodeId/advantageEvents",
+  '/:episodeId/advantageEvents',
   advantageEventController.addAdvantageEvent
 )
 

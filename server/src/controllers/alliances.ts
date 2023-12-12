@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express"
-import prismaClient from "../modules/prismaClient"
-import legalColors from "../modules/colors"
+import { Request, Response, NextFunction } from 'express'
+import prismaClient from '../modules/prismaClient'
+import legalColors from '../modules/colors'
 
 const extractAllianceData = (
   req: Request,
@@ -10,10 +10,10 @@ const extractAllianceData = (
   const data: any = {
     name: req.body.name,
     color: color,
-    notes: req.body.notes,
+    notes: req.body.notes
   }
 
-  if (typeof seasonId !== "undefined") {
+  if (typeof seasonId !== 'undefined') {
     data.seasonId = seasonId
   }
 
@@ -21,11 +21,11 @@ const extractAllianceData = (
 }
 
 const getAllianceColor = async (seasonId: number, color: string) => {
-  if (color !== "") return color
+  if (color !== '') return color
 
   const tribeColors = await prismaClient.tribe.findMany({
     where: { seasonId: seasonId },
-    select: { color: true },
+    select: { color: true }
   })
 
   if (tribeColors.length > 0) {
@@ -42,7 +42,7 @@ const getAllianceColor = async (seasonId: number, color: string) => {
     }
   }
 
-  return ""
+  return ''
 }
 
 const getAlliancesBySeason = async (
@@ -58,19 +58,19 @@ const getAlliancesBySeason = async (
       include: {
         alliancePlayers: {
           include: {
-            player: true,
-          },
-        },
-      },
+            player: true
+          }
+        }
+      }
     })
 
     return res.status(200).json({
-      data: alliances,
+      data: alliances
     })
   }
 
   return res.status(404).json({
-    data: `Season ${seasonId} not found.`,
+    data: `Season ${seasonId} not found.`
   })
 }
 
@@ -81,20 +81,20 @@ const getAlliance = async (req: Request, res: Response, next: NextFunction) => {
     include: {
       alliancePlayers: {
         include: {
-          player: true,
-        },
-      },
-    },
+          player: true
+        }
+      }
+    }
   })
 
   if (alliance) {
     return res.status(200).json({
-      data: alliance,
+      data: alliance
     })
   }
 
   return res.status(404).json({
-    data: `Alliance ${id} not found.`,
+    data: `Alliance ${id} not found.`
   })
 }
 
@@ -105,7 +105,7 @@ const updateAlliance = async (
 ) => {
   const id: number = Number(req.params.id)
   const alliance = await prismaClient.alliance.findUnique({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (alliance) {
@@ -113,16 +113,16 @@ const updateAlliance = async (
     const color: string = await getAllianceColor(seasonId, req.body.color)
     const updatedAlliance = await prismaClient.alliance.update({
       where: { id: id },
-      data: extractAllianceData(req, color, seasonId),
+      data: extractAllianceData(req, color, seasonId)
     })
 
     return res.status(200).json({
-      data: updatedAlliance,
+      data: updatedAlliance
     })
   }
 
   return res.status(404).json({
-    data: `Alliance ${id} not found.`,
+    data: `Alliance ${id} not found.`
   })
 }
 
@@ -135,8 +135,8 @@ const deleteAlliance = async (
   const alliance = await prismaClient.alliance.findUnique({
     where: { id: id },
     include: {
-      alliancePlayers: true,
-    },
+      alliancePlayers: true
+    }
   })
 
   if (alliance) {
@@ -145,25 +145,25 @@ const deleteAlliance = async (
       data: {
         alliancePlayers: {
           disconnect: alliance.alliancePlayers.map((player) => ({
-            id: player.id,
-          })),
-        },
-      },
+            id: player.id
+          }))
+        }
+      }
     })
 
     const deletedAlliance = await prismaClient.alliance.delete({
-      where: { id: id },
+      where: { id: id }
     })
 
     if (deletedAlliance) {
       return res.status(200).json({
-        data: deletedAlliance,
+        data: deletedAlliance
       })
     }
   }
 
   return res.status(404).json({
-    data: `Alliance ${id} not found.`,
+    data: `Alliance ${id} not found.`
   })
 }
 
@@ -171,11 +171,11 @@ const addAlliance = async (req: Request, res: Response, next: NextFunction) => {
   const seasonId: number = Number(req.params.seasonId)
   const color: string = await getAllianceColor(seasonId, req.body.color)
   const alliance = await prismaClient.alliance.create({
-    data: extractAllianceData(req, color, seasonId),
+    data: extractAllianceData(req, color, seasonId)
   })
 
   return res.status(201).json({
-    data: alliance,
+    data: alliance
   })
 }
 
@@ -187,8 +187,8 @@ const addPlayer = async (req: Request, res: Response, next: NextFunction) => {
   const playerInEpisode = await prismaClient.playerInEpisode.findMany({
     where: {
       episodeId: episodeId,
-      playerId: playerId,
-    },
+      playerId: playerId
+    }
   })
 
   if (playerInEpisode && playerInEpisode.length === 1) {
@@ -197,14 +197,14 @@ const addPlayer = async (req: Request, res: Response, next: NextFunction) => {
       data: {
         alliancePlayers: {
           connect: {
-            id: playerInEpisode[0].id,
-          },
-        },
-      },
+            id: playerInEpisode[0].id
+          }
+        }
+      }
     })
 
     return res.status(201).json({
-      data: alliance,
+      data: alliance
     })
   }
 }
@@ -218,25 +218,25 @@ const deletePlayer = async (
   const playerId: number = Number(req.params.playerId)
   const alliance = await prismaClient.alliance.update({
     where: {
-      id: allianceId,
+      id: allianceId
     },
     data: {
       alliancePlayers: {
         disconnect: {
-          id: playerId,
-        },
-      },
-    },
+          id: playerId
+        }
+      }
+    }
   })
 
   if (alliance) {
     return res.status(200).json({
-      data: alliance,
+      data: alliance
     })
   }
 
   return res.status(404).json({
-    data: `Player ${playerId} not found in alliance ${allianceId}.`,
+    data: `Player ${playerId} not found in alliance ${allianceId}.`
   })
 }
 
@@ -247,5 +247,5 @@ export default {
   deleteAlliance,
   addAlliance,
   addPlayer,
-  deletePlayer,
+  deletePlayer
 }

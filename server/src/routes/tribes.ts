@@ -1,12 +1,12 @@
-import express from "express"
-import controller from "../controllers/tribes"
+import express from 'express'
+import controller from '../controllers/tribes'
 const router = express.Router()
 
-router.get("/", controller.getTribes)
-router.get("/:id", controller.getTribe)
-router.put("/:id", controller.updateTribe)
-router.delete("/:id", controller.deleteTribe)
+router.get('/', controller.getTribes)
+router.get('/:id', controller.getTribe)
+router.put('/:id', controller.updateTribe)
+router.delete('/:id', controller.deleteTribe)
 
-router.get("/:id/members", controller.getTribeMembers)
+router.get('/:id/members', controller.getTribeMembers)
 
 export = router

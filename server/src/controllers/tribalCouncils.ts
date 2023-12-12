@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from "express"
-import prismaClient from "../modules/prismaClient"
+import { Request, Response, NextFunction } from 'express'
+import prismaClient from '../modules/prismaClient'
 
 const extractTribalCouncilData = (req: Request) => ({
   episodeId: req.body.episodeId,
-  notes: req.body.notes,
+  notes: req.body.notes
 })
 
 const getTribalCouncilsFromEpisode = async (
@@ -13,11 +13,11 @@ const getTribalCouncilsFromEpisode = async (
 ) => {
   const episodeId: number = Number(req.params.episodeId)
   const tribalCouncils = await prismaClient.tribalCouncil.findMany({
-    where: { episodeId: episodeId },
+    where: { episodeId: episodeId }
   })
 
   return res.status(200).json({
-    data: tribalCouncils,
+    data: tribalCouncils
   })
 }
 
@@ -34,28 +34,28 @@ const getTribalCouncil = async (
         include: {
           voter: {
             include: {
-              player: true,
-            },
+              player: true
+            }
           },
           votedFor: {
             include: {
-              player: true,
-            },
-          },
-        },
+              player: true
+            }
+          }
+        }
       },
-      tribes: true,
-    },
+      tribes: true
+    }
   })
 
   if (tribalCouncil) {
     return res.status(200).json({
-      data: tribalCouncil,
+      data: tribalCouncil
     })
   }
 
   return res.status(404).json({
-    data: `Tribal Council ${id} not found.`,
+    data: `Tribal Council ${id} not found.`
   })
 }
 
@@ -67,17 +67,17 @@ const updateTribalCouncil = async (
   const id: number = Number(req.params.id)
   const tribalCouncil = await prismaClient.tribalCouncil.update({
     where: { id: id },
-    data: extractTribalCouncilData(req),
+    data: extractTribalCouncilData(req)
   })
 
   if (tribalCouncil) {
     return res.status(200).json({
-      data: tribalCouncil,
+      data: tribalCouncil
     })
   }
 
   return res.status(404).json({
-    data: `Tribal Council ${id} not found.`,
+    data: `Tribal Council ${id} not found.`
   })
 }
 
@@ -88,17 +88,17 @@ const deleteTribalCouncil = async (
 ) => {
   const id: number = Number(req.params.id)
   const tribalCouncil = await prismaClient.tribalCouncil.delete({
-    where: { id: id },
+    where: { id: id }
   })
 
   if (tribalCouncil) {
     return res.status(200).json({
-      data: tribalCouncil,
+      data: tribalCouncil
     })
   }
 
   return res.status(404).json({
-    data: `Tribal Council ${id} not found.`,
+    data: `Tribal Council ${id} not found.`
   })
 }
 
@@ -108,11 +108,11 @@ const addTribalCouncil = async (
   next: NextFunction
 ) => {
   const tribalCouncil = await prismaClient.tribalCouncil.create({
-    data: extractTribalCouncilData(req),
+    data: extractTribalCouncilData(req)
   })
 
   return res.status(201).json({
-    data: tribalCouncil,
+    data: tribalCouncil
   })
 }
 
@@ -124,20 +124,20 @@ const addTribe = async (req: Request, res: Response, next: NextFunction) => {
     data: {
       tribes: {
         connect: {
-          id: tribeId,
-        },
-      },
-    },
+          id: tribeId
+        }
+      }
+    }
   })
 
   if (tribalCouncil) {
     return res.status(201).json({
-      data: tribalCouncil,
+      data: tribalCouncil
     })
   }
 
   return res.status(404).json({
-    data: `Tribal Council ${tribalCouncilId} not found.`,
+    data: `Tribal Council ${tribalCouncilId} not found.`
   })
 }
 
@@ -149,20 +149,20 @@ const deleteTribe = async (req: Request, res: Response, next: NextFunction) => {
     data: {
       tribes: {
         disconnect: {
-          id: tribeId,
-        },
-      },
-    },
+          id: tribeId
+        }
+      }
+    }
   })
 
   if (tribalCouncil) {
     return res.status(200).json({
-      data: tribalCouncil,
+      data: tribalCouncil
     })
   }
 
   return res.status(404).json({
-    data: `Tribal Council ${tribalCouncilId} not found.`,
+    data: `Tribal Council ${tribalCouncilId} not found.`
   })
 }
 
@@ -177,33 +177,33 @@ const getPlayersFromTribalCouncil = async (
     include: {
       tribes: {
         select: {
-          id: true,
-        },
-      },
-    },
+          id: true
+        }
+      }
+    }
   })
 
   if (tribalCouncil) {
     const players = await prismaClient.playerInEpisode.findMany({
       where: {
         tribeId: {
-          in: tribalCouncil.tribes.map((tribe) => tribe.id),
+          in: tribalCouncil.tribes.map((tribe) => tribe.id)
         },
         episodeId: tribalCouncil.episodeId,
-        status: "playing",
+        status: 'playing'
       },
       include: {
-        player: true,
-      },
+        player: true
+      }
     })
 
     return res.status(200).json({
-      data: players,
+      data: players
     })
   }
 
   return res.status(404).json({
-    data: `Tribal Council ${tribalCouncilId} not found.`,
+    data: `Tribal Council ${tribalCouncilId} not found.`
   })
 }
 
@@ -215,5 +215,5 @@ export default {
   addTribalCouncil,
   addTribe,
   deleteTribe,
-  getPlayersFromTribalCouncil,
+  getPlayersFromTribalCouncil
 }

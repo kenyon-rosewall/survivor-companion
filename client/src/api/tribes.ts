@@ -1,4 +1,4 @@
-import { get, put } from "./core"
+import { get, put } from './core'
 
 export async function readTribe(tribeId: number, callback: (d: any) => void) {
   get(`/tribes/${tribeId}`, callback)
