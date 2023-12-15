@@ -91,16 +91,29 @@ const deleteAdvantageEvent = async (req: Request, res: Response) => {
   })
 
   if (advantageEvent) {
-    await prismaClient.playerInEpisode.update({
-      where: { id: advantageEvent.playerInEpisodeId },
-      data: {
-        advantages: {
-          disconnect: {
-            id: advantageEvent.advantageId
+    if (advantageEvent.category === 'obtained') {
+      await prismaClient.playerInEpisode.update({
+        where: { id: advantageEvent.playerInEpisodeId },
+        data: {
+          advantages: {
+            disconnect: {
+              id: advantageEvent.advantageId
+            }
           }
         }
-      }
-    })
+      })
+    } else {
+      await prismaClient.playerInEpisode.update({
+        where: { id: advantageEvent.playerInEpisodeId },
+        data: {
+          advantages: {
+            connect: {
+              id: advantageEvent.advantageId
+            }
+          }
+        }
+      })
+    }
 
     return res.status(200).json({
       data: advantageEvent

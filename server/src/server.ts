@@ -13,6 +13,7 @@ import tribalCouncils from './routes/tribalCouncils'
 import eliminations from './routes/eliminations'
 import advantageEvents from './routes/advantageEvents'
 import alliances from './routes/alliances'
+import votes from './routes/votes'
 
 const router: Express = express()
 
@@ -43,6 +44,7 @@ router.use('/tribalCouncils', tribalCouncils)
 router.use('/eliminations', eliminations)
 router.use('/advantageEvents', advantageEvents)
 router.use('/alliances', alliances)
+router.use('/votes', votes)
 
 router.use((req, res) => {
   return res.status(404).json({

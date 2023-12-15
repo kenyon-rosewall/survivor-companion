@@ -73,10 +73,10 @@ const PlayerTableList: React.FC<PlayerTableListProps> = ({
 
   const renderPlayersInEpisode = () => {
     const players = filterPlayersInEpisode(playersInEpisode)
-    return players.map((player, index) => (
+    return players.map((player) => (
       <tbody>
         <PlayerInEpisodeForm
-          key={index}
+          key={player.id}
           playerInEpisode={player}
           tribes={tribes}
           renderShotInTheDark={renderShotInTheDark}

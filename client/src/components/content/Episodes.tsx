@@ -25,6 +25,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
   const [players, setPlayers] = useState<any[]>([{}])
   const [refreshEpisode, setRefreshEpisode] = useState<boolean>(false)
   const [refreshAlliances, setRefreshAlliances] = useState<boolean>(false)
+  const [refreshTribalCouncils, setRefreshTribalCouncils] = useState<boolean>(false)
 
   useEffect(() => {
     if (episodeId === 0) return
@@ -95,6 +96,8 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         <TribalCouncils
           episodeId={episodeId}
           tribes={tribes}
+          refreshTribalCouncils={refreshTribalCouncils}
+          setRefreshTribalCouncils={setRefreshTribalCouncils}
         />
       </Block>
       <Block
@@ -105,6 +108,8 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
           episodeId={episodeId}
           players={players}
           toggleRefreshEpisode={toggleRefreshEpisode}
+          refreshTribalCouncils={refreshTribalCouncils}
+          setRefreshTribalCouncils={setRefreshTribalCouncils}
         />
       </Block>
       <Block

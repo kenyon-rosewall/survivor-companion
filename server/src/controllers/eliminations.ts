@@ -91,7 +91,7 @@ const deleteElimination = async (req: Request, res: Response) => {
   })
 
   if (elimination) {
-    prismaClient.playerInEpisode.update({
+    await prismaClient.playerInEpisode.update({
       where: { id: elimination.playerInEpisodeId },
       data: { status: 'playing' }
     })

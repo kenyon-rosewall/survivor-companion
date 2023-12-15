@@ -51,14 +51,15 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
       notes: playerInEpisode.notes
     })
   }, [playerInEpisode])
+
+  const saveFormDataCallback = () => {
+    setDisableAjax(false)
+    toggleRefreshEpisode()
+  }
   
   const saveFormData = () => {
     if (disableAjax === true) return
     setDisableAjax(true)
-
-    const saveFormDataCallback = () => {
-      setDisableAjax(false)
-    }
 
     updatePlayerInEpisode(
       playerInEpisode.id,

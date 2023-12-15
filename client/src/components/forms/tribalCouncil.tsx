@@ -4,7 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   readTribalCouncil, readTribalCouncilPlayers, 
   createTribalCouncilTribe, deleteTribalCouncilTribe,
-  createTribalCouncilVote, deleteTribalCouncilVote
+  createTribalCouncilVote, deleteTribalCouncilVote,
+  updateVote
 } from '../../api'
 import Subtitle from '../common/subtitle'
 import TribeSelect from '../common/tribeSelect'
@@ -75,6 +76,18 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
     deleteTribalCouncilVote(tribalCouncilId, voteId, changeCallback)
   }
 
+  const toggleDoesNotCount = (voteId: number) => {
+    if (disableAjax === true) return
+    setDisableAjax(true)
+
+    const vote = tribalCouncil.votes?.find((v: any) => v.id === voteId)
+    if (vote) {
+      updateVote(voteId, !vote.doesNotCount, changeCallback)
+    }
+
+    setDisableAjax(false)
+  }
+
   const formatVote = (vote: any) => {
     if (vote.didNotVote) {
       return `${vote.voter?.player?.name} did not vote`
@@ -143,6 +156,7 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
               align='center'
             >
               <FontAwesomeIcon 
+                onClick={() => toggleDoesNotCount(vote.id)}
                 icon={["fas", vote.doesNotCount ? "square-xmark" : "square-check" ]} 
               />
             </td>

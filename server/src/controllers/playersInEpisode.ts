@@ -146,46 +146,56 @@ const importPlayersInEpisode = async (episodeId: number) => {
 }
 
 const copyPlayersInEpisode = async (episodeId: number) => {
-  const prevEpisodeId: number = episodeId - 1
-  const prevEpisode = await prismaClient.episode.findUnique({
-    where: { id: prevEpisodeId },
-    include: {
-      playersInEpisode: {
-        include: {
-          player: true,
-          tribe: true,
-          advantages: true,
-          alliances: true
-        }
-      }
-    }
+  const episode = await prismaClient.episode.findUnique({
+    where: { id: episodeId }
   })
 
-  if (prevEpisode) {
-    for (const playerInEpisode of prevEpisode.playersInEpisode) {
-      await prismaClient.playerInEpisode.create({
-        data: {
-          playerId: playerInEpisode.playerId,
-          episodeId: episodeId,
-          tribeId: playerInEpisode.tribeId,
-          status: playerInEpisode.status,
-          shotInTheDark: playerInEpisode.shotInTheDark,
-          advantages: {
-            connect: playerInEpisode.advantages.map((advantage) => {
-              return {
-                id: advantage.id
-              }
-            })
-          },
-          alliances: {
-            connect: playerInEpisode.alliances.map((alliance) => {
-              return {
-                id: alliance.id
-              }
-            })
+  if (episode) {
+    const seasonId: number = episode.seasonId
+    const prevEpisodeOrder: number = episode.order - 1
+    const prevEpisode = await prismaClient.episode.findFirst({
+      where: {
+        seasonId: seasonId,
+        order: prevEpisodeOrder
+      },
+      include: {
+        playersInEpisode: {
+          include: {
+            player: true,
+            tribe: true,
+            advantages: true,
+            alliances: true
           }
         }
-      })
+      }
+    })
+
+    if (prevEpisode) {
+      for (const playerInEpisode of prevEpisode.playersInEpisode) {
+        await prismaClient.playerInEpisode.create({
+          data: {
+            playerId: playerInEpisode.playerId,
+            episodeId: episodeId,
+            tribeId: playerInEpisode.tribeId,
+            status: playerInEpisode.status,
+            shotInTheDark: playerInEpisode.shotInTheDark,
+            advantages: {
+              connect: playerInEpisode.advantages.map((advantage) => {
+                return {
+                  id: advantage.id
+                }
+              })
+            },
+            alliances: {
+              connect: playerInEpisode.alliances.map((alliance) => {
+                return {
+                  id: alliance.id
+                }
+              })
+            }
+          }
+        })
+      }
     }
   }
 }

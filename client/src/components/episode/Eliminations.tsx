@@ -5,14 +5,17 @@ import ModalForm from '../common/modalForm'
 import EliminationForm from '../forms/elimination'
 
 type EliminationsProps = {
-  episodeId: number,
-  seasonId: number,
+  episodeId: number
+  seasonId: number
   players: any[]
   toggleRefreshEpisode: () => void
+  refreshTribalCouncils: boolean
+  setRefreshTribalCouncils: (refresh: boolean) => void
 }
 
 const Eliminations: React.FC<EliminationsProps> = ({ 
-  episodeId, seasonId, players, toggleRefreshEpisode
+  episodeId, seasonId, players, toggleRefreshEpisode,
+  refreshTribalCouncils, setRefreshTribalCouncils
 }) => {
   const [eliminations, setEliminations] = useState<any[]>([{}])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -23,14 +26,20 @@ const Eliminations: React.FC<EliminationsProps> = ({
     readEpisodeEliminations(episodeId, setEliminations)
   }, [episodeId])
 
-  const onSubmitComplete = (d?: any) => {
+  const eliminationCallback = () => {
     setIsModalOpen(false)
     readEpisodeEliminations(episodeId, setEliminations)
+    setRefreshTribalCouncils(!refreshTribalCouncils)
     toggleRefreshEpisode()
+  }
+
+  const onSubmitComplete = (d?: any) => {
+    eliminationCallback()
   }
 
   const handleDeleteElimination = (eliminationId: number) => {
     deleteElimination(eliminationId, onSubmitComplete)
+    eliminationCallback()
   }
 
   const formatElimination = (elimination: any) => {
@@ -140,16 +149,7 @@ const Eliminations: React.FC<EliminationsProps> = ({
           onSubmitComplete={onSubmitComplete}
         />
       </ModalForm>
-      <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <Modal.Card>
-          <Modal.Card.Header>
-            <Modal.Card.Title>Add Elimination</Modal.Card.Title>
-          </Modal.Card.Header>
-          <Modal.Card.Body>
-            
-          </Modal.Card.Body>
-        </Modal.Card>
-      </Modal>
+      
     </>
   )
 }

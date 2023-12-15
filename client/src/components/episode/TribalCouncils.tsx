@@ -6,10 +6,12 @@ import TribalCouncilForm from '../forms/tribalCouncil'
 type TribalCouncilsProps = {
   episodeId: number
   tribes: any[]
+  refreshTribalCouncils: boolean
+  setRefreshTribalCouncils: (refresh: boolean) => void
 }
 
 const TribalCouncils: React.FC<TribalCouncilsProps> = ({
-  episodeId, tribes 
+  episodeId, tribes, refreshTribalCouncils, setRefreshTribalCouncils
 }) => {
   const [tribalCouncils, setTribalCouncils] = useState<any[]>([])
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
@@ -18,7 +20,7 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({
     if (episodeId === 0) return
     
     readEpisodeTribalCouncils(episodeId, setTribalCouncils)
-  }, [episodeId])
+  }, [episodeId, refreshTribalCouncils])
 
   const addTribalCouncil = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()

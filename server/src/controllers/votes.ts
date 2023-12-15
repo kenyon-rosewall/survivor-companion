@@ -28,6 +28,30 @@ const getVotesFromTribalCouncil = async (req: Request, res: Response) => {
   })
 }
 
+const updateVote = async (req: Request, res: Response) => {
+  const voteId: number = Number(req.params.id)
+  const vote = await prismaClient.vote.findUnique({
+    where: { id: voteId }
+  })
+
+  if (vote) {
+    const updatedVote = await prismaClient.vote.update({
+      where: { id: voteId },
+      data: {
+        doesNotCount: req.body.doesNotCount
+      }
+    })
+
+    return res.status(200).json({
+      data: updatedVote
+    })
+  }
+
+  return res.status(404).json({
+    data: `Vote ${voteId} not found.`
+  })
+}
+
 const deleteVote = async (req: Request, res: Response) => {
   const voteId: number = Number(req.params.voteId)
   const vote = await prismaClient.vote.delete({
@@ -66,4 +90,4 @@ const addVote = async (req: Request, res: Response) => {
   })
 }
 
-export default { getVotesFromTribalCouncil, deleteVote, addVote }
+export default { getVotesFromTribalCouncil, updateVote, deleteVote, addVote }

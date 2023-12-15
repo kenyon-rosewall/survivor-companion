@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Button, Form } from 'react-bulma-components'
 
 type EliminationFormProps = {
@@ -30,11 +30,13 @@ const EliminationForm: React.FC<EliminationFormProps> = ({
     notes: ''
   })
 
-  const updateEliminationOrder = (count: number) => {
+  const updateEliminationOrder = useCallback((count: number) => {
     setFormData({ ...formData, order: count + 1 })
-  }
+  }, [])
 
   useEffect(() => {
+    if (seasonId === 0) return
+    
     fetch(`http://localhost:5000/seasons/${seasonId}/eliminations/count`)
     .then(response => response.json())
     .then(data => {
