@@ -1,0 +1,32 @@
+export function fixDate(dt: string) {
+  const dateOptions: any = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  }
+
+  if (dt === '') return new Date().toLocaleDateString('en-US', dateOptions)
+  else return new Date(dt).toLocaleDateString('en-US', dateOptions)
+}
+
+export function extractAlliances(players: any[]) {
+  if (!players) return []
+
+  const alliances = players
+    .map((player: any) => player.alliances)
+    .reduce((prev: any, curr: any) => prev.concat(curr), [])
+    .filter(
+      (alliance: never, index: number, arr: []) =>
+        arr.indexOf(alliance) === index
+    )
+
+  let unique: any[] = []
+  for (const alliance of alliances) {
+    if (!alliance) continue
+    if (unique.map((a: any) => a.id).includes(alliance.id)) continue
+
+    unique.push(alliance)
+  }
+
+  return unique
+}

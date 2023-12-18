@@ -9,7 +9,6 @@ const extractPlayerOnSeasonData = (
   const data: any = {
     headshot: req.body.headshot,
     occupation: req.body.occupation,
-    bornLocation: req.body.bornLocation,
     residenceLocation: req.body.residenceLocation,
     notes: req.body.playerOnSeasonNotes
   }
@@ -28,6 +27,7 @@ const extractPlayerData = (req: Request) => ({
   name: req.body.name,
   nickname: req.body.nickname,
   birthday: new Date(req.body.birthday),
+  hometown: req.body.hometown,
   notes: req.body.playerNotes
 })
 
@@ -45,16 +45,34 @@ const getPlayerOnSeasons = async (req: Request, res: Response) => {
 }
 
 const getPlayerOnSeason = async (req: Request, res: Response) => {
-  const seasonId: number = +req.params.seasonId
-  const playerId: number = +req.params.playerId
+  const seasonId: number = Number(req.params.seasonId)
+  const playerId: number = Number(req.params.playerId)
   const playerOnSeason = await prismaClient.playerOnSeason.findUnique({
     where: { playerId_seasonId: { playerId: playerId, seasonId: seasonId } },
     include: { player: true }
   })
 
   if (playerOnSeason) {
+    const playerInEpisodes = await prismaClient.playerInEpisode.findMany({
+      where: { playerId: playerId },
+      include: {
+        episode: true,
+        castVotes: true,
+        receivedVotes: true,
+        advantages: true,
+        alliances: true,
+        advantagePlays: true
+      }
+    })
+
+    // playerOnSeason.playerInEpisodes = playerOnEpisodes.
     return res.status(200).json({
-      data: playerOnSeason
+      data: {
+        ...playerOnSeason,
+        playerInEpisodes: playerInEpisodes.filter(
+          (pie) => pie.episode.seasonId === seasonId
+        )
+      }
     })
   }
 
@@ -112,8 +130,10 @@ const addPlayerOnSeason = async (
   try {
     let playerId: number = +req.body.playerId
     if (playerId === 0) {
+      const playerData = extractPlayerData(req)
+      console.log(playerData)
       const player = await prismaClient.player.create({
-        data: extractPlayerData(req)
+        data: playerData
       })
       playerId = player.id
     }

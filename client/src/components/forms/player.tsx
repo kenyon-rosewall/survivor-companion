@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Block, Columns, Form, Button } from 'react-bulma-components'
-import { readSeasonPlayer, createSeasonPlayer, updateSeasonPlayer } from '../../api'
+import { createSeasonPlayer, updateSeasonPlayer } from '../../api'
 import DatePicker from 'react-datepicker'
-import { fixDate } from '../../dateUtils'
+import { fixDate } from '../../utils'
 import PlayerSearch from '../common/playerSearch'
 
 type PlayerFormProps = {
   formType: string
   seasonId: number
-  playerOnSeasonId?: number
+  playerOnSeason?: any
   onSubmitComplete: (season: any) => void
 }
 
 const PlayerForm: React.FC<PlayerFormProps> = ({
-  formType, seasonId, playerOnSeasonId, 
+  formType, seasonId, playerOnSeason, 
   onSubmitComplete
 }) => {
   const [formData, setFormData] = useState<any>({
@@ -23,28 +23,29 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
     birthday: fixDate(""),
     headshot: 'images/players/default.jpg',
     occupation: '',
-    bornLocation: '',
+    hometown: '',
     residenceLocation: '',
     playerNotes: '',
     playerOnSeasonNotes: ''
   })
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
-  const updatePlayerInformation = (data: any) => {
-    setFormData({
-      ...data,
-      name: data.player.name,
-      nickname: data.player.nickname ? data.player.nickname : "",
-      birthday: data.player.birthday ? data.player.birthday : "",
-      playerNotes: data.player.notes ? data.player.notes : ""
-    })
-  }
-
   useEffect(() => {
-    if (formType === 'update' && playerOnSeasonId) {
-      readSeasonPlayer(seasonId, playerOnSeasonId, updatePlayerInformation)
+    if (playerOnSeason) {
+      setFormData({
+        playerId: playerOnSeason.playerId,
+        name: playerOnSeason.player.name,
+        nickname: playerOnSeason.player.nickname,
+        birthday: fixDate(playerOnSeason.player.birthday),
+        headshot: playerOnSeason.headshot,
+        occupation: playerOnSeason.occupation,
+        hometown: playerOnSeason.player.hometown,
+        residenceLocation: playerOnSeason.residenceLocation,
+        playerNotes: playerOnSeason.player.notes,
+        playerOnSeasonNotes: playerOnSeason.notes
+      })
     }
-  }, [seasonId, formType, playerOnSeasonId])
+  }, [playerOnSeason])
 
   const handleInputChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -65,8 +66,8 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
     if (disableAjax === true) return
     setDisableAjax(true)
 
-    if (formType === 'update' && playerOnSeasonId) {
-      updateSeasonPlayer(seasonId, playerOnSeasonId, formData, formSubmitCallback)
+    if (formType === 'update' && playerOnSeason) {
+      updateSeasonPlayer(seasonId, playerOnSeason.id, formData, formSubmitCallback)
     } else {
       createSeasonPlayer(seasonId, formData, formSubmitCallback)
     }
@@ -79,6 +80,7 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
       name: player.name,
       nickname: player.nickname ? player.nickname : "",
       birthday: player.birthday ? player.birthday : "",
+      hometown: player.hometown ? player.hometown : "",
       playerNotes: player.notes ? player.notes : ""
     })
   }
@@ -92,6 +94,20 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
           <PlayerSearch
             handleSelectPlayer={selectPlayer}
           />
+        </Columns.Column>
+      </Columns>
+
+      <Columns>
+        <Columns.Column>
+          <Form.Field>
+            <Form.Label>
+              Headshot
+            </Form.Label>
+            <Form.InputFile
+                filename={formData.headshot}
+                onChange={handleFileUpload}
+              />
+          </Form.Field>
         </Columns.Column>
       </Columns>
 
@@ -150,21 +166,9 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
       </Columns>
 
       <Columns>
-        <Columns.Column 
+        <Columns.Column
           size={6}
         >
-          <Form.Field>
-            <Form.Label>
-              Headshot
-            </Form.Label>
-            <Form.InputFile
-                filename={formData.headshot}
-                onChange={handleFileUpload}
-              />
-          </Form.Field>
-        </Columns.Column>
-
-        <Columns.Column>
           {formType === 'add' && (
             <Form.Field>
               <Form.Label>
@@ -189,27 +193,37 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
             </Block>
           )}
         </Columns.Column>
+
+        <Columns.Column>
+          {formType === 'add' && (
+            <Form.Field>
+              <Form.Label>
+                Hometown
+              </Form.Label>
+              <Form.Control>
+                <Form.Input
+                  name="hometown"
+                  value={formData.hometown}
+                  onChange={handleInputChange}
+                />
+              </Form.Control>
+            </Form.Field>
+          )}
+          {formType === 'update' && (
+            <Block>
+              <Form.Label>
+                Hometown
+              </Form.Label>
+              {formData.hometown}
+            </Block>
+          )}
+        </Columns.Column>
       </Columns>
 
       <Columns>
-        <Columns.Column 
+        <Columns.Column
           size={6}
         >
-          <Form.Field>
-            <Form.Label>
-              Birth Location
-            </Form.Label>
-            <Form.Control>
-              <Form.Input
-                name="bornLocation"
-                value={formData.bornLocation}
-                onChange={handleInputChange}
-              />
-            </Form.Control>
-          </Form.Field>
-        </Columns.Column>
-
-        <Columns.Column>
           <Form.Field>
             <Form.Label>
               Current Residence
@@ -223,12 +237,8 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
             </Form.Control>
           </Form.Field>
         </Columns.Column>
-      </Columns>
 
-      <Columns>
-        <Columns.Column 
-          size={6}
-        >
+        <Columns.Column>
           <Form.Field>
             <Form.Label>
               Occupation

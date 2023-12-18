@@ -11,10 +11,12 @@ const PlayerSearch: React.FC<playerSearchProps> = ({
 }) => {
   const [players, setPlayers] = useState<any[]>([])
   const [query, setQuery] = useState<string>('')
+  const [active, setActive] = useState<boolean>(false)
 
   const handleSearch = (e: any) => {
     e.preventDefault()
     setQuery(e.target.value)
+    setActive(true)
 
     const q = e.target.value
     let seasonQuery = ''
@@ -28,6 +30,7 @@ const PlayerSearch: React.FC<playerSearchProps> = ({
         .catch(err => console.error('Error fetching players:', err))
     } else {
       setPlayers([])
+      setActive(false)
     }
   }
 
@@ -35,11 +38,12 @@ const PlayerSearch: React.FC<playerSearchProps> = ({
     setQuery('')
     setPlayers([])
     handleSelectPlayer(player)
+    setActive(false)
   }
 
   const renderPlayers = () => {
     if (Array.isArray(players) && players.length > 0) {
-      return players.map((player, index) => (
+      return players.map((player) => (
         <li 
           className='dropdown-item'
           key={player.item.id}
@@ -54,7 +58,7 @@ const PlayerSearch: React.FC<playerSearchProps> = ({
   return (
     <Form.Field>
       <Form.Control>
-        <div className="dropdown is-active">
+        <div className={active ? 'dropdown is-active' : 'dropdown'}>
           <div className="dropdown-trigger">
             <Form.Input
               name="q"

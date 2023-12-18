@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PlayerTableFilter from './playerTableFilter'
 import PlayerTableList from './playerTableList'
+import { extractAlliances } from '../../utils'
 
 type PlayerTableProps = {
   playerStatus?: string
@@ -33,24 +34,6 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
       return players.filter((player: any) => player.status === playerStatus)
     }
 
-    const extractAlliances = (players: any[]) => {
-      if (!players) return []
-      
-      const alliances = players.map((player: any) => player.alliances)
-        .reduce((prev: any, curr: any) => prev.concat(curr), [])
-        .filter((alliance: never, index: number, arr: []) => arr.indexOf(alliance) === index)
-      
-      let unique: any[] = []
-      for (const alliance of alliances) {
-        if (!alliance) continue
-        if (unique.map((a: any) => a.id).includes(alliance.id)) continue
-          
-        unique.push(alliance)
-      }
-  
-      return unique
-    }
-    
     setAlliances(extractAlliances(playersInEpisode))
     if (playerStatus?.toString() !== '') {
       setFilteredPlayers(filterPlayersByStatus(playersInEpisode))    

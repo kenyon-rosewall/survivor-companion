@@ -1,4 +1,3 @@
-import { faTrowelBricks } from '@fortawesome/free-solid-svg-icons'
 import { put } from './core'
 
 export async function updateVote(

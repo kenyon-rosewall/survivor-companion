@@ -72,3 +72,10 @@ export async function readSeasonEpisodes(
 ) {
   get(`/seasons/${seasonId}/episodes`, callback)
 }
+
+export async function readSeasonEliminations(
+  seasonId: number,
+  callback: (d: any) => void
+) {
+  get(`/seasons/${seasonId}/eliminations`, callback)
+}

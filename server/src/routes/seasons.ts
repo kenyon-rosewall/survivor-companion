@@ -41,5 +41,9 @@ router.get(
   '/:seasonId/eliminations/count',
   eliminationController.getTotalEliminationCount
 )
+router.get(
+  '/:seasonId/eliminations',
+  eliminationController.getEliminationsFromSeason
+)
 
 export = router

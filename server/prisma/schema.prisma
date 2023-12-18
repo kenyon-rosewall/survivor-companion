@@ -26,6 +26,7 @@ model Season {
   playersOnSeason         PlayerOnSeason[]
   alliances               Alliance[]
   hasFireTokens			      Boolean		          @default(false)
+  totalDays               Int                 @default(0)
   createdAt			          DateTime		        @default(now())
   updatedAt			          DateTime		        @updatedAt
 }
@@ -37,6 +38,7 @@ model Episode {
   order				            Int
   name				            String?
   airingDate			        DateTime
+  days                    Int                 @default(0)
   notes				            String?
   premiere				        Boolean
   merge				            Boolean
@@ -65,6 +67,7 @@ model Player {
   name				            String
   nickname				        String?
   birthday				        DateTime
+  hometown                String?
   notes				            String?
   playerInEpisodes			  PlayerInEpisode[]
   playerOnSeasons			    PlayerOnSeason[]
@@ -95,6 +98,7 @@ model TribalCouncil {
   tribes				          Tribe[]
   votes				            Vote[]
   notes				            String?
+  final                   Boolean?
   createdAt			          DateTime		        @default(now())
   updatedAt			          DateTime		        @updatedAt
 }
@@ -118,6 +122,7 @@ model Vote {
 model Elimination {
   id				              Int			            @id @default(autoincrement())
   order                   Int                 @default(0)
+  onDay                   Int                 @default(0)
   playerInEpisode			    PlayerInEpisode	    @relation(fields: [playerInEpisodeId], references: [id])
   playerInEpisodeId		    Int			            @unique
   // ["votedOut", "rockDraw", "fireMaking", "quit", "medevac", "redemption", "edge", "ejection", "redemptionDual", "edgeChallenge"]

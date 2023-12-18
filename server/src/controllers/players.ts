@@ -7,6 +7,7 @@ const extractPlayerData = (req: Request) => ({
   name: req.body.name,
   nickname: req.body.nickname,
   birthday: new Date(req.body.birthday),
+  hometown: req.body.hometown,
   notes: req.body.notes
 })
 

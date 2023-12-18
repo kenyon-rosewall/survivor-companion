@@ -8,6 +8,26 @@ const extractEliminationData = (req: Request) => ({
   notes: req.body.notes
 })
 
+const uniquePlayersInEpisode = (episodes: any[]) => {
+  const playersInEpisode: any[] = episodes
+    .map((episode: any) => episode.playersInEpisode)
+    .reduce((prev: any, curr: any) => prev.concat(curr), [])
+    .filter(
+      (playerInEpisode: never, index: number, arr: []) =>
+        arr.indexOf(playerInEpisode) === index
+    )
+
+  const unique: any[] = []
+  for (const playerInEpisode of playersInEpisode) {
+    if (!playerInEpisode) continue
+    if (unique.map((p: any) => p.id).includes(playerInEpisode.id)) continue
+
+    unique.push(playerInEpisode)
+  }
+
+  return unique
+}
+
 const getEliminationsFromEpisode = async (req: Request, res: Response) => {
   const episodeId: number = Number(req.params.episodeId)
   const eliminatedPlayers = await prismaClient.playerInEpisode.findMany({
@@ -29,6 +49,39 @@ const getEliminationsFromEpisode = async (req: Request, res: Response) => {
           include: {
             player: true
           }
+        }
+      }
+    })
+
+    if (eliminations) {
+      return res.status(200).json({
+        data: eliminations
+      })
+    }
+  }
+
+  return res.status(200).json({
+    data: []
+  })
+}
+
+const getEliminationsFromSeason = async (req: Request, res: Response) => {
+  const seasonId: number = Number(req.params.seasonId)
+  const episodes = await prismaClient.episode.findMany({
+    where: {
+      seasonId: seasonId
+    },
+    include: {
+      playersInEpisode: true
+    }
+  })
+
+  if (episodes) {
+    const playersInEpisode = uniquePlayersInEpisode(episodes)
+    const eliminations = await prismaClient.elimination.findMany({
+      where: {
+        playerInEpisodeId: {
+          in: playersInEpisode.map((player) => player.id)
         }
       }
     })
@@ -156,6 +209,7 @@ const getTotalEliminationCount = async (req: Request, res: Response) => {
 
 export default {
   getEliminationsFromEpisode,
+  getEliminationsFromSeason,
   getElimination,
   updateElimination,
   deleteElimination,
