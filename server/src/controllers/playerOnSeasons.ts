@@ -57,12 +57,26 @@ const getPlayerOnSeason = async (req: Request, res: Response) => {
       where: { playerId: playerId },
       include: {
         episode: true,
-        castVotes: true,
+        castVotes: {
+          include: {
+            votedFor: {
+              include: {
+                player: true
+              }
+            }
+          }
+        },
         receivedVotes: true,
+        tribe: true,
         advantages: true,
         alliances: true,
-        advantagePlays: true
-      }
+        advantagePlays: {
+          include: {
+            advantage: true
+          }
+        }
+      },
+      orderBy: { episode: { order: 'asc' } }
     })
 
     // playerOnSeason.playerInEpisodes = playerOnEpisodes.

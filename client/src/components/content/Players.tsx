@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Block, Tabs } from 'react-bulma-components'
 import { readSeasonPlayer } from '../../api'
 import Stats from '../player/stats'
+import Timeline from '../player/timeline'
 import PlayerForm from '../forms/player'
 
 type PlayersProps = {
@@ -70,7 +71,7 @@ const Players: React.FC<PlayersProps> = ({
       <Block
         className={selectedTab === 'Timeline' ? '' : 'is-hidden'}
       >
-        <p>Timeline</p>
+        <Timeline player={player} />
       </Block>
 
     </Block>

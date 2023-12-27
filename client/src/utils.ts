@@ -30,3 +30,19 @@ export function extractAlliances(players: any[]) {
 
   return unique
 }
+
+export function calculateAge(birthDate: string, airingDate: string) {
+  const birth = new Date(birthDate)
+  const airing = new Date(airingDate)
+
+  let years = airing.getFullYear() - birth.getFullYear()
+  if (
+    airing.getMonth() < birth.getMonth() ||
+    (airing.getMonth() === birth.getMonth() &&
+      airing.getDate() < birth.getDate())
+  ) {
+    years--
+  }
+
+  return years
+}

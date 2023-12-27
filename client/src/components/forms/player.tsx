@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Block, Columns, Form, Button } from 'react-bulma-components'
-import { createSeasonPlayer, updateSeasonPlayer } from '../../api'
+import { createSeasonPlayer, updateSeasonPlayer, readSeason } from '../../api'
 import DatePicker from 'react-datepicker'
-import { fixDate } from '../../utils'
+import { fixDate, calculateAge } from '../../utils'
 import PlayerSearch from '../common/playerSearch'
 
 type PlayerFormProps = {
@@ -29,21 +29,26 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
     playerOnSeasonNotes: ''
   })
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
+  const [season, setSeason] = useState<any>({})
 
   useEffect(() => {
-    if (playerOnSeason) {
+    if (playerOnSeason.player) {
       setFormData({
         playerId: playerOnSeason.playerId,
-        name: playerOnSeason.player.name,
-        nickname: playerOnSeason.player.nickname,
-        birthday: fixDate(playerOnSeason.player.birthday),
         headshot: playerOnSeason.headshot,
         occupation: playerOnSeason.occupation,
-        hometown: playerOnSeason.player.hometown,
         residenceLocation: playerOnSeason.residenceLocation,
+        playerOnSeasonNotes: playerOnSeason.notes,
+        name: playerOnSeason.player.name,
+        nickname: playerOnSeason.player.nickname,
         playerNotes: playerOnSeason.player.notes,
-        playerOnSeasonNotes: playerOnSeason.notes
+        hometown: playerOnSeason.player.hometown,
+        birthday: fixDate(playerOnSeason.player.birthday)
       })
+    }
+
+    if (seasonId > 0) {
+      readSeason(seasonId, setSeason)
     }
   }, [playerOnSeason])
 
@@ -190,6 +195,8 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
                 Birthday
               </Form.Label>
               {fixDate(formData.birthday)}
+              <br />
+              ({calculateAge(formData.birthday, season.airingStart)} years old)
             </Block>
           )}
         </Columns.Column>
