@@ -49,7 +49,7 @@ const SeasonInfo: React.FC<SeasonInfoProps> = ({ seasonId }) => {
         </Columns.Column>
         <Columns.Column>
           <p>
-            {new Date(season.airingStart).toLocaleDateString('en-US', dateOptions)}-
+            {new Date(season.airingStart).toLocaleDateString('en-US', dateOptions)} - 
             {new Date(season.airingEnd).toLocaleDateString('en-US', dateOptions)}
           </p>
         </Columns.Column>
