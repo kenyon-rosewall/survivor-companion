@@ -77,6 +77,20 @@ const SeasonInfo: React.FC<SeasonInfoProps> = ({ seasonId }) => {
         </Columns.Column>
       </Columns>
       <Columns>
+        <Columns.Column>
+          <p><strong>What Makes it Good:</strong></p>
+          <p style={{ whiteSpace: 'pre-wrap' }}>
+            {(season.whyItsGood) ? season.whyItGood : ''}
+          </p>
+        </Columns.Column>
+        <Columns.Column>
+          <p><strong>What Makes it Bad</strong></p>
+          <p style={{ whiteSpace: 'pre-wrap' }}>
+            {(season.whyItsBad) ? season.whyItsBad : ''}
+          </p>
+        </Columns.Column>
+      </Columns>
+      <Columns>
         <Columns.Column size={'one-quarter'}>
           <p>
             <strong>Notes:</strong>

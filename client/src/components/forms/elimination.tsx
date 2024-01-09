@@ -33,7 +33,7 @@ const EliminationForm: React.FC<EliminationFormProps> = ({
 
   const updateEliminationOrder = useCallback((count: string) => {
     setFormData({ ...formData, order: Number(count) + 1 })
-  }, [])
+  }, [formData])
 
   useEffect(() => {
     if (seasonId === 0) return

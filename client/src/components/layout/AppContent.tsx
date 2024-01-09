@@ -1,10 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { SeasonInfo, 
+import { 
+  SeasonInfo, 
+  Seasons,
   Episodes, 
   Players, 
   Advantages, 
-  Tribes} 
+  Tribes
+} 
   from '../content'
 
 const AppContent: React.FC = () => {
@@ -17,7 +20,7 @@ const AppContent: React.FC = () => {
 
   const selectComponent = () => {
     if (selectedMenuItem === 'manageSeasons') {
-      return <SeasonInfo seasonId={selectedSeason} />
+      return <Seasons seasonId={selectedSeason} />
     } else if (selectedMenuItem === 'manageAdvantages') {
       return <Advantages advantageId={selectedAdvantage} />
     }

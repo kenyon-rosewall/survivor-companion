@@ -6,9 +6,30 @@ import { setMenuItem } from '../../actions/menu'
 
 const AdminNavbar: React.FC = () => {
   const dispatch = useDispatch()
+  const menuItems: any[] = [
+    { name: 'manageSeasons', icon: 'compass', text: 'Manage Seasons' },
+    { name: 'managePlayers', icon: 'users', text: 'Manage Players' },
+    { name: 'manageAdvantages', icon: 'trophy', text: 'Manage Advantages' }
+  ]
 
   const handleItemClick = (item: string) => {
     dispatch(setMenuItem(item))
+  }
+
+  const renderMenuItem = (menuItem: any) => {
+    return (
+      <Dropdown.Item
+        key={menuItem.name}
+        value={menuItem.name}
+      >
+        <FontAwesomeIcon icon={["fas", menuItem.icon]} />
+        <span>{menuItem.text}</span>
+      </Dropdown.Item>
+    )
+  }
+
+  const renderMenuItems = () => {
+    return menuItems.map((menuItem) => renderMenuItem(menuItem))
   }
 
   return (
@@ -19,24 +40,7 @@ const AdminNavbar: React.FC = () => {
         label="Global Admin"
         onChange={handleItemClick}
       >
-        <Dropdown.Item 
-          value="manageSeasons"
-        >
-          <FontAwesomeIcon icon={["fas", "compass"]} />
-          <span>Manage Seasons</span>
-        </Dropdown.Item>
-        <Dropdown.Item
-          value="managePlayers"
-        >
-          <FontAwesomeIcon icon={["fas", "users"]} />
-          <span>Manage Players</span>
-        </Dropdown.Item>
-        <Dropdown.Item
-          value="manageAdvantages"
-        >
-          <FontAwesomeIcon icon={["fas", "trophy"]} />
-          <span>Manage Advantages</span>
-        </Dropdown.Item>
+        {renderMenuItems()}
       </Dropdown>
     </Navbar.Item>
   )

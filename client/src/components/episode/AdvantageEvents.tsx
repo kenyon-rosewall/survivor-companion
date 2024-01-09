@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Button, Modal, Table } from 'react-bulma-components'
+import { Button, Table } from 'react-bulma-components'
 import { readEpisodeAdvantageEvents, deleteAdvantageEvent } from "../../api"
 import ModalForm from "../common/modalForm"
 import AdvantageEventForm from "../forms/advantageEvent"

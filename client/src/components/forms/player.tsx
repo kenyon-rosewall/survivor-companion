@@ -50,7 +50,7 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
     if (seasonId > 0) {
       readSeason(seasonId, setSeason)
     }
-  }, [playerOnSeason])
+  }, [playerOnSeason, seasonId])
 
   const handleInputChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })

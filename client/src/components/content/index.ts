@@ -3,7 +3,6 @@ import Episodes from './Episodes'
 import Players from './Players'
 import Tribes from './Tribes'
 import Advantages from './Advantages'
-// import Seasons from "./Seasons"
-// import Events from "./Events"
+import Seasons from './Seasons'
 
-export { SeasonInfo, Episodes, Players, Tribes, Advantages }
+export { SeasonInfo, Episodes, Players, Tribes, Advantages, Seasons }

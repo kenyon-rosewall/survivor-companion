@@ -15,6 +15,14 @@ export async function readSeason(seasonId: number, callback: (d: any) => void) {
   get(`/seasons/${seasonId}`, callback)
 }
 
+export async function updateSeason(
+  seasonId: number,
+  seasonData: any,
+  callback: (d: any) => void
+) {
+  put(`/seasons/${seasonId}`, seasonData, callback)
+}
+
 export async function readSeasonTribes(
   seasonId: number,
   callback: (d: any) => void

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Form } from 'react-bulma-components'
-import { createAdvantage, readAdvantage, readAdvantages, updateAdvantage } from '../../api'
+import { createAdvantage, readAdvantage, updateAdvantage } from '../../api'
 
 type AdvantageFormProps = {
   formType: string,
@@ -36,7 +36,7 @@ const AdvantageForm: React.FC<AdvantageFormProps> = ({
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
+    
     if (disableAjax === true) return
     setDisableAjax(true)
 

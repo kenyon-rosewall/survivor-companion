@@ -10,6 +10,8 @@ const extractSeasonData = (req: Request) => ({
   airingStart: dt.parse(req.body.airingStart),
   airingEnd: dt.parse(req.body.airingEnd),
   rating: req.body.rating,
+  whyItsGood: req.body.whyItsGood,
+  whyItsBad: req.body.whyItsBad,
   notes: req.body.notes,
   episodeCount: Number(req.body.episodeCount)
 })
@@ -25,7 +27,7 @@ const getSeasons = async (req: Request, res: Response) => {
 }
 
 const getSeason = async (req: Request, res: Response) => {
-  const id: number = +req.params.id
+  const id: number = Number(req.params.id)
   const season = await prismaClient.season.findUnique({
     where: { id: id }
   })
@@ -42,7 +44,7 @@ const getSeason = async (req: Request, res: Response) => {
 }
 
 const updateSeason = async (req: Request, res: Response) => {
-  const id: number = +req.params.id
+  const id: number = Number(req.params.id)
   const season = await prismaClient.season.findUnique({
     where: { id: id }
   })
@@ -64,7 +66,7 @@ const updateSeason = async (req: Request, res: Response) => {
 }
 
 const deleteSeason = async (req: Request, res: Response) => {
-  const id: number = +req.params.id
+  const id: number = Number(req.params.id)
   const season = await prismaClient.season.delete({
     where: { id: id }
   })

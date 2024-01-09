@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Menu, Modal } from 'react-bulma-components'
+import { Menu } from 'react-bulma-components'
 import { readSeasons } from '../../api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setSelectedSeason } from '../../actions/seasons'
@@ -66,6 +66,7 @@ const SeasonsSidebar: React.FC<SeasonsSidebarProps> = ({ seasonId }) => {
         closeModal={() => setIsModalOpen(false)}
       >
         <SeasonForm
+          formType='create'
           maxOrder={maxOrder}
           onSubmitComplete={handleFormSubmit}
         />

@@ -20,6 +20,8 @@ model Season {
   airingStart	            DateTime?
   airingEnd		            DateTime?
   rating			            String?
+  whyItsGood              String?
+  whyItsBad               String?
   notes				            String?
   episodes				        Episode[]
   tribes				          Tribe[]
