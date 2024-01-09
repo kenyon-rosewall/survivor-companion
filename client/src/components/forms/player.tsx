@@ -32,7 +32,7 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
   const [season, setSeason] = useState<any>({})
 
   useEffect(() => {
-    if (playerOnSeason.player) {
+    if (playerOnSeason && playerOnSeason.player) {
       setFormData({
         playerId: playerOnSeason.playerId,
         headshot: playerOnSeason.headshot,

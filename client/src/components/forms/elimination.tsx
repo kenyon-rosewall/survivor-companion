@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Button, Form } from 'react-bulma-components'
+import { readSeasonEliminationCount, createEpisodeElimination } from '../../api'
 
 type EliminationFormProps = {
   episodeId: number
@@ -30,37 +31,28 @@ const EliminationForm: React.FC<EliminationFormProps> = ({
     notes: ''
   })
 
-  const updateEliminationOrder = useCallback((count: number) => {
-    setFormData({ ...formData, order: count + 1 })
+  const updateEliminationOrder = useCallback((count: string) => {
+    setFormData({ ...formData, order: Number(count) + 1 })
   }, [])
 
   useEffect(() => {
     if (seasonId === 0) return
     
-    fetch(`http://localhost:5000/seasons/${seasonId}/eliminations/count`)
-    .then(response => response.json())
-    .then(data => {
-      updateEliminationOrder(Number(data.data))
-    })
-    .catch(err => console.error('Error fetching eliminations:', err))
+    readSeasonEliminationCount(seasonId, updateEliminationOrder)
   }, [seasonId, updateEliminationOrder])
 
   const handleInputChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
+  const formSubmitCallback = (data: any) => {
+    onSubmitComplete()
+  }
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    fetch(`http://localhost:5000/episodes/${episodeId}/eliminations`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      onSubmitComplete()
-    })
-    .catch(err => console.error('Error adding elimination:', err))
+    createEpisodeElimination(episodeId, formData, formSubmitCallback)
   }
 
   return (

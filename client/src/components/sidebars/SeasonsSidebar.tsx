@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Menu, Modal } from 'react-bulma-components'
+import { readSeasons } from '../../api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setSelectedSeason } from '../../actions/seasons'
 import SeasonForm from '../forms/season'
@@ -19,19 +20,14 @@ const SeasonsSidebar: React.FC<SeasonsSidebarProps> = ({ seasonId }) => {
     return Math.max.apply(Math, s.map((o: any) => { return o.order }))
   }
 
-  useEffect(() => {
-    fetch(`http://localhost:5000/seasons`)
-      .then(response => response.json())
-      .then(data => {
-        setSeasons(data.data)
-        setMaxOrder(findMaxOrder(data.data))
-      })
-      .catch(err => console.error('Error fetching seasons:', err))
-  }, [seasonId])
+  const seasonsCallback = (data: any) => {
+    setSeasons(data)
+    setMaxOrder(findMaxOrder(data))
+  }
 
-  // const handleSeasonClick = (seasonId: number) => () => {
-  //   dispatch(setSelectedSeason(seasonId))
-  // }
+  useEffect(() => {
+    readSeasons(seasonsCallback)
+  }, [seasonId])
 
   const renderSeasons = () => {
     if (Array.isArray(seasons) && seasons.length > 0) {

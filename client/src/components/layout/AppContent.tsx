@@ -44,8 +44,6 @@ const AppContent: React.FC = () => {
                   seasonId={selectedSeason}
                   tribeId={selectedTribe}
                 />
-      // case 'events':
-      //   return <Events seasonId={selectedSeason} />
       default:
         return <h1>Content</h1>
     }

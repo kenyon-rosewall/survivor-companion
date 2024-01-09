@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Form } from "react-bulma-components"
+import { searchPlayers } from "../../api"
 
 type playerSearchProps = {
   handleSelectPlayer: (player: any) => void
@@ -13,25 +14,22 @@ const PlayerSearch: React.FC<playerSearchProps> = ({
   const [query, setQuery] = useState<string>('')
   const [active, setActive] = useState<boolean>(false)
 
+  const setPlayersWrapper = (data: any) => {
+    if (data && data.length > 0) {
+      setPlayers(data)
+    } else {
+      setPlayers([])
+      setActive(false)
+    }
+  }
+
   const handleSearch = (e: any) => {
     e.preventDefault()
     setQuery(e.target.value)
     setActive(true)
 
     const q = e.target.value
-    let seasonQuery = ''
-    if (Number(seasonId) > 0) seasonQuery = 'season/' + seasonId + '/'
-    if (q.length > 2) {
-      fetch(`http://localhost:5000/players/${seasonQuery}search/${q}`)
-        .then(response => response.json())
-        .then(data => {
-          setPlayers(data.data)
-        })
-        .catch(err => console.error('Error fetching players:', err))
-    } else {
-      setPlayers([])
-      setActive(false)
-    }
+    searchPlayers(q, Number(seasonId), setPlayersWrapper)
   }
 
   const selectPlayer = (player: any) => {

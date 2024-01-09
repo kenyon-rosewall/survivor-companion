@@ -1,5 +1,16 @@
 import { get, post, put } from './core'
 
+export async function readSeasons(callback: (d: any) => void) {
+  get('/seasons', callback)
+}
+
+export async function createSeason(
+  seasonData: any,
+  callback: (d: any) => void
+) {
+  post('/seasons', seasonData, callback)
+}
+
 export async function readSeason(seasonId: number, callback: (d: any) => void) {
   get(`/seasons/${seasonId}`, callback)
 }
@@ -66,6 +77,14 @@ export async function createSeasonAlliance(
   post(`/seasons/${seasonId}/alliances`, allianceData, callback)
 }
 
+export async function createSeasonEpisode(
+  seasonId: number,
+  episodeData: any,
+  callback: (d: any) => void
+) {
+  post(`/seasons/${seasonId}/episodes`, episodeData, callback)
+}
+
 export async function readSeasonEpisodes(
   seasonId: number,
   callback: (d: any) => void
@@ -78,4 +97,11 @@ export async function readSeasonEliminations(
   callback: (d: any) => void
 ) {
   get(`/seasons/${seasonId}/eliminations`, callback)
+}
+
+export async function readSeasonEliminationCount(
+  seasonId: number,
+  callback: (d: any) => void
+) {
+  get(`/seasons/${seasonId}/eliminations/count`, callback)
 }

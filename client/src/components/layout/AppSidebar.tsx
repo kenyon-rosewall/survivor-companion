@@ -4,9 +4,7 @@ import { Menu } from 'react-bulma-components'
 import { 
   EpisodesSidebar, 
   PlayersSidebar, 
-  TribesSidebar, 
-  AlliancesSidebar, 
-  EventsSidebar,
+  TribesSidebar,
   SeasonsSidebar,
   AdvantagesSidebar } 
   from '../sidebars'
@@ -46,10 +44,6 @@ const AppSidebar: React.FC = () => {
                   seasonId={selectedSeason}
                   tribeId={selectedTribe}
                 />
-      case 'alliances':
-        return <AlliancesSidebar seasonId={selectedSeason} />
-      case 'events':
-        return <EventsSidebar seasonId={selectedSeason} />
       default:
         return null
     }

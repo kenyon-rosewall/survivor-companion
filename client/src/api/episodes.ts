@@ -7,6 +7,14 @@ export async function readEpisode(
   get(`/episodes/${episodeId}`, callback)
 }
 
+export async function updateEpisode(
+  episodeId: number,
+  episodeData: any,
+  callback: (d: any) => void
+) {
+  post(`/episodes/${episodeId}`, episodeData, callback)
+}
+
 export async function readEpisodePlayers(
   episodeId: number,
   callback: (d: any) => void
@@ -30,6 +38,14 @@ export async function readEpisodeTribalCouncils(
   get(`/episodes/${episodeId}/tribalCouncils`, callback)
 }
 
+export async function createEpisodeElimination(
+  episodeId: number,
+  eliminationData: any,
+  callback: (d: any) => void
+) {
+  post(`/episodes/${episodeId}/eliminations`, eliminationData, callback)
+}
+
 export async function readEpisodeEliminations(
   episodeId: number,
   callback: (d: any) => void
@@ -43,4 +59,19 @@ export async function createEpisodeTribalCouncil(
 ) {
   const body = { episodeId: episodeId }
   post(`/episodes/${episodeId}/tribalCouncils`, body, callback)
+}
+
+export async function createEpisodeAdvantageEvent(
+  episodeId: number,
+  advantageEventData: any,
+  callback: (d: any) => void
+) {
+  post(`/episodes/${episodeId}/advantageEvents`, advantageEventData, callback)
+}
+
+export async function readEpisodeAdvantageEvents(
+  episodeId: number,
+  callback: (d: any) => void
+) {
+  get(`/episodes/${episodeId}/advantageEvents`, callback)
 }

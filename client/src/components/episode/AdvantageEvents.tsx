@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Button, Modal, Table } from 'react-bulma-components'
+import { readEpisodeAdvantageEvents, deleteAdvantageEvent } from "../../api"
 import AdvantageEventForm from "../forms/advantageEvent"
 
 type AdvantageEventsProps = {
@@ -13,16 +14,18 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, t
   const [refreshAdvantageEvents, setRefreshAdvantageEvents] = useState<boolean>(false)
   const [advantageEvents, setAdvantageEvents] = useState<any[]>([])
 
+  const advantageEventCallback = (data: any) => {
+    if (data.length > 0) {
+      setAdvantageEvents(data)
+    } else {
+      setAdvantageEvents([])
+    }
+  }
+
   useEffect(() => {
     if (episodeId === 0) return
 
-    fetch(`http://localhost:5000/episodes/${episodeId}/advantageEvents`)
-    .then(response => response.json())
-    .then(data => {
-      const ae: any[] = data.data.length > 0 ? data.data : []
-      setAdvantageEvents(ae)
-    })
-    .catch(err => console.error('Error fetching advantage events:', err))
+    readEpisodeAdvantageEvents(episodeId, advantageEventCallback)
   }, [episodeId, refreshAdvantageEvents])
 
   const handleAddAdvantageEvent = () => {
@@ -31,16 +34,13 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, t
     toggleRefreshEpisode()
   }
 
-  const handleDeleteAdvantageEvent = (index: number) => {
-    const advantageEventId = advantageEvents[index].id
-    fetch(`http://localhost:5000/advantageEvents/${advantageEventId}`, {
-      method: 'DELETE'
-    })
-    .then(response => {
-      setRefreshAdvantageEvents(!refreshAdvantageEvents)
-      toggleRefreshEpisode()
-    })
-    .catch(err => console.error('Error deleting advantage event:', err))
+  const deleteAdvantageEventCallback = (data: any) => {
+    setRefreshAdvantageEvents(!refreshAdvantageEvents)
+    toggleRefreshEpisode()
+  }
+
+  const handleDeleteAdvantageEvent = (advantageEventId: number) => {
+    deleteAdvantageEvent(advantageEventId, deleteAdvantageEventCallback)
   }
 
   const formatAdvantageEvent = (event: any) => {
@@ -61,15 +61,15 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, t
   }
 
   const renderAdvantageEvents = () => {
-    return advantageEvents.map((event: any, index: number) => (
-      <tr key={index}>
+    return advantageEvents.map((event: any) => (
+      <tr key={event.id}>
         <td>{formatAdvantageEvent(event)}</td>
         <td width={'40%'}>{event.notes}</td>
         <td width={2}>
           <Button
             remove
             size={'small'}
-            onClick={() => handleDeleteAdvantageEvent(index)}
+            onClick={() => handleDeleteAdvantageEvent(event.id)}
           />
         </td>
       </tr>

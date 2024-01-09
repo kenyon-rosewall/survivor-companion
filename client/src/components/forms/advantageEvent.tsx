@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Button, Form } from 'react-bulma-components'
+import { readAdvantages, createEpisodeAdvantageEvent } from "../../api"
 
 type AdvantageEventFormProps = {
   episodeId: number
@@ -16,7 +17,7 @@ const AdvantageEventForm: React.FC<AdvantageEventFormProps> = ({ episodeId, play
     { value: 'lost', label: 'Lost' },
     { value: 'expired', label: 'Expired' },
   ]
-  const [disableButton, setDisableButton] = useState<boolean>(false)
+  const [disableAjax, setDisableAjax] = useState<boolean>(false)
   const [formData, setFormData] = useState<any>({
     playerInEpisodeId: 0,
     advantageId: 0,
@@ -25,12 +26,7 @@ const AdvantageEventForm: React.FC<AdvantageEventFormProps> = ({ episodeId, play
   })
 
   useEffect(() => {
-    fetch(`http://localhost:5000/advantages`)
-    .then(response => response.json())
-    .then(data => {
-      setAdvantages(data.data)
-    })
-    .catch(err => console.error('Error fetching advantages:', err))
+    readAdvantages(setAdvantages)
   }, [])
 
   const handleInputChange = (e: any) => {
@@ -38,20 +34,17 @@ const AdvantageEventForm: React.FC<AdvantageEventFormProps> = ({ episodeId, play
     setFormData({ ...formData, [name]: value })
   }
 
+  const formSubmitCallback = (data: any) => {
+    setDisableAjax(false)
+    callback()
+  }
+
   const handleFormSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    setDisableButton(true)
+    if (disableAjax === true) return
+    setDisableAjax(true)
 
-    fetch(`http://localhost:5000/episodes/${episodeId}/advantageEvents`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      setDisableButton(false)
-      callback()
-    })
-    .catch(err => console.error('Error adding advantage event:', err))
+    createEpisodeAdvantageEvent(episodeId, formData, formSubmitCallback)
   }
 
   return (
@@ -105,7 +98,6 @@ const AdvantageEventForm: React.FC<AdvantageEventFormProps> = ({ episodeId, play
       </Form.Control>
       <Button
         onClick={handleFormSubmit}
-        disabled={disableButton}
       >
         Add Advantage Event
       </Button>

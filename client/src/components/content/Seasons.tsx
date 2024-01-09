@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Columns, Heading } from 'react-bulma-components'
+import { readSeason } from '../../api'
 
 type SeasonsProps = {
   seasonId: number
@@ -14,12 +15,7 @@ const Seasons: React.FC<SeasonsProps> = ({ seasonId }) => {
   }
 
   useEffect(() => {
-    fetch(`http://localhost:5000/seasons/${seasonId}`)
-      .then(response => response.json())
-      .then(data => {
-        setSeason(data.data)
-      })
-      .catch(err => console.error('Error fetching selected season info:', err))
+    readSeason(seasonId, setSeason)
   }, [seasonId])
 
   return (

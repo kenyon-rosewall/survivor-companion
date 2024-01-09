@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Columns, Form, Button } from 'react-bulma-components'
+import { readEpisode, createSeasonEpisode, updateEpisode } from '../../api'
 import DatePicker from 'react-datepicker'
 
 type EpisodeFormProps = {
@@ -10,67 +11,57 @@ type EpisodeFormProps = {
   onSubmitComplete: (episode: any) => void
 }
 
-const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
-  const buttonText = props.formType === 'update' ? 'Update Episode' : 'Add Episode'
-  const formDisabled = props.formType === 'update' && !props.episodeId
+const EpisodeForm: React.FC<EpisodeFormProps> = ({
+  formType, seasonId, episodeId, maxOrder,
+  onSubmitComplete
+}) => {
+  const buttonText = formType === 'update' ? 'Update Episode' : 'Add Episode'
   const dateOptions: any = {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
   }
   const [formData, setFormData] = useState<any>({
-    order: props.maxOrder ? props.maxOrder + 1 : 0,
+    order: maxOrder ? maxOrder + 1 : 0,
     name: '',
     airingDate: new Date().toLocaleDateString('en-US', dateOptions),
-    premiere: props.maxOrder ? props.maxOrder + 1 === 1 : false,
+    premiere: maxOrder ? maxOrder + 1 === 1 : false,
     merge: false,
     final: false,
     notes: ''
   })
-  const [disableButton, setDisableButton] = useState<boolean>(false)
+  const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
   useEffect(() => {
-    if (props.episodeId === 0) return
-    if (props.formType === 'update' && props.episodeId) {
-      fetch(`http://localhost:5000/episodes/${props.episodeId}`)
-      .then(response => response.json())
-      .then(data => {
-        setFormData(data.data)
-      })
-      .catch(err => console.error('Error fetching episode:', err))
+    if (episodeId === 0 || episodeId === undefined) return
+
+    if (formType === 'update' && episodeId) {
+      readEpisode(episodeId, setFormData)
     }
-  }, [props.episodeId, props.formType])
+  }, [episodeId, formType])
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
 
+  const formSubmitCallback = (data: any) => {
+    setDisableAjax(false)
+    onSubmitComplete(data)
+  }
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (props.episodeId === 0) return
+    if (episodeId === 0 || episodeId === undefined) return
+
     e.preventDefault()
-    setDisableButton(true)
+    if (disableAjax) return
+    setDisableAjax(true)
 
-    let url = `http://localhost:5000/seasons/${props.seasonId}/episodes`
-    let method = 'POST'
-    if (props.formType === 'update') {
-      url = `http://localhost:5000/episodes/${props.episodeId}`
-      method = 'PUT'
+    if (formType === 'update') {
+      updateEpisode(episodeId, formData, formSubmitCallback)
+    } else {
+      createSeasonEpisode(seasonId, formData, formSubmitCallback)
     }
-
-    fetch(url, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      setDisableButton(false)
-      props.onSubmitComplete(data.data)
-    })
-    .catch(err => console.error('Error adding episode:', err))
   }
 
   return (
@@ -84,7 +75,6 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 name="order"
                 value={formData.order}
                 onChange={handleInputChange}
-                disabled={formDisabled}
               />
             </Form.Control>
           </Form.Field>
@@ -98,7 +88,6 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                disabled={formDisabled}
               />
             </Form.Control>
           </Form.Field>
@@ -115,7 +104,6 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 selected={new Date(formData.airingDate)}
                 onChange={(date) => setFormData({ ...formData, airingDate: date })}
                 showIcon
-                disabled={formDisabled}
               />
             </Form.Control>
           </Form.Field>
@@ -129,7 +117,6 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 <Form.Control>
                   <Form.Checkbox
                     checked={formData.premiere}
-                    disabled={formDisabled}
                     onChange={(e) => setFormData({ ...formData, premiere: e.target.checked })}
                   >
                     Premiere
@@ -141,7 +128,6 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 <Form.Control>
                   <Form.Checkbox
                     checked={formData.merge}
-                    disabled={formDisabled}
                     onChange={(e) => setFormData({ ...formData, merge: e.target.checked })}
                   >
                     Merge
@@ -153,7 +139,6 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
                 <Form.Control>
                   <Form.Checkbox
                     checked={formData.final}
-                    disabled={formDisabled}
                     onChange={(e) => setFormData({ ...formData, final: e.target.checked })}
                   >
                     Final
@@ -171,7 +156,6 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
           <Form.Textarea
             name="notes"
             onChange={handleInputChange}
-            disabled={formDisabled}
           />
         </Form.Control>
       </Form.Field>
@@ -179,7 +163,6 @@ const EpisodeForm: React.FC<EpisodeFormProps> = (props: EpisodeFormProps) => {
       <Button
         color="primary"
         type="submit"
-        disabled={formDisabled || disableButton}
         className='is-pulled-right'
       >
         {buttonText}

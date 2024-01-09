@@ -19,9 +19,7 @@ const AppMenu: React.FC = () => {
     { icon: 'circle-info', text: 'Season Info', name: 'seasonInfo' },
     { icon: 'users', text: 'Players', name: 'players' },
     { icon: 'campground', text: 'Tribes', name: 'tribes' },
-    { icon: 'tv', text: 'Episodes', name: 'episodes' },
-    // { icon: 'heart', text: 'Alliances', name: 'alliances' },
-    // { icon: 'list', text: 'Events', name: 'events' },
+    { icon: 'tv', text: 'Episodes', name: 'episodes' }
   ]
 
   const handleItemClick = (itemName: string) => {

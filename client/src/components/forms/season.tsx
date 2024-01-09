@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Form, Button } from 'react-bulma-components'
+import { createSeason } from '../../api'
 import DatePicker from 'react-datepicker'
 
 type SeasonFormProps = {
@@ -20,30 +21,24 @@ const SeasonForm: React.FC<SeasonFormProps> = ({ maxOrder, onSubmitComplete }) =
     notes: '',
     episodeCount: 0
   })
-  const [disableButton, setDisableButton] = useState<boolean>(false)
+  const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
 
+  const formSubmitCallback = (data: any) => {
+    setDisableAjax(false)
+    onSubmitComplete(data)
+  }
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setDisableButton(true)
+    if (disableAjax) return
+    setDisableAjax(true)
 
-    fetch(`http://localhost:5000/seasons`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      onSubmitComplete(data.data)
-      setDisableButton(false)
-    })
-    .catch(err => console.error('Error adding season:', err))
+    createSeason(formData, formSubmitCallback)
   }
 
   const renderRatings = () => {
@@ -148,7 +143,6 @@ const SeasonForm: React.FC<SeasonFormProps> = ({ maxOrder, onSubmitComplete }) =
       <Button
         color="primary"
         type="submit"
-        disabled={disableButton}
       >
         Add Season
       </Button>
