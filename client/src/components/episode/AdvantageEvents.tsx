@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Button, Modal, Table } from 'react-bulma-components'
 import { readEpisodeAdvantageEvents, deleteAdvantageEvent } from "../../api"
+import ModalForm from "../common/modalForm"
 import AdvantageEventForm from "../forms/advantageEvent"
 
 type AdvantageEventsProps = {
@@ -82,25 +83,24 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, t
         Add Advantage Event
       </Button>
       <br /><br />
+
       <Table bordered className='is-fullwidth'>
         <tbody>
           {renderAdvantageEvents()}
         </tbody>
       </Table>
-      <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <Modal.Card>
-          <Modal.Card.Header>
-            <Modal.Card.Title>Add Advantage Event</Modal.Card.Title>
-          </Modal.Card.Header>
-          <Modal.Card.Body>
-            <AdvantageEventForm
-              episodeId={episodeId}
-              players={players}
-              callback={handleAddAdvantageEvent}
-            />
-          </Modal.Card.Body>
-        </Modal.Card>
-      </Modal>
+
+      <ModalForm
+        title='Add Advantage Event'
+        isModalOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+      >
+        <AdvantageEventForm
+          episodeId={episodeId}
+          players={players}
+          callback={handleAddAdvantageEvent}
+        />
+      </ModalForm>
     </>
   )
 }

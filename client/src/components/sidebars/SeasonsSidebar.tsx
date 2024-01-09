@@ -4,6 +4,7 @@ import { Menu, Modal } from 'react-bulma-components'
 import { readSeasons } from '../../api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setSelectedSeason } from '../../actions/seasons'
+import ModalForm from '../common/modalForm'
 import SeasonForm from '../forms/season'
 
 type SeasonsSidebarProps = {
@@ -43,34 +44,32 @@ const SeasonsSidebar: React.FC<SeasonsSidebarProps> = ({ seasonId }) => {
     }
   }
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen)
-  }
-
   const handleFormSubmit = (season: any) => {
-    toggleModal()
+    setIsModalOpen(false)
     dispatch(setSelectedSeason(season.id))
   }
 
   return (
     <>
       <Menu.List.Item
-        onClick={toggleModal}
+        onClick={() => setIsModalOpen(true)}
       >
         <FontAwesomeIcon icon={["fas", "plus"]} />
         <span>Add Season</span>
       </Menu.List.Item>
+
       {renderSeasons()}
-      <Modal show={isModalOpen} onClose={toggleModal}>
-        <Modal.Card>
-          <Modal.Card.Header>
-            <Modal.Card.Title>Add Season</Modal.Card.Title>
-          </Modal.Card.Header>
-          <Modal.Card.Body>
-            <SeasonForm maxOrder={maxOrder} onSubmitComplete={handleFormSubmit} />
-          </Modal.Card.Body>
-        </Modal.Card>
-      </Modal>
+
+      <ModalForm
+        title="Add Season"
+        isModalOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+      >
+        <SeasonForm
+          maxOrder={maxOrder}
+          onSubmitComplete={handleFormSubmit}
+        />
+      </ModalForm>
     </>
   )
 }
