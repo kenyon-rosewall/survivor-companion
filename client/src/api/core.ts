@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:5000'
+import 'dotenv/config'
+
+const BASE_URL = process.env.BASE_URL || 'http://localhost:5000'
 
 async function doFetch(
   url: string,
