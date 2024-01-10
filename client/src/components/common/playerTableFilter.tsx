@@ -1,11 +1,12 @@
 import React from 'react'
 import { Button, Form } from 'react-bulma-components'
+import { PlayerFilter, ITribe, IAlliance } from '../../models'
 
 type PlayerTableFilterProps = {
-  filter: any
-  tribes: any[]
-  alliances: any[]
-  callback: (o: any) => void
+  filter: PlayerFilter
+  tribes: ITribe[]
+  alliances: IAlliance[]
+  callback: (o: PlayerFilter) => void
 }
 
 const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({ 
@@ -13,9 +14,10 @@ const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({
 }) => {
   const renderTribes = () => {
     if (!tribes) return
-    return tribes.map((tribe: any, index: number) => (
+
+    return tribes.map((tribe: ITribe) => (
       <option
-        key={index} 
+        key={tribe.id} 
         value={tribe.id}
       >
         {tribe.name}
@@ -25,9 +27,10 @@ const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({
 
   const renderAlliances = () => {
     if (!alliances) return
-    return alliances.map((alliance: any, index: number) => (
+
+    return alliances.map((alliance: IAlliance) => (
       <option 
-        key={index} 
+        key={alliance.id} 
         value={alliance.id}
       >
         {alliance.name}
@@ -36,8 +39,9 @@ const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({
   }
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const name = e.target.name
-    let value = null
+    const name: string = e.target.name
+    let value: string | number | null = null
+    
     switch (name) {
       case 'hasAdvantage':
         value = e.target.value

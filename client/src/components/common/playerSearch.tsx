@@ -1,20 +1,21 @@
-import React, { useState } from "react"
+import React, { ChangeEvent, ReactHTMLElement, useState } from "react"
 import { Form } from "react-bulma-components"
 import { searchPlayers } from "../../api"
+import { IPlayer, IPlayerSearchResult } from "../../models"
 
 type playerSearchProps = {
-  handleSelectPlayer: (player: any) => void
+  handleSelectPlayer: (player: IPlayer) => void
   seasonId?: number
 }
 
 const PlayerSearch: React.FC<playerSearchProps> = ({ 
   handleSelectPlayer, seasonId 
 }) => {
-  const [players, setPlayers] = useState<any[]>([])
+  const [players, setPlayers] = useState<IPlayerSearchResult[]>([])
   const [query, setQuery] = useState<string>('')
   const [active, setActive] = useState<boolean>(false)
 
-  const setPlayersWrapper = (data: any) => {
+  const setPlayersWrapper = (data: IPlayerSearchResult[]) => {
     if (data && data.length > 0) {
       setPlayers(data)
     } else {
@@ -23,16 +24,16 @@ const PlayerSearch: React.FC<playerSearchProps> = ({
     }
   }
 
-  const handleSearch = (e: any) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     setQuery(e.target.value)
     setActive(true)
 
-    const q = e.target.value
+    const q: string = e.target.value
     searchPlayers(q, Number(seasonId), setPlayersWrapper)
   }
 
-  const selectPlayer = (player: any) => {
+  const selectPlayer = (player: IPlayer) => {
     setQuery('')
     setPlayers([])
     handleSelectPlayer(player)
@@ -41,7 +42,7 @@ const PlayerSearch: React.FC<playerSearchProps> = ({
 
   const renderPlayers = () => {
     if (Array.isArray(players) && players.length > 0) {
-      return players.map((player) => (
+      return players.map((player: IPlayerSearchResult) => (
         <li 
           className='dropdown-item'
           key={player.item.id}

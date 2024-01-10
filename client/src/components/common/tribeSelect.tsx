@@ -1,18 +1,21 @@
 import React from 'react'
 import { Form } from 'react-bulma-components'
+import { ITribe } from '../../models'
 
 type tribeSelectProps = {
-  tribes: any[]
+  tribes: ITribe[]
   selectedTribeId: number
   handleTribeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }
 
-const TribeSelect: React.FC<tribeSelectProps> = ({ tribes, selectedTribeId, handleTribeChange }) => {
+const TribeSelect: React.FC<tribeSelectProps> = ({
+  tribes, selectedTribeId, handleTribeChange 
+}) => {
   const renderTribes = () => {
     return (
       <>
         <option value="0" data-color=""></option>
-        {tribes.map(tribe => (
+        {tribes.map((tribe: ITribe) => (
           <option
             key={tribe.id}
             value={tribe.id}

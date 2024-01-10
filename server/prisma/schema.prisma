@@ -84,7 +84,6 @@ model PlayerOnSeason {
   seasonId				        Int
   headshot				        String?
   occupation			        String?
-  bornLocation			      String?
   residenceLocation		    String?
   notes				            String?
   createdAt			          DateTime		        @default(now())
@@ -127,7 +126,7 @@ model Elimination {
   onDay                   Int                 @default(0)
   playerInEpisode			    PlayerInEpisode	    @relation(fields: [playerInEpisodeId], references: [id])
   playerInEpisodeId		    Int			            @unique
-  // ["votedOut", "rockDraw", "fireMaking", "quit", "medevac", "redemption", "edge", "ejection", "redemptionDual", "edgeChallenge"]
+  // ["votedOut", "rockDraw", "fireMaking", "quit", "medevac", "redemption", "edge", "ejection", "redemptionDuel", "edgeChallenge"]
   category				        String			        @default("votedOut")
   notes				            String?
   createdAt			          DateTime		        @default(now())

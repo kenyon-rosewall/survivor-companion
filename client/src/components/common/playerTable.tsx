@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react'
 import PlayerTableFilter from './playerTableFilter'
 import PlayerTableList from './playerTableList'
 import { extractAlliances } from '../../utils'
+import { PlayerStatusEnum, IPlayerInEpisode, ITribe, IAlliance, PlayerFilter } from '../../models'
 
 type PlayerTableProps = {
-  playerStatus?: string
+  playerStatus?: PlayerStatusEnum
   seasonId: number
-  playersInEpisode: any[]
-  tribes: any[]
+  playersInEpisode: IPlayerInEpisode[]
+  tribes: ITribe[]
   showFilter?: boolean
   renderShotInTheDark: boolean
   refreshAlliances: boolean
@@ -19,19 +20,19 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
   playerStatus, seasonId, playersInEpisode, tribes, showFilter = false,
   renderShotInTheDark, refreshAlliances, toggleRefreshEpisode, setRefreshAlliances
 }) => {
-  const [filteredPlayers, setFilteredPlayers] = useState<any[]>(playersInEpisode)
-  const [alliances, setAlliances] = useState<any[]>([])
-  const [filter, setFilter] = useState<any>({
+  const [filteredPlayers, setFilteredPlayers] = useState<IPlayerInEpisode[]>(playersInEpisode)
+  const [alliances, setAlliances] = useState<IAlliance[]>([])
+  const [filter, setFilter] = useState<PlayerFilter>({
     tribe: 0,
     hasAdvantage: '',
     alliance: 0,
   })
 
   useEffect(() => {
-    const filterPlayersByStatus = (players: any[]) => {
+    const filterPlayersByStatus = (players: IPlayerInEpisode[]) => {
       if (!players) return []
       
-      return players.filter((player: any) => player.status === playerStatus)
+      return players.filter((player: IPlayerInEpisode) => player.status === playerStatus)
     }
 
     setAlliances(extractAlliances(playersInEpisode))
@@ -40,7 +41,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
     }
   }, [playerStatus, playersInEpisode])
 
-  const handleFilterChange = (newFilter: any) => {
+  const handleFilterChange = (newFilter: PlayerFilter) => {
     setFilter(newFilter)
   }
 
@@ -56,7 +57,6 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
       )}
       <PlayerTableList
         filter={filter}
-        seasonId={seasonId}
         playersInEpisode={filteredPlayers}
         tribes={tribes}
         renderShotInTheDark={renderShotInTheDark}
