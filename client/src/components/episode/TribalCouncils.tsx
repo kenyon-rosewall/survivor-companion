@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { Button, Level } from 'react-bulma-components'
 import { readEpisodeTribalCouncils, createEpisodeTribalCouncil } from '../../api'
 import TribalCouncilForm from '../forms/tribalCouncil'
+import { ITribalCouncil, ITribe } from '../../models'
 
 type TribalCouncilsProps = {
   episodeId: number
-  tribes: any[]
+  tribes: ITribe[]
   refreshTribalCouncils: boolean
-  setRefreshTribalCouncils: (refresh: boolean) => void
 }
 
 const TribalCouncils: React.FC<TribalCouncilsProps> = ({
-  episodeId, tribes, refreshTribalCouncils, setRefreshTribalCouncils
+  episodeId, tribes, refreshTribalCouncils
 }) => {
-  const [tribalCouncils, setTribalCouncils] = useState<any[]>([])
+  const [tribalCouncils, setTribalCouncils] = useState<ITribalCouncil[]>([])
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
   useEffect(() => {
@@ -22,22 +22,22 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({
     readEpisodeTribalCouncils(episodeId, setTribalCouncils)
   }, [episodeId, refreshTribalCouncils])
 
+  const addTribalCouncilCallback = (d?: any) => {
+    setDisableAjax(false)
+    readEpisodeTribalCouncils(episodeId, setTribalCouncils)
+  }
+
   const addTribalCouncil = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    if (disableAjax === true) return
+    if (disableAjax === true || episodeId === 0) return
     setDisableAjax(true)
 
-    const addTribalCouncilCallback = (d?: any) => {
-      setDisableAjax(false)
-      readEpisodeTribalCouncils(episodeId, setTribalCouncils)
-    }
-    
     createEpisodeTribalCouncil(episodeId, addTribalCouncilCallback)
   }
 
-  const renderTribalCouncils = () => {
-    return tribalCouncils.map((tribalCouncil: any) => (
+  const renderTribalCouncils = (): React.ReactNode => {
+    return tribalCouncils.map((tribalCouncil: ITribalCouncil) => (
       <TribalCouncilForm
         key={tribalCouncil.id}
         tribalCouncilId={tribalCouncil.id}

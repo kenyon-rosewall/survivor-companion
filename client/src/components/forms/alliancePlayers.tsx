@@ -2,12 +2,13 @@ import React, { useState } from "react"
 import { Button, Columns, Tag } from "react-bulma-components"
 import { createAlliancePlayer, deleteAlliancePlayer } from "../../api"
 import PlayerSearch from "../common/playerSearch"
+import { IAlliance } from "../../models"
 
 type AlliancePlayersFormProps = {
   alliance: any
   episodeId: number
   seasonId: number
-  allianceCallback: () => void
+  allianceCallback: (data?: IAlliance[]) => void
 }
 
 const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({ 

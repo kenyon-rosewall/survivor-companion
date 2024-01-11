@@ -5,12 +5,12 @@ import { readSeasonEliminationCount, createEpisodeElimination } from '../../api'
 type EliminationFormProps = {
   episodeId: number
   seasonId: number
-  players: any[]
+  playersInEpisode: any[]
   onSubmitComplete: () => void
 }
 
 const EliminationForm: React.FC<EliminationFormProps> = ({ 
-  episodeId, seasonId, players, onSubmitComplete 
+  episodeId, seasonId, playersInEpisode, onSubmitComplete 
 }) => {
   const categories = [
     { name: 'Voted Out', value: 'votedOut' }, 
@@ -77,7 +77,7 @@ const EliminationForm: React.FC<EliminationFormProps> = ({
             onChange={handleInputChange}
           >
             <option value={0}>Select a player</option>
-            {players.map((player: any) => (
+            {playersInEpisode.map((player: any) => (
               <option key={player.id} value={player.id}>{player.player?.name}</option>
             ))}
           </Form.Select>

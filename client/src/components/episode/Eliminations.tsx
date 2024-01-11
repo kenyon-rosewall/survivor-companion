@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Modal, Table } from 'react-bulma-components'
+import { Button, Table } from 'react-bulma-components'
 import { readEpisodeEliminations, deleteElimination } from '../../api'
 import ModalForm from '../common/modalForm'
 import EliminationForm from '../forms/elimination'
+import { EliminationCategoryEnum, IElimination, IPlayerInEpisode } from '../../models'
 
 type EliminationsProps = {
   episodeId: number
   seasonId: number
-  players: any[]
+  playersInEpisode: IPlayerInEpisode[]
   toggleRefreshEpisode: () => void
   refreshTribalCouncils: boolean
   setRefreshTribalCouncils: (refresh: boolean) => void
 }
 
 const Eliminations: React.FC<EliminationsProps> = ({ 
-  episodeId, seasonId, players, toggleRefreshEpisode,
+  episodeId, seasonId, playersInEpisode, toggleRefreshEpisode,
   refreshTribalCouncils, setRefreshTribalCouncils
 }) => {
-  const [eliminations, setEliminations] = useState<any[]>([{}])
+  const [eliminations, setEliminations] = useState<IElimination[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const Eliminations: React.FC<EliminationsProps> = ({
     toggleRefreshEpisode()
   }
 
-  const onSubmitComplete = (d?: any) => {
+  const onSubmitComplete = (data?: IElimination[]) => {
     eliminationCallback()
   }
 
@@ -42,34 +43,36 @@ const Eliminations: React.FC<EliminationsProps> = ({
     eliminationCallback()
   }
 
-  const formatElimination = (elimination: any) => {
+  const formatElimination = (elimination: IElimination) => {
     switch (elimination.category) {
-      case 'votedOut':
-        return `${elimination.playerInEpisode.player?.name} was voted out`
-      case 'rockDraw':
-        return `${elimination.playerInEpisode.player?.name} was eliminated by a rock draw`
-      case 'fireMaking':
-        return `${elimination.playerInEpisode.player?.name} lost a fire-making challenge`
-      case 'quit':
-        return `${elimination.playerInEpisode.player?.name} quit`
-      case 'medevac':
-        return `${elimination.playerInEpisode.player?.name} was medically evacuated`
-      case 'redemption':
-        return `${elimination.playerInEpisode.player?.name} was sent to Redemption Island`
-      case 'edge':
-        return `${elimination.playerInEpisode.player?.name} was sent to the Edge of Extinction`
-      case 'ejection':
-        return `${elimination.playerInEpisode.player?.name} was ejected`
-      case 'redemptionDuel':
-        return `${elimination.playerInEpisode.player?.name} lost a Redemption Island duel`
-      case 'edgeChallenge':
-        return `${elimination.playerInEpisode.player?.name} lost an Edge of Extinction challenge`
+      case EliminationCategoryEnum.VotedOut:
+        return `${elimination.playerInEpisode?.player?.name} was voted out`
+      case EliminationCategoryEnum.RockDraw:
+        return `${elimination.playerInEpisode?.player?.name} was eliminated by a rock draw`
+      case EliminationCategoryEnum.FireMaking:
+        return `${elimination.playerInEpisode?.player?.name} lost a fire-making challenge`
+      case EliminationCategoryEnum.Quit:
+        return `${elimination.playerInEpisode?.player?.name} quit`
+      case EliminationCategoryEnum.Medevac:
+        return `${elimination.playerInEpisode?.player?.name} was medically evacuated`
+      case EliminationCategoryEnum.Redemption:
+        return `${elimination.playerInEpisode?.player?.name} was sent to Redemption Island`
+      case EliminationCategoryEnum.Edge:
+        return `${elimination.playerInEpisode?.player?.name} was sent to the Edge of Extinction`
+      case EliminationCategoryEnum.Ejection:
+        return `${elimination.playerInEpisode?.player?.name} was ejected`
+      case EliminationCategoryEnum.RedemptionDuel:
+        return `${elimination.playerInEpisode?.player?.name} lost a Redemption Island duel`
+      case EliminationCategoryEnum.EdgeChallenge:
+        return `${elimination.playerInEpisode?.player?.name} lost an Edge of Extinction challenge`
+      default:
+        return ""
     }
   }
 
-  const ordinalSuffix = (i: number) => {
-    const j = i % 10
-    const k = i % 100
+  const ordinalSuffix = (i: number): string => {
+    const j: number = i % 10
+    const k: number = i % 100
 
     if (j === 1 && k !== 11) {
         return i + "st"
@@ -86,10 +89,10 @@ const Eliminations: React.FC<EliminationsProps> = ({
     return i + "th";
   }
 
-  const renderEliminations = () => {
+  const renderEliminations = (): React.ReactNode => {
     return (
       <tbody>
-        {eliminations.map((elimination: any) => (
+        {eliminations.map((elimination: IElimination) => (
           <tr
             key={elimination.id}
           >
@@ -145,7 +148,7 @@ const Eliminations: React.FC<EliminationsProps> = ({
         <EliminationForm
           episodeId={episodeId}
           seasonId={seasonId}
-          players={players}
+          playersInEpisode={playersInEpisode}
           onSubmitComplete={onSubmitComplete}
         />
       </ModalForm>

@@ -98,7 +98,6 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
           episodeId={episodeId}
           tribes={tribes}
           refreshTribalCouncils={refreshTribalCouncils}
-          setRefreshTribalCouncils={setRefreshTribalCouncils}
         />
       </Block>
       <Block
@@ -107,7 +106,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         <Eliminations
           seasonId={seasonId}
           episodeId={episodeId}
-          players={playersInEpisode}
+          playersInEpisode={playersInEpisode}
           toggleRefreshEpisode={toggleRefreshEpisode}
           refreshTribalCouncils={refreshTribalCouncils}
           setRefreshTribalCouncils={setRefreshTribalCouncils}
@@ -118,7 +117,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
       >
         <AdvantageEvents
           episodeId={episodeId}
-          players={playersInEpisode}
+          playersInEpisode={playersInEpisode}
           toggleRefreshEpisode={toggleRefreshEpisode}
         />
       </Block>

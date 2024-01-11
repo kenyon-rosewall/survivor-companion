@@ -3,19 +3,22 @@ import { Button, Table } from 'react-bulma-components'
 import { readEpisodeAdvantageEvents, deleteAdvantageEvent } from "../../api"
 import ModalForm from "../common/modalForm"
 import AdvantageEventForm from "../forms/advantageEvent"
+import { AdvantageEventCategoryEnum, IAdvantageEvent, IPlayerInEpisode } from "../../models"
 
 type AdvantageEventsProps = {
   episodeId: number
-  players: any[]
+  playersInEpisode: IPlayerInEpisode[]
   toggleRefreshEpisode: () => void
 }
 
-const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, toggleRefreshEpisode }) => {
+const AdvantageEvents: React.FC<AdvantageEventsProps> = ({
+  episodeId, playersInEpisode, toggleRefreshEpisode
+}) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [refreshAdvantageEvents, setRefreshAdvantageEvents] = useState<boolean>(false)
-  const [advantageEvents, setAdvantageEvents] = useState<any[]>([])
+  const [advantageEvents, setAdvantageEvents] = useState<IAdvantageEvent[]>([])
 
-  const advantageEventCallback = (data: any) => {
+  const advantageEventCallback = (data: IAdvantageEvent[]) => {
     if (data.length > 0) {
       setAdvantageEvents(data)
     } else {
@@ -35,7 +38,7 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, t
     toggleRefreshEpisode()
   }
 
-  const deleteAdvantageEventCallback = (data: any) => {
+  const deleteAdvantageEventCallback = (data: IAdvantageEvent) => {
     setRefreshAdvantageEvents(!refreshAdvantageEvents)
     toggleRefreshEpisode()
   }
@@ -44,25 +47,25 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, t
     deleteAdvantageEvent(advantageEventId, deleteAdvantageEventCallback)
   }
 
-  const formatAdvantageEvent = (event: any) => {
+  const formatAdvantageEvent = (event: IAdvantageEvent): string => {
     switch (event.category) {
-      case 'obtained':
-        return `${event.playerInEpisode.player?.name} obtained a ${event.advantage?.name}`
-      case 'played':
-        return `${event.playerInEpisode.player?.name} played ${event.advantage?.name}`
-      case 'transferred':
-        return `${event.playerInEpisode.player?.name} transferred ${event.advantage?.name}`
-      case 'lost':
-        return `${event.playerInEpisode.player?.name} lost ${event.advantage?.name}`
-      case 'expired':
-        return `${event.playerInEpisode.player?.name}'s ${event.advantage?.name} expired`
+      case AdvantageEventCategoryEnum.Obtained:
+        return `${event.playerInEpisode?.player?.name} obtained a ${event.advantage?.name}`
+      case AdvantageEventCategoryEnum.Played:
+        return `${event.playerInEpisode?.player?.name} played ${event.advantage?.name}`
+      case AdvantageEventCategoryEnum.Transferred:
+        return `${event.playerInEpisode?.player?.name} transferred ${event.advantage?.name}`
+      case AdvantageEventCategoryEnum.Lost:
+        return `${event.playerInEpisode?.player?.name} lost ${event.advantage?.name}`
+      case AdvantageEventCategoryEnum.Expired:
+        return `${event.playerInEpisode?.player?.name}'s ${event.advantage?.name} expired`
       default:
-        return ''
+        return ""
     }
   }
 
-  const renderAdvantageEvents = () => {
-    return advantageEvents.map((event: any) => (
+  const renderAdvantageEvents = (): React.ReactNode => {
+    return advantageEvents.map((event: IAdvantageEvent) => (
       <tr key={event.id}>
         <td>{formatAdvantageEvent(event)}</td>
         <td width={'40%'}>{event.notes}</td>
@@ -79,9 +82,13 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, t
 
   return (
     <>
-      <Button className='is-pulled-right' onClick={() => setIsModalOpen(true)}>
+      <Button
+        className='is-pulled-right'
+        onClick={() => setIsModalOpen(true)}
+      >
         Add Advantage Event
       </Button>
+
       <br /><br />
 
       <Table bordered className='is-fullwidth'>
@@ -97,7 +104,7 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({ episodeId, players, t
       >
         <AdvantageEventForm
           episodeId={episodeId}
-          players={players}
+          players={playersInEpisode}
           callback={handleAddAdvantageEvent}
         />
       </ModalForm>

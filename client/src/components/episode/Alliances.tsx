@@ -4,6 +4,7 @@ import { readSeasonAlliances, deleteAlliance } from '../../api'
 import Subtitle from '../common/subtitle'
 import AllianceForm from '../forms/alliance'
 import AlliancePlayersForm from '../forms/alliancePlayers'
+import { IAlliance } from '../../models'
 
 type AlliancesProps = {
   seasonId: number
@@ -18,7 +19,7 @@ const Alliances: React.FC<AlliancesProps> = ({
   seasonId, episodeId, refreshAlliances,
   toggleRefreshEpisode, setRefreshAlliances 
 }) => {
-  const [alliances, setAlliances] = useState<any[]>([])
+  const [alliances, setAlliances] = useState<IAlliance[]>([])
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const Alliances: React.FC<AlliancesProps> = ({
     readSeasonAlliances(seasonId, setAlliances)
   }, [seasonId, refreshAlliances])
 
-  const allianceCallback = (d?: any) => {
+  const allianceCallback = (data?: IAlliance[]) => {
     setRefreshAlliances(!refreshAlliances)
     toggleRefreshEpisode()
     setDisableAjax(false)
@@ -40,8 +41,8 @@ const Alliances: React.FC<AlliancesProps> = ({
     deleteAlliance(allianceId, allianceCallback)
   }
 
-  const renderAlliances = () => {
-    return alliances.map((alliance: any) => (
+  const renderAlliances = (): React.ReactNode => {
+    return alliances.map((alliance: IAlliance) => (
       <Block
         key={alliance.id}
       >

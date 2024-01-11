@@ -2,12 +2,13 @@ import React, { useState } from 'react'
 import { Block, Button } from 'react-bulma-components'
 import { createEpisodePlayers } from '../../api'
 import PlayerTable from '../common/playerTable'
+import { IEpisode, IPlayerInEpisode, ISeason, ITribe, PlayerStatusEnum } from '../../models'
 
 type PlayersInEpisodeProps = {
-  playersInEpisode: any[]
-  season: any
-  episode: any
-  tribes: any[]
+  playersInEpisode: IPlayerInEpisode[]
+  season?: ISeason
+  episode?: IEpisode
+  tribes: ITribe[]
   refreshAlliances: boolean
   toggleRefreshEpisode: () => void
   setRefreshAlliances: (refresh: boolean) => void
@@ -18,28 +19,30 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
   toggleRefreshEpisode, setRefreshAlliances 
 }) => {
   // TODO: This should be a property of the season
-  const renderShotInTheDark = season.order > 40
+  const renderShotInTheDark = Number(season?.order) > 40 ?? false
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
+  const initPlayersInEpisodeCallback = (data?: IPlayerInEpisode[]) => {
+    setDisableAjax(false)
+    toggleRefreshEpisode()
+  }
+  
   const initPlayersInEpisode = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     
-    if (disableAjax === true) return
+    if (disableAjax === true || !episode) return
     setDisableAjax(true)
-
-    const initPlayersInEpisodeCallback = (d: any) => {
-      setDisableAjax(false)
-      toggleRefreshEpisode()
-    }
 
     createEpisodePlayers(episode.id, episode.premiere, initPlayersInEpisodeCallback)
   }
+
+  if (!season) return null
 
   return (
     <>
       <Block>
         <PlayerTable
-          playerStatus='playing'
+          playerStatus={PlayerStatusEnum.Playing}
           seasonId={season.id}
           playersInEpisode={playersInEpisode}
           tribes={tribes}
@@ -50,7 +53,7 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
           setRefreshAlliances={setRefreshAlliances}
         />
         <PlayerTable
-          playerStatus='redemption'
+          playerStatus={PlayerStatusEnum.Redemption}
           seasonId={season.id}
           playersInEpisode={playersInEpisode}
           tribes={tribes}
@@ -60,7 +63,7 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
           setRefreshAlliances={setRefreshAlliances}
         />
         <PlayerTable
-          playerStatus='edge'
+          playerStatus={PlayerStatusEnum.Edge}
           seasonId={season.id}
           playersInEpisode={playersInEpisode}
           tribes={tribes}
@@ -70,7 +73,7 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
           setRefreshAlliances={setRefreshAlliances}
         />
         <PlayerTable
-          playerStatus='eliminated'
+          playerStatus={PlayerStatusEnum.Eliminated}
           seasonId={season.id}
           playersInEpisode={playersInEpisode}
           tribes={tribes}
