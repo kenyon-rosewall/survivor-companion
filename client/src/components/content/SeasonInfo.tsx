@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import { Columns, Heading } from 'react-bulma-components'
 import { readSeason } from '../../api'
+import { ISeason } from '../../models'
+import { fixDate } from '../../utils'
 
 type SeasonInfoProps = {
   seasonId: number
 }
 
 const SeasonInfo: React.FC<SeasonInfoProps> = ({ seasonId }) => {
-  const [season, setSeason] = useState<any>({})
-  const dateOptions: any = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }
+  const [season, setSeason] = useState<ISeason>()
 
   useEffect(() => {
     readSeason(seasonId, setSeason)
   }, [seasonId])
+
+  if (!season) return null
 
   return (
     <>
@@ -38,8 +37,7 @@ const SeasonInfo: React.FC<SeasonInfoProps> = ({ seasonId }) => {
         </Columns.Column>
         <Columns.Column>
           <p>
-            {new Date(season.filmingStart).toLocaleDateString('en-US', dateOptions)} - 
-            {new Date(season.filmingEnd).toLocaleDateString('en-US', dateOptions)}
+            {fixDate(season.filmingStart)} - {fixDate(season.filmingEnd)}
           </p>
         </Columns.Column>
         <Columns.Column>
@@ -49,8 +47,7 @@ const SeasonInfo: React.FC<SeasonInfoProps> = ({ seasonId }) => {
         </Columns.Column>
         <Columns.Column>
           <p>
-            {new Date(season.airingStart).toLocaleDateString('en-US', dateOptions)} - 
-            {new Date(season.airingEnd).toLocaleDateString('en-US', dateOptions)}
+            {fixDate(season.airingStart)} - {fixDate(season.airingEnd)}
           </p>
         </Columns.Column>
       </Columns>
@@ -80,7 +77,7 @@ const SeasonInfo: React.FC<SeasonInfoProps> = ({ seasonId }) => {
         <Columns.Column>
           <p><strong>What Makes it Good:</strong></p>
           <p style={{ whiteSpace: 'pre-wrap' }}>
-            {(season.whyItsGood) ? season.whyItGood : ''}
+            {(season.whyItsGood) ? season.whyItsGood : ''}
           </p>
         </Columns.Column>
         <Columns.Column>

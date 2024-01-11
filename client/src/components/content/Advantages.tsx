@@ -1,13 +1,14 @@
 import React from 'react'
 import AdvantageForm from '../forms/advantage'
 import { Block } from 'react-bulma-components'
+import { IAdvantage } from '../../models'
 
 type AdvantagesProps = {
   advantageId: number
 }
 
 const Advantages: React.FC<AdvantagesProps> = ({ advantageId }) => {
-  const handleFormSubmit = (advantage: any) => {
+  const handleFormSubmit = (advantage: IAdvantage) => {
     // TODO: update advantage in state
   }
 

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Block, Tabs } from 'react-bulma-components'
 import { readSeasonPlayer } from '../../api'
-import Stats from '../player/stats'
-import Timeline from '../player/timeline'
+import Stats from '../player/Stats'
+import Timeline from '../player/Timeline'
 import PlayerForm from '../forms/player'
+import { IPlayerOnSeason } from '../../models'
 
 type PlayersProps = {
   seasonId: number,
@@ -13,22 +14,22 @@ type PlayersProps = {
 const Players: React.FC<PlayersProps> = ({ 
   seasonId, playerId 
 }) => {
-  const tabs = ['Info', 'Stats', 'Timeline']
-  const [player, setPlayer] = useState<any>({})
+  const tabs: string[] = ['Info', 'Stats', 'Timeline']
+  const [playerOnSeason, setPlayerOnSeason] = useState<IPlayerOnSeason>()
   const [selectedTab, setSelectedTab] = useState<string>('Info')
 
   useEffect(() => {
     if (playerId === 0) return
 
-    readSeasonPlayer(seasonId, playerId, setPlayer)
+    readSeasonPlayer(seasonId, playerId, setPlayerOnSeason)
   }, [playerId, seasonId])
 
-  const handleFormSubmit = (player: any) => {
+  const handleFormSubmit = (player: IPlayerOnSeason) => {
     // TODO: update player in state
   }
 
-  const renderTabs = () => {
-    return tabs.map((tab, index) => (
+  const renderTabs = (): React.ReactNode => {
+    return tabs.map((tab: string, index: number) => (
       <Tabs.Tab
         key={index}
         active={tab === selectedTab}
@@ -57,7 +58,7 @@ const Players: React.FC<PlayersProps> = ({
         <PlayerForm
           formType='update'
           seasonId={seasonId}
-          playerOnSeason={player}
+          playerOnSeason={playerOnSeason}
           onSubmitComplete={handleFormSubmit}
         />
       </Block>
@@ -65,13 +66,13 @@ const Players: React.FC<PlayersProps> = ({
       <Block
         className={selectedTab === 'Stats' ? '' : 'is-hidden'}
       >
-        <Stats player={player} />
+        <Stats playerOnSeason={playerOnSeason} />
       </Block>
 
       <Block
         className={selectedTab === 'Timeline' ? '' : 'is-hidden'}
       >
-        <Timeline player={player} />
+        <Timeline playerOnSeason={playerOnSeason} />
       </Block>
 
     </Block>

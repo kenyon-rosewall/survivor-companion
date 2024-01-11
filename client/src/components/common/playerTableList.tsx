@@ -22,11 +22,11 @@ const PlayerTableList: React.FC<PlayerTableListProps> = ({
     'Alliances', 'Shot in the Dark', 'Notes'
   ]
 
-  const hideShot = (header: string) => {
+  const hideShot = (header: string): boolean => {
     return (header === 'Shot in the Dark' && !renderShotInTheDark)
   }
 
-  const renderHeaders = () => {
+  const renderHeaders = (): React.ReactNode => {
     return (
       <thead>
         <tr>
@@ -43,54 +43,40 @@ const PlayerTableList: React.FC<PlayerTableListProps> = ({
     )
   }
 
-  const filterPlayersInEpisode = (players: IPlayerInEpisode[]) => {
-    let filteredPlayers: IPlayerInEpisode[] = players
-    if (filter.tribe > 0) {
-      filteredPlayers = filteredPlayers.filter((player: IPlayerInEpisode) => {
-        if (player.tribe) return player.tribe.id === filter.tribe
-      })
-    }
+  const filterPlayersInEpisode = (players: IPlayerInEpisode[]): IPlayerInEpisode[] => {
+    return players.filter((player: IPlayerInEpisode) => {
+      const hasAdvantageCondition = filter.hasAdvantage === 'yes'
+        ? (player.advantages?.length)
+        : (!player.advantages?.length);
+      const inAdvantageFilter = filter.hasAdvantage === '' || hasAdvantageCondition;
 
-    if (filter.hasAdvantage !== '') {
-      if (filter.hasAdvantage === 'yes') {
-        filteredPlayers = filteredPlayers.filter((player: IPlayerInEpisode) => {
-          if (player.advantages) return player.advantages.length > 0
-        })
-      } else {
-        filteredPlayers = filteredPlayers.filter((player: IPlayerInEpisode) => {
-          if (player.advantages) return player.advantages.length === 0
-        })
-      }
-    }
-    
-    if (filter.alliance > 0) {
-      filteredPlayers = filteredPlayers.filter((player: IPlayerInEpisode) => {
-        if (player.alliances) {
-          return player.alliances
-            .map((alliance: IAlliance) => alliance.id)
-            .includes(filter.alliance)
-        }
-      })
-    }
+      const inTribeFilter = filter.tribe > 0
+        ? player.tribe?.id === filter.tribe
+        : true;
 
-    return filteredPlayers
+      const inAllianceFilter = filter.alliance > 0
+        ? player.alliances?.some(alliance => alliance.id === filter.alliance)
+        : true;
+
+      return inTribeFilter && inAdvantageFilter && inAllianceFilter;
+    });
   }
 
-  const renderPlayersInEpisode = () => {
-    const players: IPlayerInEpisode[] = filterPlayersInEpisode(playersInEpisode)
-    return players.map((player: IPlayerInEpisode) => (
-      <tbody>
-        <PlayerInEpisodeForm
-          key={player.id}
-          playerInEpisode={player}
-          tribes={tribes}
-          renderShotInTheDark={renderShotInTheDark}
-          refreshAlliances={refreshAlliances}
-          toggleRefreshEpisode={toggleRefreshEpisode}
-          setRefreshAlliances={setRefreshAlliances}
-        />
-      </tbody>
-    ))
+  const renderPlayersInEpisode = (): React.ReactNode => {
+    return filterPlayersInEpisode(playersInEpisode)
+      .map((player: IPlayerInEpisode) => (
+        <tbody>
+          <PlayerInEpisodeForm
+            key={player.id}
+            playerInEpisode={player}
+            tribes={tribes}
+            renderShotInTheDark={renderShotInTheDark}
+            refreshAlliances={refreshAlliances}
+            toggleRefreshEpisode={toggleRefreshEpisode}
+            setRefreshAlliances={setRefreshAlliances}
+          />
+        </tbody>
+      ))
   }
 
   return (

@@ -6,7 +6,7 @@ export interface IAlliance {
   season?: ISeason
   seasonId: number
   alliancePlayers?: IPlayerInEpisode[]
-  name?: string
+  name: string
   color: string
   notes?: string
 }

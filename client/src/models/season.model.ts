@@ -8,10 +8,10 @@ export interface ISeason {
   order: number
   name?: string
   episodeCount: number
-  filmingStart?: Date
-  filmingEnd?: Date
-  airingStart?: Date
-  airingEnd?: Date
+  filmingStart?: string
+  filmingEnd?: string
+  airingStart?: string
+  airingEnd?: string
   rating?: string
   whyItsGood?: string
   whyItsBad?: string

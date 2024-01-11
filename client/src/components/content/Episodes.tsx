@@ -7,6 +7,7 @@ import TribalCouncils from '../episode/TribalCouncils'
 import Eliminations from '../episode/Eliminations'
 import AdvantageEvents from '../episode/AdvantageEvents'
 import Alliances from '../episode/Alliances'
+import { IEpisode, ISeason, ITribe, IPlayerInEpisode } from '../../models'
 
 type EpisodesProps = {
   seasonId: number,
@@ -14,15 +15,15 @@ type EpisodesProps = {
 }
 
 const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
-  const episodeTabs = [
+  const episodeTabs: string[] = [
     'Info', 'Players', 'Tribal Councils', 
     'Eliminations', 'Advantage Events', 'Alliances'
   ]
   const [selectedTab, setSelectedTab] = useState<string>('Info')
-  const [episode, setEpisode] = useState<any>({})
-  const [season, setSeason] = useState<any>({})
-  const [tribes, setTribes] = useState<any[]>([{}])
-  const [players, setPlayers] = useState<any[]>([{}])
+  const [episode, setEpisode] = useState<IEpisode>()
+  const [season, setSeason] = useState<ISeason>()
+  const [tribes, setTribes] = useState<ITribe[]>([])
+  const [playersInEpisode, setPlayersInEpisode] = useState<IPlayerInEpisode[]>([])
   const [refreshEpisode, setRefreshEpisode] = useState<boolean>(false)
   const [refreshAlliances, setRefreshAlliances] = useState<boolean>(false)
   const [refreshTribalCouncils, setRefreshTribalCouncils] = useState<boolean>(false)
@@ -33,19 +34,19 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
     readEpisode(episodeId, setEpisode)
     readSeason(seasonId, setSeason)
     readSeasonTribes(seasonId, setTribes)
-    readEpisodePlayers(episodeId, setPlayers)
+    readEpisodePlayers(episodeId, setPlayersInEpisode)
   }, [episodeId, seasonId, refreshEpisode])
 
   const toggleRefreshEpisode = () => {
     setRefreshEpisode(!refreshEpisode)
   }
 
-  const handleFormSubmit = (episode: any) => {
+  const handleFormSubmit = (episode: IEpisode) => {
     toggleRefreshEpisode()
   }
 
-  const renderTabs = () => {
-    return episodeTabs.map((tab, index) => (
+  const renderTabs = (): React.ReactNode => {
+    return episodeTabs.map((tab: string, index: number) => (
       <Tabs.Tab
         key={index}
         active={tab === selectedTab}
@@ -83,7 +84,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         <PlayersInEpisode
           season={season}
           episode={episode}
-          playersInEpisode={players}
+          playersInEpisode={playersInEpisode}
           tribes={tribes}
           refreshAlliances={refreshAlliances}
           toggleRefreshEpisode={toggleRefreshEpisode}
@@ -106,7 +107,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
         <Eliminations
           seasonId={seasonId}
           episodeId={episodeId}
-          players={players}
+          players={playersInEpisode}
           toggleRefreshEpisode={toggleRefreshEpisode}
           refreshTribalCouncils={refreshTribalCouncils}
           setRefreshTribalCouncils={setRefreshTribalCouncils}
@@ -117,7 +118,7 @@ const Episodes: React.FC<EpisodesProps> = ({ seasonId, episodeId }) => {
       >
         <AdvantageEvents
           episodeId={episodeId}
-          players={players}
+          players={playersInEpisode}
           toggleRefreshEpisode={toggleRefreshEpisode}
         />
       </Block>

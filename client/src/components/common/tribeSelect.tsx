@@ -11,7 +11,7 @@ type tribeSelectProps = {
 const TribeSelect: React.FC<tribeSelectProps> = ({
   tribes, selectedTribeId, handleTribeChange 
 }) => {
-  const renderTribes = () => {
+  const renderTribes = (): React.ReactNode => {
     return (
       <>
         <option value="0" data-color=""></option>

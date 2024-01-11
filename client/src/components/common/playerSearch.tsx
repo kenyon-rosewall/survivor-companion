@@ -40,8 +40,8 @@ const PlayerSearch: React.FC<playerSearchProps> = ({
     setActive(false)
   }
 
-  const renderPlayers = () => {
-    if (Array.isArray(players) && players.length > 0) {
+  const renderPlayers = (): React.ReactNode => {
+    if (players.length > 0) {
       return players.map((player: IPlayerSearchResult) => (
         <li 
           className='dropdown-item'

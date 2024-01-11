@@ -48,6 +48,7 @@ export interface IPlayerOnSeason {
   occupation?: string
   residenceLocation?: string
   notes?: string
+  playerInEpisodes?: IPlayerInEpisode[]
 }
 
 export interface IPlayer {

@@ -12,7 +12,7 @@ type PlayerTableFilterProps = {
 const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({ 
   filter, tribes, alliances, callback 
 }) => {
-  const renderTribes = () => {
+  const renderTribes = (): React.ReactNode => {
     if (!tribes) return
 
     return tribes.map((tribe: ITribe) => (
@@ -25,7 +25,7 @@ const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({
     ))
   }
 
-  const renderAlliances = () => {
+  const renderAlliances = (): React.ReactNode => {
     if (!alliances) return
 
     return alliances.map((alliance: IAlliance) => (
@@ -40,7 +40,7 @@ const PlayerTableFilter: React.FC<PlayerTableFilterProps> = ({
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const name: string = e.target.name
-    let value: string | number | null = null
+    let value: string | number
     
     switch (name) {
       case 'hasAdvantage':

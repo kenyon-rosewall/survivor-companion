@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PlayerTableFilter from './playerTableFilter'
 import PlayerTableList from './playerTableList'
 import { extractAlliances } from '../../utils'
-import { PlayerStatusEnum, IPlayerInEpisode, ITribe, IAlliance, PlayerFilter } from '../../models'
+import { PlayerStatusEnum, IPlayerInEpisode, ITribe, IAlliance, PlayerFilter, IPlayer } from '../../models'
 
 type PlayerTableProps = {
   playerStatus?: PlayerStatusEnum
@@ -28,17 +28,15 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
     alliance: 0,
   })
 
-  useEffect(() => {
-    const filterPlayersByStatus = (players: IPlayerInEpisode[]) => {
-      if (!players) return []
-      
-      return players.filter((player: IPlayerInEpisode) => player.status === playerStatus)
-    }
+  const filterPlayersByStatus = (players: IPlayerInEpisode[]): IPlayerInEpisode[] => {
+    if (!players) return []
+    
+    return players.filter((player: IPlayerInEpisode) => player.status === playerStatus)
+  }
 
+  useEffect(() => {
     setAlliances(extractAlliances(playersInEpisode))
-    if (playerStatus?.toString() !== '') {
-      setFilteredPlayers(filterPlayersByStatus(playersInEpisode))    
-    }
+    if (playerStatus) setFilteredPlayers(filterPlayersByStatus(playersInEpisode))
   }, [playerStatus, playersInEpisode])
 
   const handleFilterChange = (newFilter: PlayerFilter) => {

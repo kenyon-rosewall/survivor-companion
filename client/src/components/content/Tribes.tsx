@@ -3,14 +3,17 @@ import { Block, Tag } from 'react-bulma-components'
 import { readTribeMembers } from '../../api'
 import Subtitle from '../common/subtitle'
 import TribeForm from '../forms/tribe'
+import { IPlayerInEpisode } from '../../models'
 
 type TribesProps = {
   seasonId: number,
   tribeId: number
 }
 
-const Tribes: React.FC<TribesProps> = ({ seasonId, tribeId }) => {
-  const [originalMembers, setOriginalMembers] = useState<any[]>([])
+const Tribes: React.FC<TribesProps> = ({
+  seasonId, tribeId
+}) => {
+  const [originalMembers, setOriginalMembers] = useState<IPlayerInEpisode[]>([])
   const [tribeColor, setTribeColor] = useState<string>('')
 
   useEffect(() => {
@@ -24,7 +27,7 @@ const Tribes: React.FC<TribesProps> = ({ seasonId, tribeId }) => {
     // TODO: update tribe in state
   }
 
-  const renderOriginalMembers = () => {
+  const renderOriginalMembers = (): React.ReactNode => {
     return originalMembers.map((member: any) => {
       return (
         <Tag 
@@ -36,7 +39,7 @@ const Tribes: React.FC<TribesProps> = ({ seasonId, tribeId }) => {
           }}
         >
           {member.player.name} 
-          { member.player.nickname ? `(${member.player.nickname})` : '' }
+          {member.player.nickname ? `(${member.player.nickname})` : ''}
         </Tag>
       )
     })
