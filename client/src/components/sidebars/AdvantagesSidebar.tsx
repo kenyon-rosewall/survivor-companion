@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ModalForm from '../common/modalForm'
 import AdvantageForm from '../forms/advantage'
 import { read } from 'fs'
+import { IAdvantage } from '../../models'
 
 type AdvantagesSidebarProps = {
   advantageId: number
@@ -14,7 +15,7 @@ type AdvantagesSidebarProps = {
 
 const AdvantagesSidebar: React.FC<AdvantagesSidebarProps> = ({ advantageId }) => {
   const dispatch = useDispatch()
-  const [advantages, setAdvantages] = useState<any[]>([])
+  const [advantages, setAdvantages] = useState<IAdvantage[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
@@ -30,10 +31,10 @@ const AdvantagesSidebar: React.FC<AdvantagesSidebarProps> = ({ advantageId }) =>
     }
   }, [isModalOpen])
 
-  const renderAdvantages = () => {
+  const renderAdvantages = (): React.ReactNode => {
     if (!advantages) return
 
-    return advantages.map((advantage: any) => (
+    return advantages.map((advantage: IAdvantage) => (
       <Menu.List.Item
         key={advantage.id}
         active={advantage.id === advantageId}

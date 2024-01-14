@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { setMenuItem } from '../actions/menu'
 
-interface MenuState {
+export interface MenuState {
   selectedMenuItem: string
 }
 

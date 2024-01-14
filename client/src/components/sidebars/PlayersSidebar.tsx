@@ -6,6 +6,7 @@ import { readSeasonPlayers } from '../../api'
 import { setSelectedPlayer } from '../../actions/seasons'
 import ModalForm from '../common/modalForm'
 import PlayerForm from '../forms/player'
+import { IPlayerOnSeason } from '../../models'
 
 type PlayersSidebarProps = {
   seasonId: number,
@@ -16,13 +17,13 @@ const PlayersSidebar: React.FC<PlayersSidebarProps> = ({
   seasonId, playerId 
 }) => {
   const dispatch = useDispatch()
-  const [players, setPlayers] = useState<any[]>([])
+  const [playersOnSeason, setPlayersOnSeason] = useState<IPlayerOnSeason[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
     if (seasonId === 0) return
 
-    readSeasonPlayers(seasonId, setPlayers)
+    readSeasonPlayers(seasonId, setPlayersOnSeason)
   }, [seasonId])
 
   useEffect(() => {
@@ -32,23 +33,24 @@ const PlayersSidebar: React.FC<PlayersSidebarProps> = ({
     }
   }, [isModalOpen])
 
-  const renderPlayers = () => {
-    if (!players) return
+  const renderPlayers = (): React.ReactNode => {
+    if (!playersOnSeason) return
 
-    return players.map((player: any) => (
+    return playersOnSeason.map((playerOnSeason: IPlayerOnSeason) => (
       <Menu.List.Item
-        key={player.playerId}
-        active={player.playerId === playerId}
-        onClick={() => dispatch(setSelectedPlayer(player.playerId))}
+        key={playerOnSeason.playerId}
+        active={playerOnSeason.playerId === playerId}
+        onClick={() => dispatch(setSelectedPlayer(playerOnSeason.playerId))}
       >
-        {player.player.name} {player.player.nickname ? `(${player.player.nickname})` : ''}
+        {playerOnSeason.player?.name} 
+        {playerOnSeason.player?.nickname ? `(${playerOnSeason.player?.nickname})` : ''}
       </Menu.List.Item>
     ))
   }
 
   const handleFormSubmit = () => {
     setIsModalOpen(false)
-    readSeasonPlayers(seasonId, setPlayers)
+    readSeasonPlayers(seasonId, setPlayersOnSeason)
   }
 
   return (

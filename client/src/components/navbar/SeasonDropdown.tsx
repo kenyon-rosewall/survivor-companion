@@ -7,11 +7,13 @@ import {
   setSelectedTribe 
 } from '../../actions/seasons'
 import { Form } from 'react-bulma-components'
+import { ISeason } from '../../models'
+import { RootState } from '../../reducers'
 
 const SeasonDropdown: React.FC = () => {
   const dispatch = useDispatch()
-  const [seasons, setSeasons] = useState<any[]>([])
-  const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
+  const [seasons, setSeasons] = useState<ISeason[]>([])
+  const selectedSeason: number = useSelector((state: RootState) => state.season.selectedSeason)
 
   useEffect(() => {
     readSeasons(setSeasons)
@@ -26,8 +28,8 @@ const SeasonDropdown: React.FC = () => {
     dispatch(setSelectedTribe(0))
   }
 
-  const renderDropdownItems = () => {
-    return seasons.map((season, index) => (
+  const renderDropdownItems = (): React.ReactNode => {
+    return seasons.map((season: ISeason) => (
       <option key={season.id} value={season.id}>
         Season {season.order}: {season.name}
       </option>

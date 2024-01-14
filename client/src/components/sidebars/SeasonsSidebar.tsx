@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setSelectedSeason } from '../../actions/seasons'
 import ModalForm from '../common/modalForm'
 import SeasonForm from '../forms/season'
+import { ISeason } from '../../models'
 
 type SeasonsSidebarProps = {
   seasonId: number
@@ -13,15 +14,15 @@ type SeasonsSidebarProps = {
 
 const SeasonsSidebar: React.FC<SeasonsSidebarProps> = ({ seasonId }) => {
   const dispatch = useDispatch()
-  const [seasons, setSeasons] = useState<any[]>([])
+  const [seasons, setSeasons] = useState<ISeason[]>([])
   const [maxOrder, setMaxOrder] = useState<number>(0)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
-  const findMaxOrder = (s: any[]) => {
-    return Math.max.apply(Math, s.map((o: any) => { return o.order }))
+  const findMaxOrder = (s: ISeason[]) => {
+    return Math.max.apply(Math, s.map((o: ISeason) => { return o.order }))
   }
 
-  const seasonsCallback = (data: any) => {
+  const seasonsCallback = (data: ISeason[]) => {
     setSeasons(data)
     setMaxOrder(findMaxOrder(data))
   }
@@ -32,7 +33,7 @@ const SeasonsSidebar: React.FC<SeasonsSidebarProps> = ({ seasonId }) => {
 
   const renderSeasons = () => {
     if (Array.isArray(seasons) && seasons.length > 0) {
-      return seasons.map((season, index) => (
+      return seasons.map((season: ISeason) => (
         <Menu.List.Item
           key={season.id}
           active={seasonId === season.id}
@@ -44,7 +45,7 @@ const SeasonsSidebar: React.FC<SeasonsSidebarProps> = ({ seasonId }) => {
     }
   }
 
-  const handleFormSubmit = (season: any) => {
+  const handleFormSubmit = (season: ISeason) => {
     setIsModalOpen(false)
     dispatch(setSelectedSeason(season.id))
   }

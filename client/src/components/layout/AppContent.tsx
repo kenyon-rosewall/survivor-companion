@@ -9,16 +9,17 @@ import {
   Tribes
 } 
   from '../content'
+import { RootState } from '../../reducers'
 
 const AppContent: React.FC = () => {
-  const selectedSeason: number = useSelector((state: any) => state.season.selectedSeason)
-  const selectedEpisode: number = useSelector((state: any) => state.season.selectedEpisode)
-  const selectedPlayer: number = useSelector((state: any) => state.season.selectedPlayer)
-  const selectedTribe: number = useSelector((state: any) => state.season.selectedTribe)
-  const selectedAdvantage: number = useSelector((state: any) => state.season.selectedAdvantage)
-  const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
+  const selectedSeason: number = useSelector((state: RootState) => state.season.selectedSeason)
+  const selectedEpisode: number = useSelector((state: RootState) => state.season.selectedEpisode) ?? 0
+  const selectedPlayer: number = useSelector((state: RootState) => state.season.selectedPlayer) ?? 0
+  const selectedTribe: number = useSelector((state: RootState) => state.season.selectedTribe) ?? 0
+  const selectedAdvantage: number = useSelector((state: RootState) => state.season.selectedAdvantage) ?? 0
+  const selectedMenuItem: string = useSelector((state: RootState) => state.menu.selectedMenuItem)
 
-  const selectComponent = () => {
+  const selectComponent = (): React.ReactNode => {
     if (selectedMenuItem === 'manageSeasons') {
       return <Seasons seasonId={selectedSeason} />
     } else if (selectedMenuItem === 'manageAdvantages') {

@@ -6,6 +6,7 @@ import { readSeasonTribes } from '../../api'
 import { setSelectedTribe } from '../../actions/seasons'
 import ModalForm from '../common/modalForm'
 import TribeForm from '../forms/tribe'
+import { ITribe } from '../../models'
 
 type TribesSidebarProps = {
   seasonId: number,
@@ -14,7 +15,7 @@ type TribesSidebarProps = {
 
 const TribesSidebar: React.FC<TribesSidebarProps> = ({ seasonId, tribeId }) => {
   const dispatch = useDispatch()
-  const [tribes, setTribes] = useState<any[]>([])
+  const [tribes, setTribes] = useState<ITribe[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const TribesSidebar: React.FC<TribesSidebarProps> = ({ seasonId, tribeId }) => {
   const renderTribes = () => {
     if (!tribes) return 
 
-    return tribes.map((tribe: any) => (
+    return tribes.map((tribe: ITribe) => (
       <Menu.List.Item
         key={tribe.id}
         active={tribe.id === tribeId}

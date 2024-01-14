@@ -5,21 +5,22 @@ import { IconName } from '@fortawesome/fontawesome-svg-core'
 import { Navbar } from 'react-bulma-components'
 import { setMenuItem } from '../../actions/menu'
 import { setSelectedPlayer, setSelectedEpisode, setSelectedAdvantage, setSelectedTribe } from '../../actions/seasons'
+import { RootState } from '../../reducers'
 
 interface LevelItem {
   icon: IconName,
-  text: string,
   name: string,
+  label: string,
 }
 
 const AppMenu: React.FC = () => {
   const dispatch = useDispatch()
-  const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
+  const selectedMenuItem: string = useSelector((state: RootState) => state.menu.selectedMenuItem)
   const levelItems: LevelItem[] = [
-    { icon: 'circle-info', text: 'Season Info', name: 'seasonInfo' },
-    { icon: 'users', text: 'Players', name: 'players' },
-    { icon: 'campground', text: 'Tribes', name: 'tribes' },
-    { icon: 'tv', text: 'Episodes', name: 'episodes' }
+    { icon: 'circle-info', label: 'Season Info', name: 'seasonInfo' },
+    { icon: 'users', label: 'Players', name: 'players' },
+    { icon: 'campground', label: 'Tribes', name: 'tribes' },
+    { icon: 'tv', label: 'Episodes', name: 'episodes' }
   ]
 
   const handleItemClick = (itemName: string) => {
@@ -30,15 +31,15 @@ const AppMenu: React.FC = () => {
     dispatch(setSelectedTribe(0))
   }
 
-  const renderLevelItems = () => {
-    return levelItems.map((item, index) => (
+  const renderLevelItems = (): React.ReactNode => {
+    return levelItems.map((item: LevelItem, index: number) => (
       <Navbar.Item
         key={index}
         active={selectedMenuItem === item.name}
         onClick={() => handleItemClick(item.name)}
       >
         <FontAwesomeIcon icon={["fas", item.icon]} />
-        <span>{item.text}</span>
+        <span>{item.label}</span>
       </Navbar.Item>
     ))
   }

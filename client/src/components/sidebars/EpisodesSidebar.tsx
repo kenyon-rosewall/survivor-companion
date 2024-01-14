@@ -6,6 +6,7 @@ import { readSeasonEpisodes } from '../../api'
 import { setSelectedEpisode } from '../../actions/seasons'
 import ModalForm from '../common/modalForm'
 import EpisodeForm from '../forms/episode'
+import { IEpisode } from '../../models'
 
 type EpisodesSidebarProps = {
   seasonId: number,
@@ -14,13 +15,13 @@ type EpisodesSidebarProps = {
 
 const EpisodesSidebar: React.FC<EpisodesSidebarProps> = ({ seasonId, episodeId }) => {
   const dispatch = useDispatch()
-  const [episodes, setEpisodes] = useState<any[]>([])
+  const [episodes, setEpisodes] = useState<IEpisode[]>([])
   const [maxOrder, setMaxOrder] = useState<number>(0)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
-  const episodeCallback = (data: any) => {
+  const episodeCallback = (data: IEpisode[]) => {
     setEpisodes(data)
-    const newMaxOrder = Math.max.apply(Math, data.map((o: any) => { return o.order }))
+    const newMaxOrder = Math.max.apply(Math, data.map((o: IEpisode) => { return o.order }))
     setMaxOrder(newMaxOrder)
   }
 
@@ -39,10 +40,10 @@ const EpisodesSidebar: React.FC<EpisodesSidebarProps> = ({ seasonId, episodeId }
     }
   }, [isModalOpen])
 
-  const renderEpisodes = () => {
+  const renderEpisodes = (): React.ReactNode => {
     if (!episodes) return
 
-    return episodes.map((episode: any) => (
+    return episodes.map((episode: IEpisode) => (
       <Menu.List.Item
         key={episode.id}
         active={episode.id === episodeId}
@@ -53,7 +54,7 @@ const EpisodesSidebar: React.FC<EpisodesSidebarProps> = ({ seasonId, episodeId }
     ))
   }
 
-  const handleFormSubmit = (episode: any) => {
+  const handleFormSubmit = (episode: IEpisode) => {
     setIsModalOpen(false)
     readSeasonEpisodes(seasonId, episodeCallback)
   }

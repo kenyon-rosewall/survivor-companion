@@ -3,13 +3,14 @@ import { useSelector } from 'react-redux'
 import { Columns, Container } from 'react-bulma-components'
 import AppSidebar from './AppSidebar'
 import MainContent from './AppContent'
+import { RootState } from '../../reducers'
 
 // TODO: Create refreshes for sidebars so that updating
 //      a form in the content pane will refresh the sidebar
 const AppBody: React.FC = () => {
-  const selectedMenuItem: string = useSelector((state: any) => state.menu.selectedMenuItem)
+  const selectedMenuItem: string = useSelector((state: RootState) => state.menu.selectedMenuItem)
 
-  const sidebarHidden = () => {
+  const sidebarHidden = (): boolean => {
     switch (selectedMenuItem) {
       case 'seasonInfo':
         return true

@@ -3,33 +3,40 @@ import { useDispatch } from 'react-redux'
 import { Navbar, Dropdown } from 'react-bulma-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setMenuItem } from '../../actions/menu'
+import { IconName } from '@fortawesome/fontawesome-svg-core'
+
+type MenuItem = {
+  label: string
+  icon: IconName
+  name: string
+}
 
 const AdminNavbar: React.FC = () => {
   const dispatch = useDispatch()
-  const menuItems: any[] = [
-    { name: 'manageSeasons', icon: 'compass', text: 'Manage Seasons' },
-    { name: 'managePlayers', icon: 'users', text: 'Manage Players' },
-    { name: 'manageAdvantages', icon: 'trophy', text: 'Manage Advantages' }
+  const menuItems: MenuItem[] = [
+    { name: 'manageSeasons', icon: 'compass', label: 'Manage Seasons' },
+    { name: 'managePlayers', icon: 'users', label: 'Manage Players' },
+    { name: 'manageAdvantages', icon: 'trophy', label: 'Manage Advantages' }
   ]
 
   const handleItemClick = (item: string) => {
     dispatch(setMenuItem(item))
   }
 
-  const renderMenuItem = (menuItem: any) => {
+  const renderMenuItem = (menuItem: MenuItem): React.ReactNode => {
     return (
       <Dropdown.Item
         key={menuItem.name}
         value={menuItem.name}
       >
         <FontAwesomeIcon icon={["fas", menuItem.icon]} />
-        <span>{menuItem.text}</span>
+        <span>{menuItem.label}</span>
       </Dropdown.Item>
     )
   }
 
-  const renderMenuItems = () => {
-    return menuItems.map((menuItem) => renderMenuItem(menuItem))
+  const renderMenuItems = (): React.ReactNode => {
+    return menuItems.map((menuItem: MenuItem) => renderMenuItem(menuItem))
   }
 
   return (
