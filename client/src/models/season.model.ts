@@ -19,7 +19,7 @@ export interface ISeason {
   episodes?: IEpisode[]
   tribes?: ITribe[]
   playersOnSeason?: IPlayerOnSeason[]
-  alliances: IAlliance[]
+  alliances?: IAlliance[]
   hasFireTokens: boolean
   totalDays: number
 }

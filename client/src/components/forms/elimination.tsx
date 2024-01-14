@@ -1,33 +1,40 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Button, Form } from 'react-bulma-components'
 import { readSeasonEliminationCount, createEpisodeElimination } from '../../api'
+import { EliminationCategoryEnum, IElimination, IPlayerInEpisode } from '../../models'
 
 type EliminationFormProps = {
   episodeId: number
   seasonId: number
-  playersInEpisode: any[]
+  playersInEpisode: IPlayerInEpisode[]
   onSubmitComplete: () => void
+}
+
+type EliminationCategory = {
+  label: string
+  value: EliminationCategoryEnum
 }
 
 const EliminationForm: React.FC<EliminationFormProps> = ({ 
   episodeId, seasonId, playersInEpisode, onSubmitComplete 
 }) => {
-  const categories = [
-    { name: 'Voted Out', value: 'votedOut' }, 
-    { name: 'Rock Draw', value: 'rockDraw' }, 
-    { name: 'Fire Making', value: 'fireMaking' }, 
-    { name: 'Quit', value: 'quit' }, 
-    { name: 'Medical Evacuation', value: 'medevac' },
-    { name: 'Redemption Island', value: 'redemption' }, 
-    { name: 'Edge of Extinction', value: 'edge' }, 
-    { name: 'Ejected', value: 'ejection' }, 
-    { name: 'Redemption Island Duel', value: 'redemptionDuel' }, 
-    { name: 'Edge of Extinction Challenge', value: 'edgeChallenge' }
+  const categories: EliminationCategory[] = [
+    { label: 'Voted Out', value: EliminationCategoryEnum.VotedOut }, 
+    { label: 'Rock Draw', value: EliminationCategoryEnum.RockDraw },
+    { label: 'Fire Making', value: EliminationCategoryEnum.FireMaking }, 
+    { label: 'Quit', value: EliminationCategoryEnum.Quit }, 
+    { label: 'Medical Evacuation', value: EliminationCategoryEnum.Medevac },
+    { label: 'Redemption Island', value: EliminationCategoryEnum.Redemption }, 
+    { label: 'Edge of Extinction', value: EliminationCategoryEnum.Edge }, 
+    { label: 'Ejected', value: EliminationCategoryEnum.Ejection }, 
+    { label: 'Redemption Island Duel', value: EliminationCategoryEnum.RedemptionDuel }, 
+    { label: 'Edge of Extinction Challenge', value: EliminationCategoryEnum.EdgeChallenge }
   ]
-  const [formData, setFormData] = useState<any>({
-    playerEpisodeIInd: 0,
+  const [formData, setFormData] = useState<IElimination>({
+    id: 0,
+    playerInEpisodeId: 0,
     order: 1,
-    category: 'votedOut',
+    category: EliminationCategoryEnum.VotedOut,
     notes: ''
   })
 
@@ -41,11 +48,11 @@ const EliminationForm: React.FC<EliminationFormProps> = ({
     readSeasonEliminationCount(seasonId, updateEliminationOrder)
   }, [seasonId, updateEliminationOrder])
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const formSubmitCallback = (data: any) => {
+  const formSubmitCallback = (data: IElimination) => {
     onSubmitComplete()
   }
 

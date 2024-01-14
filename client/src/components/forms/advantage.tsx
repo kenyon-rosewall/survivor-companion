@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Form } from 'react-bulma-components'
 import { createAdvantage, readAdvantage, updateAdvantage } from '../../api'
+import { IAdvantage } from '../../models'
 
 type AdvantageFormProps = {
   formType: string,
   advantageId?: number,
-  onSubmitComplete: (season: any) => void
+  onSubmitComplete: (advantage: IAdvantage) => void
 }
 
 const AdvantageForm: React.FC<AdvantageFormProps> = ({
   formType, advantageId, onSubmitComplete
 }) => {
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<IAdvantage>({
+    id: 0,
     name: '',
     description: ''
   })
@@ -25,13 +27,13 @@ const AdvantageForm: React.FC<AdvantageFormProps> = ({
     }
   }, [advantageId, formType])
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const formSubmitCallback = (d: any) => {
+  const formSubmitCallback = (data: IAdvantage) => {
     setDisableAjax(false)
-    onSubmitComplete(d)
+    onSubmitComplete(data)
   }
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -80,7 +82,6 @@ const AdvantageForm: React.FC<AdvantageFormProps> = ({
       <Button
         color="primary"
         type="submit"
-        disabled={disableAjax}
         className='is-pulled-right'
       >
         { formType === 'update' ? 'Update Advantage' : 'Add Advantage' }

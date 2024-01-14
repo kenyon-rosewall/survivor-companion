@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Button, Columns, Form } from "react-bulma-components"
 import { createSeasonAlliance } from "../../api"
+import { IAlliance } from "../../models"
 
 type AllianceFormProps = {
   seasonId: number
@@ -11,19 +12,25 @@ const AllianceForm: React.FC<AllianceFormProps> = ({
   seasonId, allianceCallback 
 }) => {
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
-  const [formData, setFormData] = useState<any>({ name: "", color: "", notes: "" })
+  const [formData, setFormData] = useState<IAlliance>({ 
+    id: 0,
+    seasonId: seasonId,
+    name: "",
+    color: "",
+    notes: ""
+  })
 
-  const handleFormSubmitCallback = (d: any) => {
+  const handleFormSubmitCallback = (data: IAlliance) => {
     setDisableAjax(false)
-    setFormData({ name: "", color: "", notes: "" })
+    setFormData({ id: 0, seasonId: seasonId, name: "", color: "", notes: "" })
     allianceCallback()
   }
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleFormSubmit = (e: any) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (disableAjax === true) return
@@ -97,7 +104,6 @@ const AllianceForm: React.FC<AllianceFormProps> = ({
               <Button
                 color={'primary'}
                 className="is-pulled-right"
-                disabled={disableAjax}
               >
                 Add Alliance
               </Button>

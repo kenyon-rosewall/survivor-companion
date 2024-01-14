@@ -2,10 +2,10 @@ import React, { useState } from "react"
 import { Button, Columns, Tag } from "react-bulma-components"
 import { createAlliancePlayer, deleteAlliancePlayer } from "../../api"
 import PlayerSearch from "../common/playerSearch"
-import { IAlliance } from "../../models"
+import { IAlliance, IPlayer, IPlayerInEpisode } from "../../models"
 
 type AlliancePlayersFormProps = {
-  alliance: any
+  alliance: IAlliance
   episodeId: number
   seasonId: number
   allianceCallback: (data?: IAlliance[]) => void
@@ -20,12 +20,12 @@ const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({
     episodeId: episodeId,
   }
 
-  const alliancePlayerCallback = (d?: any) => {
+  const alliancePlayerCallback = (data?: IAlliance) => {
     setDisableAjax(false)
     allianceCallback()
   }
 
-  const selectPlayer = (player: any) => {
+  const selectPlayer = (player: IPlayer) => {
     if (disableAjax === true) return
     setDisableAjax(true)
 
@@ -40,21 +40,23 @@ const AlliancePlayersForm: React.FC<AlliancePlayersFormProps> = ({
     deleteAlliancePlayer(alliance.id, alliancePlayerId, alliancePlayerCallback)
   }
 
-  const renderPlayers = () => {
-    const players = alliance.alliancePlayers
-      .filter((player: any) => player.episodeId === episodeId)
+  const renderPlayers = (): React.ReactNode => {
+    if (!alliance.alliancePlayers) return null
+
+    const playersInEpisode = alliance.alliancePlayers
+      .filter((pie: IPlayerInEpisode) => pie.episodeId === episodeId)
   
-    return players.map((player: any) => (
+    return playersInEpisode.map((pie: IPlayerInEpisode) => (
       <Tag 
-        key={player.id} 
+        key={pie.id} 
         color="info" 
         size={'medium'}
       >
-        {player.player?.name}
+        {pie.player?.name}
         <Button 
           remove 
           size={'small'} 
-          onClick={() => removePlayer(player.id)} 
+          onClick={() => removePlayer(pie.id)} 
         />
       </Tag>
     ))

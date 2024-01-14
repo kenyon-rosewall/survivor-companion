@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Columns, Form, Button } from 'react-bulma-components'
 import { createSeasonTribe, readTribe, updateTribe } from '../../api'
+import { ITribe } from '../../models'
 
 type TribeFormProps = {
   formType: string,
@@ -13,17 +14,18 @@ type TribeFormProps = {
 const TribeForm: React.FC<TribeFormProps> = ({
   formType, seasonId, tribeId, onSubmitComplete, setTribeColor
 }) => {
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<ITribe>({
+    id: 0,
     name: '',
     category: '',
     color: ''
   })
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
-  const tribeCallback = (d: any) => {
-    setFormData(d)
+  const tribeCallback = (data: ITribe) => {
+    setFormData(data)
     if (setTribeColor)
-      setTribeColor(d.color)
+      setTribeColor(data.color ?? '')
   }
 
   useEffect(() => {
@@ -34,12 +36,12 @@ const TribeForm: React.FC<TribeFormProps> = ({
     }
   }, [tribeId, formType])
 
-  const formSubmitCallback = (d: any) => {
+  const formSubmitCallback = (data: ITribe) => {
     setDisableAjax(false)
     onSubmitComplete()
   }
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
@@ -96,7 +98,6 @@ const TribeForm: React.FC<TribeFormProps> = ({
         color="primary"
         type="submit"
         className='is-pulled-right'
-        disabled={disableAjax}
       >
         { formType === 'update' ? 'Update Tribe' : 'Add Tribe' }
       </Button>

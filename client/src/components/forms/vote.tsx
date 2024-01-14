@@ -1,37 +1,45 @@
 import React, { useState } from 'react'
 import { Button, Form } from 'react-bulma-components'
+import { IPlayerInEpisode, IVote, VoteCategoryEnum } from '../../models'
 
 type VoteFormProps = {
   tribalCouncilId: number
-  players: any[]
+  playersInEpisode: IPlayerInEpisode[]
   handleFormSubmit: (voteData: any) => void
 }
 
-const VoteForm: React.FC<VoteFormProps> = ({ tribalCouncilId, players, handleFormSubmit }) => {
+type VoteCategory = {
+  label: string
+  value: VoteCategoryEnum
+}
+
+const VoteForm: React.FC<VoteFormProps> = ({
+  tribalCouncilId, playersInEpisode, handleFormSubmit
+}) => {
   // TODO: Shot in the Dark should be hidden on seasons below 41
-  const voteCategories = [
-    { name: 'Vote', value: 'vote' }, 
-    { name: 'Shot in the Dark', value: 'shotInTheDark' },
-    { name: 'Extra Vote', value: 'extraVote'},
-    { name: 'Revote', value: 'revote' },
+  const voteCategories: VoteCategory[] = [
+    { label: 'Vote', value: VoteCategoryEnum.Vote }, 
+    { label: 'Shot in the Dark', value: VoteCategoryEnum.ShotInTheDark },
+    { label: 'Extra Vote', value: VoteCategoryEnum.ExtraVote},
+    { label: 'Revote', value: VoteCategoryEnum.Revote },
   ]
-  const [voteData, setVoteData] = useState<any>({
+  const [voteData, setVoteData] = useState<IVote>({
+    id: 0,
     tribalCouncilId: tribalCouncilId,
     voterId: 0,
     votedForId: 0,
-    category: 'vote',
+    category: VoteCategoryEnum.Vote,
     doesNotCount: false,
     didNotVote: false,
   })
 
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target
-    setVoteData({ ...voteData, [name]: value })
+  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setVoteData({ ...voteData, [e.target.name]: e.target.value })
   }
 
-  const renderCategories = () => {
-    return voteCategories.map((category, index) => (
-      <option key={index} value={category.value}>{category.name}</option>
+  const renderCategories = (): React.ReactNode => {
+    return voteCategories.map((category: VoteCategory, index: number) => (
+      <option key={index} value={category.value}>{category.label}</option>
     ))
   }
 
@@ -46,7 +54,7 @@ const VoteForm: React.FC<VoteFormProps> = ({ tribalCouncilId, players, handleFor
             onChange={handleInputChange}
           >
             <option value={0}>Select Player</option>
-            {players.map(player => (
+            {playersInEpisode.map((player: IPlayerInEpisode) => (
               <option key={player.id} value={player.id}>{player.player?.name}</option>
             ))}
           </Form.Select>
@@ -62,7 +70,7 @@ const VoteForm: React.FC<VoteFormProps> = ({ tribalCouncilId, players, handleFor
             onChange={handleInputChange}
           >
             <option value={0}>Select Player</option>
-            {players.map(player => (
+            {playersInEpisode.map((player: IPlayerInEpisode) => (
               <option key={player.id} value={player.id}>{player.player?.name}</option>
             ))}
           </Form.Select>

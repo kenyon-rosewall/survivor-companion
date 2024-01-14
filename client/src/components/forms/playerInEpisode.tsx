@@ -3,10 +3,12 @@ import { Button, Form, Tag } from "react-bulma-components"
 import { updatePlayerInEpisode, deleteAlliancePlayer } from "../../api"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import TribeSelect from '../common/tribeSelect'
+import { IAdvantage, IAlliance, IPlayerInEpisode, ITribe, PlayerStatusEnum } from "../../models"
+import { IconName } from "@fortawesome/fontawesome-svg-core"
 
 type PlayerInEpisodeFormProps = {
-  playerInEpisode: any
-  tribes: any[]
+  playerInEpisode: IPlayerInEpisode
+  tribes: ITribe[]
   renderShotInTheDark: boolean
   refreshAlliances: boolean
   toggleRefreshEpisode: () => void
@@ -17,12 +19,15 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
   playerInEpisode, tribes, renderShotInTheDark, 
   refreshAlliances, toggleRefreshEpisode, setRefreshAlliances
 }) => {
-  const playerStatuses = ["playing", "eliminated", "redemption", "edge"]
+  const playerStatuses: PlayerStatusEnum[] = [
+    PlayerStatusEnum.Playing, PlayerStatusEnum.Eliminated,
+    PlayerStatusEnum.Redemption, PlayerStatusEnum.Edge
+  ]
   const [editing, setEditing] = useState<boolean>(false)
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<IPlayerInEpisode>({
     playerName: "",
-    status: "playing",
+    status: PlayerStatusEnum.Playing,
     tribe: {
       id: 0,
       name: "",
@@ -41,8 +46,8 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
       playerName: playerInEpisode.player?.name,
       status: playerInEpisode.status,
       tribe: {
-        id: playerInEpisode.tribeId,
-        name: playerInEpisode.tribe?.name,
+        id: Number(playerInEpisode.tribeId),
+        name: String(playerInEpisode.tribe?.name),
         color: playerInEpisode.tribe?.color
       },
       advantages: playerInEpisode.advantages,
@@ -62,10 +67,10 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
     setDisableAjax(true)
 
     updatePlayerInEpisode(
-      playerInEpisode.id,
+      Number(playerInEpisode.id),
       {
         status: formData.status,
-        tribeId: formData.tribe.id,
+        tribeId: formData.tribe?.id,
         shotInTheDark: formData.shotInTheDark,
         notes: formData.notes
       },
@@ -73,7 +78,7 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
     )
   }
 
-  const renderPlayerName = () => {
+  const renderPlayerName = (): React.ReactNode => {
     return (
       <td 
         style={{ 
@@ -86,11 +91,11 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
   }
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData({ ...formData, status: e.target.value })
+    setFormData({ ...formData, status: e.target.value as PlayerStatusEnum })
   }
 
-  const renderStatusOptions = () => {
-    return playerStatuses.map((status, index) => (
+  const renderStatusOptions = (): React.ReactNode => {
+    return playerStatuses.map((status: PlayerStatusEnum, index: number) => (
       <option
         key={index} 
         value={status}
@@ -100,7 +105,7 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
     ))
   }
 
-  const renderStatus = () => {
+  const renderStatus = (): React.ReactNode => {
     return (
       <td>
         { editing ? (
@@ -129,34 +134,34 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
     })
   }
 
-  const renderTribe = () => {
+  const renderTribe = (): React.ReactNode => {
     return (
       <td>
         { editing ? (
           <TribeSelect
             tribes={tribes}
-            selectedTribeId={formData.tribe.id}
+            selectedTribeId={Number(formData.tribe?.id)}
             handleTribeChange={handleTribeChange}
           />
         ) : (
           <Tag
             style={{ 
-              backgroundColor: formData.tribe.color,
+              backgroundColor: formData.tribe?.color,
               color: 'black' 
             }}
           >
-            {formData.tribe.name}
+            {formData.tribe?.name}
           </Tag>
         )}
       </td>
     )
   }
 
-  const renderAdvantages = () => {
+  const renderAdvantages = (): React.ReactNode => {
     return (
       <td>
         <Tag.Group>
-          {playerInEpisode.advantages?.map((advantage: any) => (
+          {playerInEpisode.advantages?.map((advantage: IAdvantage) => (
             <Tag
               key={advantage.id}
             >
@@ -168,26 +173,26 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
     )
   }
 
-  const removePlayerFromAlliance = (index: number) => {
-    if (disableAjax === true) return
-    setDisableAjax(true)
-    
-    const allianceId = playerInEpisode.alliances[index].id
-
-    const deleteAlliancePlayerCallback = () => {
-      toggleRefreshEpisode()
-      setDisableAjax(false)
-      setRefreshAlliances(!refreshAlliances)
-    }
-
-    deleteAlliancePlayer(allianceId, playerInEpisode.id, deleteAlliancePlayerCallback)
+  const deleteAlliancePlayerCallback = () => {
+    toggleRefreshEpisode()
+    setDisableAjax(false)
+    setRefreshAlliances(!refreshAlliances)
   }
 
-  const renderAlliances = () => {
+  const removePlayerFromAlliance = (allianceId: number) => {
+    if (disableAjax === true) return
+    setDisableAjax(true)
+
+    const playerInEpisodeId: number = Number(playerInEpisode.id)
+    if (playerInEpisodeId > 0)
+      deleteAlliancePlayer(allianceId, playerInEpisodeId, deleteAlliancePlayerCallback)
+  }
+
+  const renderAlliances = (): React.ReactNode => {
     return (
       <td>
         <Tag.Group>
-          {playerInEpisode.alliances?.map((alliance: any, index: number) => (
+          {playerInEpisode.alliances?.map((alliance: IAlliance) => (
             <Tag
               key={alliance.id}
               style={{ 
@@ -198,7 +203,7 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
               <Button
                 remove
                 size={'small'}
-                onClick={() => removePlayerFromAlliance(index)} 
+                onClick={() => removePlayerFromAlliance(alliance.id)} 
               />
             </Tag>
           ))}
@@ -211,8 +216,10 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
     setFormData({ ...formData, shotInTheDark: e.target.checked })
   }
   
-  const renderShot = () => {
+  const renderShot = (): React.ReactNode => {
     if (!renderShotInTheDark) return null
+
+    const shotState: IconName = (playerInEpisode.shotInTheDark) ? "square-check" : "square"
 
     return (
       <td
@@ -225,7 +232,7 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
           />
         ) : (
           <FontAwesomeIcon
-            icon={["fas", (playerInEpisode.shotInTheDark) ? "square-check" : "square"]}
+            icon={["fas", shotState]}
           />
         )}
       </td>
@@ -236,7 +243,7 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
     setFormData({ ...formData, notes: e.target.value })
   }
 
-  const renderNotes = () => {
+  const renderNotes = (): React.ReactNode => {
     return (
       <td
         className="is-size-7"
@@ -260,24 +267,26 @@ const PlayerInEpisodeForm: React.FC<PlayerInEpisodeFormProps> = ({
 
   const toggleEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
+
     if (editing) saveFormData()
     setEditing(!editing)
   }
 
-  const renderEdit = () => {
+  const renderEdit = (): React.ReactNode => {
+    const editState: IconName = (editing) ? "floppy-disk" : "edit"
+    
     return (
       <td
         align="center" 
         width={10}
       >
         <Button 
-          disabled={disableAjax} 
           color='primary' 
           size={'small'} 
           onClick={toggleEdit}
         >
           <FontAwesomeIcon
-            icon={["fas", (editing) ? "floppy-disk" : "edit" ]}
+            icon={["fas", editState]}
           />
         </Button>
       </td>

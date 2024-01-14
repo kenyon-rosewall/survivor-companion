@@ -88,7 +88,6 @@ const PlayersInEpisode: React.FC<PlayersInEpisodeProps> = ({
         color='danger'
         onClick={initPlayersInEpisode}
         className='is-pulled-right'
-        disabled={disableAjax}
       >
         Reset Players
       </Button>

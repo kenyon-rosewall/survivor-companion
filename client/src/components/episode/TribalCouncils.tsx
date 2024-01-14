@@ -18,7 +18,7 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({
 
   useEffect(() => {
     if (episodeId === 0) return
-    
+
     readEpisodeTribalCouncils(episodeId, setTribalCouncils)
   }, [episodeId, refreshTribalCouncils])
 
@@ -54,7 +54,6 @@ const TribalCouncils: React.FC<TribalCouncilsProps> = ({
           <Level.Item>
             <Button
               onClick={addTribalCouncil}
-              disabled={disableAjax}
             >
               Add Tribal Council
             </Button>

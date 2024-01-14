@@ -16,7 +16,7 @@ export enum EliminationCategoryEnum {
 export interface IElimination {
   id: number
   order: number
-  onDay: number
+  onDay?: number
   playerInEpisode?: IPlayerInEpisode
   playerInEpisodeId: number
   category: EliminationCategoryEnum

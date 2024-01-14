@@ -4,19 +4,20 @@ import { createSeasonPlayer, updateSeasonPlayer, readSeason } from '../../api'
 import DatePicker from 'react-datepicker'
 import { fixDate, calculateAge } from '../../utils'
 import PlayerSearch from '../common/playerSearch'
+import { IPlayer, IPlayerMeta, IPlayerOnSeason, ISeason } from '../../models'
 
 type PlayerFormProps = {
   formType: string
   seasonId: number
-  playerOnSeason?: any
-  onSubmitComplete: (season: any) => void
+  playerOnSeason?: IPlayerOnSeason
+  onSubmitComplete: (playerOnSeason: IPlayerOnSeason) => void
 }
 
 const PlayerForm: React.FC<PlayerFormProps> = ({
   formType, seasonId, playerOnSeason, 
   onSubmitComplete
 }) => {
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<IPlayerMeta>({
     playerId: 0,
     name: '',
     nickname: '',
@@ -29,10 +30,10 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
     playerOnSeasonNotes: ''
   })
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
-  const [season, setSeason] = useState<any>({})
+  const [season, setSeason] = useState<ISeason>()
 
   useEffect(() => {
-    if (playerOnSeason && playerOnSeason.player) {
+    if (playerOnSeason?.player) {
       setFormData({
         playerId: playerOnSeason.playerId,
         headshot: playerOnSeason.headshot,
@@ -52,15 +53,15 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
     }
   }, [playerOnSeason, seasonId])
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleFileUpload = (e: any) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     // TODO: upload file to server
   }
 
-  const formSubmitCallback = (data: any) => {
+  const formSubmitCallback = (data: IPlayerOnSeason) => {
     onSubmitComplete(data)
     setDisableAjax(false)
   }
@@ -78,15 +79,15 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
     }
   }
 
-  const selectPlayer = (player: any) => {
+  const selectPlayer = (player: IPlayer) => {
     setFormData({
       ...formData,
       playerId: player.id,
       name: player.name,
-      nickname: player.nickname ? player.nickname : "",
-      birthday: player.birthday ? player.birthday : "",
-      hometown: player.hometown ? player.hometown : "",
-      playerNotes: player.notes ? player.notes : ""
+      nickname: player.nickname, 
+      birthday: player.birthday, 
+      hometown: player.hometown, 
+      playerNotes: player.notes
     })
   }
 
@@ -183,7 +184,7 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
                 <DatePicker
                   dateFormat={'yyyy-MM-dd'}
                   selected={new Date(formData.birthday)}
-                  onChange={(date) => setFormData({ ...formData, birthday: date })}
+                  onChange={(date) => setFormData({ ...formData, birthday: fixDate(date) })}
                   showIcon
                 />
               </Form.Control>
@@ -196,7 +197,7 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
               </Form.Label>
               {fixDate(formData.birthday)}
               <br />
-              ({calculateAge(formData.birthday, season.airingStart)} years old)
+              ({calculateAge(formData.birthday, String(season?.airingStart))} years old)
             </Block>
           )}
         </Columns.Column>
@@ -300,7 +301,6 @@ const PlayerForm: React.FC<PlayerFormProps> = ({
       <Button
         color="primary"
         type="submit"
-        disabled={disableAjax}
       >
         { formType === "update" ? "Update Player" : "Add Player" }
       </Button>

@@ -1,13 +1,15 @@
-export function fixDate(dt: string | undefined) {
-  const dateOptions: any = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }
+export function fixDate(dt: string | Date | null | undefined) {
+  const dateOptions: any = { year: 'numeric', month: 'short', day: 'numeric' }
 
-  return dt === '' || dt === undefined
-    ? new Date().toLocaleDateString('en-US', dateOptions)
-    : new Date(dt).toLocaleDateString('en-US', dateOptions)
+  if (dt === '' || dt === undefined || dt === null) {
+    return new Date().toLocaleDateString('en-US', dateOptions)
+  } else if (typeof dt === 'string') {
+    return new Date(dt).toLocaleDateString('en-US', dateOptions)
+  } else if (dt instanceof Date) {
+    return dt.toLocaleDateString('en-US', dateOptions)
+  } else {
+    return new Date().toLocaleDateString('en-US', dateOptions)
+  }
 }
 
 export function extractAlliances(players: any[]) {

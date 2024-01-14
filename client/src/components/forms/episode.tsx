@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Columns, Form, Button } from 'react-bulma-components'
 import { readEpisode, createSeasonEpisode, updateEpisode } from '../../api'
 import DatePicker from 'react-datepicker'
+import { fixDate } from '../../utils'
+import { IEpisode } from '../../models'
 
 type EpisodeFormProps = {
   formType: string,
@@ -16,15 +18,13 @@ const EpisodeForm: React.FC<EpisodeFormProps> = ({
   onSubmitComplete
 }) => {
   const buttonText = formType === 'update' ? 'Update Episode' : 'Add Episode'
-  const dateOptions: any = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<IEpisode>({
+    id: episodeId ? episodeId : 0,
+    seasonId: seasonId,
+    days: 0,
     order: maxOrder ? maxOrder + 1 : 0,
     name: '',
-    airingDate: new Date().toLocaleDateString('en-US', dateOptions),
+    airingDate: fixDate(''),
     premiere: maxOrder ? maxOrder + 1 === 1 : false,
     merge: false,
     final: false,
@@ -33,27 +33,26 @@ const EpisodeForm: React.FC<EpisodeFormProps> = ({
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
   useEffect(() => {
-    if (episodeId === 0 || episodeId === undefined) return
+    if (!episodeId) return
 
     if (formType === 'update' && episodeId) {
       readEpisode(episodeId, setFormData)
     }
   }, [episodeId, formType])
 
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const formSubmitCallback = (data: any) => {
+  const formSubmitCallback = (data: IEpisode) => {
     setDisableAjax(false)
     onSubmitComplete(data)
   }
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (episodeId === 0 || episodeId === undefined) return
-
     e.preventDefault()
+    if (!episodeId) return
+
     if (disableAjax) return
     setDisableAjax(true)
 
@@ -99,10 +98,12 @@ const EpisodeForm: React.FC<EpisodeFormProps> = ({
           <Form.Field>
             <Form.Label>Air Date</Form.Label>
             <Form.Control>
+
+
               <DatePicker
                 dateFormat={'yyyy-MM-dd'}
                 selected={new Date(formData.airingDate)}
-                onChange={(date) => setFormData({ ...formData, airingDate: date })}
+                onChange={(date) => setFormData({ ...formData, airingDate: fixDate(date) })}
                 showIcon
               />
             </Form.Control>

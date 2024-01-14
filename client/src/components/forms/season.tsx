@@ -2,43 +2,48 @@ import React, { useEffect, useState } from 'react'
 import { Button, Columns, Form } from 'react-bulma-components'
 import { createSeason, updateSeason } from '../../api'
 import DatePicker from 'react-datepicker'
+import { ISeason } from '../../models'
+import { fixDate } from '../../utils'
 
 type SeasonFormProps = {
   formType: string,
-  season?: any,
+  season?: ISeason,
   maxOrder: number,
-  onSubmitComplete: (season: any) => void
+  onSubmitComplete: (season: ISeason) => void
 }
 
 const SeasonForm: React.FC<SeasonFormProps> = ({
   formType, season, maxOrder, onSubmitComplete
 }) => {
-  const ratings = ['', 'S', 'A', 'B', 'C', 'D', 'F']
-  const [formData, setFormData] = useState<any>({
+  const ratings: string[] = ['', 'S', 'A', 'B', 'C', 'D', 'F']
+  const [formData, setFormData] = useState<ISeason>({
+    id: 0,
     order: maxOrder + 1,
     name: '',
-    filmingStart: new Date(),
-    filmingEnd: new Date(),
-    airingStart: new Date(),
-    airingEnd: new Date(),
+    filmingStart: '',
+    filmingEnd: '',
+    airingStart: '',
+    airingEnd: '',
     rating: '',
     whyItsGood: '',
     whyItsBad: '',
     notes: '',
-    episodeCount: 0
+    episodeCount: 0,
+    totalDays: 0,
+    hasFireTokens: false
   })
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
 
   useEffect(() => {
-    if (season && season.id) {
-      console.log('season', season)
+    if (season?.id) {
       setFormData({
+        ...formData,
         order: season.order,
         name: season.name,
-        filmingStart: new Date(season.filmingStart),
-        filmingEnd: new Date(season.filmingEnd),
-        airingStart: new Date(season.airingStart),
-        airingEnd: new Date(season.airingEnd),
+        filmingStart: season.filmingStart,
+        filmingEnd: season.filmingEnd,
+        airingStart: season.airingStart,
+        airingEnd: season.airingEnd,
         rating: season.rating,
         whyItsGood: season.whyItsGood || '',
         whyItsBad: season.whyItsBad || '',
@@ -48,11 +53,11 @@ const SeasonForm: React.FC<SeasonFormProps> = ({
     }
   }, [season])
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const formSubmitCallback = (data: any) => {
+  const formSubmitCallback = (data: ISeason) => {
     setDisableAjax(false)
     onSubmitComplete(data)
   }
@@ -63,15 +68,15 @@ const SeasonForm: React.FC<SeasonFormProps> = ({
     if (disableAjax) return
     setDisableAjax(true)
 
-    if (formType === 'update' && season && season.id) {
+    if (formType === 'update' && season?.id) {
       updateSeason(season.id, formData, formSubmitCallback)
     } else {
       createSeason(formData, formSubmitCallback)
     }
   }
 
-  const renderRatings = () => {
-    return ratings.map((rating, index) => (
+  const renderRatings = (): React.ReactNode => {
+    return ratings.map((rating: string, index: number) => (
       <option key={index} value={rating}>{rating}</option>
     ))
   }
@@ -128,8 +133,8 @@ const SeasonForm: React.FC<SeasonFormProps> = ({
             <Form.Control>
               <DatePicker
                 dateFormat={'yyyy-MM-dd'}
-                selected={formData.filmingStart}
-                onChange={(date) => setFormData({ ...formData, filmingStart: date })}
+                selected={new Date(String(formData.filmingStart))}
+                onChange={(date) => setFormData({ ...formData, filmingStart: fixDate(date) })}
                 showIcon
               />
             </Form.Control>
@@ -142,8 +147,8 @@ const SeasonForm: React.FC<SeasonFormProps> = ({
             <Form.Control>
               <DatePicker
                 dateFormat={'yyyy-MM-dd'}
-                selected={formData.filmingEnd}
-                onChange={(date) => setFormData({ ...formData, filmingEnd: date })}
+                selected={new Date(String(formData.filmingEnd))}
+                onChange={(date) => setFormData({ ...formData, filmingEnd: fixDate(date) })}
                 showIcon
               />
             </Form.Control>
@@ -156,8 +161,8 @@ const SeasonForm: React.FC<SeasonFormProps> = ({
             <Form.Control>
               <DatePicker
                 dateFormat={'yyyy-MM-dd'}
-                selected={formData.airingStart}
-                onChange={(date) => setFormData({ ...formData, airingStart: date })}
+                selected={new Date(String(formData.airingStart))}
+                onChange={(date) => setFormData({ ...formData, airingStart: fixDate(date) })}
                 showIcon
               />
             </Form.Control>
@@ -170,8 +175,8 @@ const SeasonForm: React.FC<SeasonFormProps> = ({
             <Form.Control>
               <DatePicker
                 dateFormat={'yyyy-MM-dd'}
-                selected={formData.airingEnd}
-                onChange={(date) => setFormData({ ...formData, airingEnd: date })}
+                selected={new Date(String(formData.airingEnd))}
+                onChange={(date) => setFormData({ ...formData, airingEnd: fixDate(date) })}
                 showIcon
               />
             </Form.Control>

@@ -11,21 +11,23 @@ import Subtitle from '../common/subtitle'
 import TribeSelect from '../common/tribeSelect'
 import ModalForm from '../common/modalForm'
 import VoteForm from './vote'
+import { IPlayerInEpisode, ITribalCouncil, ITribalCouncilTribe, ITribe, IVote, VoteCategoryEnum } from '../../models'
+import { IconName } from '@fortawesome/fontawesome-svg-core'
 
 type TribalCouncilFormProps = {
-  tribalCouncilId: any
-  tribes: any[]
+  tribalCouncilId: number
+  tribes: ITribe[]
 }
 
 const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({ 
   tribalCouncilId, tribes 
 }) => {
-  const [tribalCouncil, setTribalCouncil] = useState<any>({})
-  const [players, setPlayers] = useState<any[]>([])
+  const [tribalCouncil, setTribalCouncil] = useState<ITribalCouncil>()
+  const [playersInEpisode, setPlayersInEpisode] = useState<IPlayerInEpisode[]>([])
   const [isTribeModalOpen, setIsTribeModalOpen] = useState<boolean>(false)
   const [isVoteModalOpen, setIsVoteModalOpen] = useState<boolean>(false)
   const [disableAjax, setDisableAjax] = useState<boolean>(false)
-  const [tribeData, setTribeData] = useState<any>({
+  const [tribeData, setTribeData] = useState<ITribalCouncilTribe>({
     tribalCouncilId: tribalCouncilId,
     tribeId: 0,
   })
@@ -34,16 +36,16 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
     if (tribalCouncilId === 0) return
 
     readTribalCouncil(tribalCouncilId, setTribalCouncil)
-    readTribalCouncilPlayers(tribalCouncilId, setPlayers)
+    readTribalCouncilPlayers(tribalCouncilId, setPlayersInEpisode)
   }, [tribalCouncilId])
 
-  const changeCallback = (d: any) => {
+  const changeCallback = (d: ITribalCouncil) => {
     setDisableAjax(false)
     setIsTribeModalOpen(false)
     setIsVoteModalOpen(false)
 
     readTribalCouncil(tribalCouncilId, setTribalCouncil)
-    readTribalCouncilPlayers(tribalCouncilId, setPlayers)
+    readTribalCouncilPlayers(tribalCouncilId, setPlayersInEpisode)
   }
 
   const addTribe = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -62,7 +64,7 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
     deleteTribalCouncilTribe(tribalCouncilId, tribeId, changeCallback)
   }
 
-  const addVote = (voteData: any) => {
+  const addVote = (voteData: IVote) => {
     if (disableAjax === true) return
     setDisableAjax(true)
 
@@ -80,32 +82,30 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
     if (disableAjax === true) return
     setDisableAjax(true)
 
-    const vote = tribalCouncil.votes?.find((v: any) => v.id === voteId)
+    const vote = tribalCouncil?.votes?.find((v: IVote) => v.id === voteId)
     if (vote) {
       updateVote(voteId, !vote.doesNotCount, changeCallback)
     }
-
-    setDisableAjax(false)
   }
 
-  const formatVote = (vote: any) => {
+  const formatVote = (vote: IVote) => {
     if (vote.didNotVote) {
       return `${vote.voter?.player?.name} did not vote`
     }
 
     switch (vote.category) {
-      case 'vote':
+      case VoteCategoryEnum.Vote:
         return `${vote.voter?.player?.name} voted for ${vote.votedFor?.player?.name}`
-      case 'shotInTheDark':
+      case VoteCategoryEnum.ShotInTheDark:
         return `${vote.voter?.player?.name} played their shot in the dark`
-      case 'extraVote':
+      case VoteCategoryEnum.ExtraVote:
         return `${vote.voter?.player?.name} cast an extra vote for ${vote.votedFor?.player?.name}`
-      case 'revote':
+      case VoteCategoryEnum.Revote:
         return `Revote: ${vote.voter?.player?.name} voted for ${vote.votedFor?.player?.name}`
     }
   }
 
-  const renderHeader = () => {
+  const renderHeader = (): React.ReactNode => {
     return (
       <thead>
         <tr>
@@ -117,10 +117,10 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
     )
   }
 
-  const renderTribes = () => {
+  const renderTribes = (): React.ReactNode => {
     return (
       <>
-        {tribalCouncil.tribes?.map((tribe: any) => (
+        {tribalCouncil?.tribes?.map((tribe: ITribe) => (
           <Tag
             key={tribe.id}
             size={'large'}
@@ -141,10 +141,10 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
     )
   }
 
-  const renderVotes = () => {
+  const renderVotes = (): React.ReactNode => {
     return (
       <tbody>
-        {tribalCouncil.votes?.map((vote: any) => (
+        {tribalCouncil?.votes?.map((vote: IVote) => (
           <tr 
             key={vote.id}
           >
@@ -157,7 +157,7 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
             >
               <FontAwesomeIcon 
                 onClick={() => toggleDoesNotCount(vote.id)}
-                icon={["fas", vote.doesNotCount ? "square-xmark" : "square-check" ]} 
+                icon={["fas", vote.doesNotCount ? "square-xmark" : "square-check"]} 
               />
             </td>
             <td 
@@ -238,7 +238,7 @@ const TribalCouncilForm: React.FC<TribalCouncilFormProps> = ({
         >
           <VoteForm
             tribalCouncilId={tribalCouncilId}
-            players={players}
+            playersInEpisode={playersInEpisode}
             handleFormSubmit={addVote}
           />
         </ModalForm>

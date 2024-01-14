@@ -8,7 +8,7 @@ export interface IEpisode {
   seasonId: number
   order: number
   name?: string
-  airingDate: Date
+  airingDate: string
   days: number
   notes?: string
   premiere: boolean

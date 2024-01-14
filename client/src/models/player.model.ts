@@ -20,11 +20,12 @@ export interface IPlayerSearchResult {
 }
 
 export interface IPlayerInEpisode {
-  id: number
+  id?: number
   player?: IPlayer
-  playerId: number
+  playerId?: number
+  playerName?: string
   episode?: IEpisode
-  episodeId: number
+  episodeId?: number
   status: PlayerStatusEnum
   castVotes?: IVote[]
   receivedVotes?: IVote[]
@@ -34,12 +35,13 @@ export interface IPlayerInEpisode {
   advantages?: IAdvantage[]
   alliances?: IAlliance[]
   advantagePlays?: IAdvantageEvent[]
-  shotInDark: boolean
-  fireTokens: number
+  shotInTheDark: boolean
+  fireTokens?: number
   notes?: string
 }
 
 export interface IPlayerOnSeason {
+  id: number
   player?: IPlayer
   playerId: number
   season?: ISeason
@@ -55,9 +57,22 @@ export interface IPlayer {
   id: number
   name: string
   nickname?: string
-  birthday: Date
+  birthday: string
   hometown?: string
   notes?: string
   playerInEpisodes?: IPlayerInEpisode[]
   playerOnSeasons?: IPlayerOnSeason[]
+}
+
+export interface IPlayerMeta {
+  playerId: number
+  name: string
+  nickname: string | undefined
+  birthday: string
+  headshot: string | undefined
+  occupation: string | undefined
+  hometown: string | undefined
+  residenceLocation: string | undefined
+  playerNotes: string | undefined
+  playerOnSeasonNotes: string | undefined
 }

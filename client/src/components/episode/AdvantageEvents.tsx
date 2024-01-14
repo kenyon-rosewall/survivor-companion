@@ -104,7 +104,7 @@ const AdvantageEvents: React.FC<AdvantageEventsProps> = ({
       >
         <AdvantageEventForm
           episodeId={episodeId}
-          players={playersInEpisode}
+          playersInEpisode={playersInEpisode}
           callback={handleAddAdvantageEvent}
         />
       </ModalForm>
